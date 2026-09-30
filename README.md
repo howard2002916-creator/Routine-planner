@@ -29,3 +29,4 @@ After you deploy the companion Cloudflare Worker from the `cloudflare-worker` fo
 8. Tap **Test notification**.
 
 The Worker URL is remembered on that device/browser.
+v19 notification update

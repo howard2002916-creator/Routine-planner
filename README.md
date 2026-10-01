@@ -1,4 +1,4 @@
-# Routine Planner — GitHub Pages v19
+# Routine Planner — GitHub Pages v20
 
 This folder is the website.
 
@@ -29,4 +29,12 @@ After you deploy the companion Cloudflare Worker from the `cloudflare-worker` fo
 8. Tap **Test notification**.
 
 The Worker URL is remembered on that device/browser.
-v19 notification update
+
+
+## v20 change
+
+The Motivation timer is now connected to the same Cloudflare background push system as activity timers.
+
+When Motivation is started, the planner schedules a push notification with the existing Worker. Pause / Stop cancels it, and Resume schedules a new finish time.
+
+You do **not** need to redeploy the Cloudflare Worker for this update. Only replace the GitHub Pages files and let GitHub Pages redeploy.

@@ -574,6 +574,8 @@ let motivationTimerInterval=null;
 let motivationRemainingSeconds=0;
 let motivationRunning=false;
 let motivationPaused=false;
+let motivationEndAt=null;
+let motivationActiveId=null;
 // Expanded tool cards are UI-only and reset on every refresh.
 let expandedToolNames=new Set();
 
@@ -996,6 +998,7 @@ function renderMotivationBank(){
                   </div>`;
     el.querySelector(".selectMotivation").onclick=(e)=>{
       e.stopPropagation();
+      stopMotivationTimer(false);
       setSelectedMotivationId(item.id);
       motivationRemainingSeconds=item.duration*60;
       motivationRunning=false; motivationPaused=false;
@@ -1003,6 +1006,7 @@ function renderMotivationBank(){
     };
     el.querySelector(".removeMotivation").onclick=(e)=>{
       e.stopPropagation();
+      if(motivationActiveId===item.id || selectedMotivationId()===item.id) stopMotivationTimer(false);
       currentTemplate().motivationItems=motivationItems().filter(x=>x.id!==item.id);
       if(selectedMotivationId()===item.id) setSelectedMotivationId(null);
       renderMotivationBank(); renderUnlockTaskList(); updateFirstThen(); updateMotivationTimerDisplay(); scheduleAutoSave();
@@ -1081,10 +1085,30 @@ function updateMotivationTimerDisplay(){
   updateMotivationStatus();
 }
 
+function motivationPushTask(m){
+  if(!m) return null;
+  return {
+    id:`motivation-${m.id}`,
+    label:`Motivation: ${m.name}`,
+    timerEndAt:motivationEndAt
+  };
+}
+
+function activeMotivationItem(){
+  return motivationItems().find(x=>x.id===motivationActiveId) || selectedMotivation();
+}
+
 function stopMotivationTimer(reset=true){
+  const active=activeMotivationItem();
+  if(active) cancelClosedPush({id:`motivation-${active.id}`});
+
   clearInterval(motivationTimerInterval);
   motivationTimerInterval=null;
-  motivationRunning=false; motivationPaused=false;
+  motivationEndAt=null;
+  motivationRunning=false;
+  motivationPaused=false;
+  motivationActiveId=null;
+
   if(reset){
     const m=selectedMotivation();
     motivationRemainingSeconds=m?m.duration*60:0;
@@ -1092,36 +1116,69 @@ function stopMotivationTimer(reset=true){
   updateMotivationTimerDisplay();
 }
 
+function completeMotivationTimer(){
+  const m=activeMotivationItem();
+  clearInterval(motivationTimerInterval);
+  motivationTimerInterval=null;
+  motivationEndAt=null;
+  motivationRunning=false;
+  motivationPaused=false;
+  motivationActiveId=null;
+
+  if(m){
+    playAlarmSound();
+    setTimeout(()=>alert(`Motivation time finished: ${m.name}\n\nWhat’s next in the routine?`),0);
+    motivationRemainingSeconds=m.duration*60;
+  }else{
+    motivationRemainingSeconds=0;
+  }
+  updateMotivationTimerDisplay();
+}
+
+function tickMotivationTimer(){
+  if(!motivationRunning || !motivationEndAt) return;
+  motivationRemainingSeconds=Math.max(0,Math.ceil((motivationEndAt-Date.now())/1000));
+  updateMotivationTimerDisplay();
+  if(motivationRemainingSeconds<=0) completeMotivationTimer();
+}
+
 function startMotivationTimer(){
   const m=selectedMotivation();
   if(!m){alert("Choose a motivation item first.");return;}
   if(!motivationUnlocked()){alert("The selected motivation is still locked. Complete the linked tasks first.");return;}
+
   if(motivationRemainingSeconds<=0) motivationRemainingSeconds=m.duration*60;
+
   clearInterval(motivationTimerInterval);
-  motivationRunning=true; motivationPaused=false;
-  updateMotivationTimerDisplay();
-  motivationTimerInterval=setInterval(()=>{
-    motivationRemainingSeconds--;
-    updateMotivationTimerDisplay();
-    if(motivationRemainingSeconds<=0){
-      clearInterval(motivationTimerInterval);
-      motivationTimerInterval=null;
-      motivationRunning=false; motivationPaused=false;
-      playAlarmSound();
-      alert(`Motivation time finished: ${m.name}\n\nWhat’s next in the routine?`);
-      motivationRemainingSeconds=m.duration*60;
-      updateMotivationTimerDisplay();
-    }
-  },1000);
+  motivationActiveId=m.id;
+  motivationEndAt=Date.now()+motivationRemainingSeconds*1000;
+  motivationRunning=true;
+  motivationPaused=false;
+
+  const pushTask=motivationPushTask(m);
+  if(pushTask) scheduleClosedPush(pushTask);
+
+  tickMotivationTimer();
+  motivationTimerInterval=setInterval(tickMotivationTimer,1000);
 }
 
 function pauseMotivationTimer(){
   if(!motivationRunning) return;
+
+  const active=activeMotivationItem();
+  if(motivationEndAt){
+    motivationRemainingSeconds=Math.max(0,Math.ceil((motivationEndAt-Date.now())/1000));
+  }
+  if(active) cancelClosedPush({id:`motivation-${active.id}`});
+
   clearInterval(motivationTimerInterval);
   motivationTimerInterval=null;
-  motivationRunning=false; motivationPaused=true;
+  motivationEndAt=null;
+  motivationRunning=false;
+  motivationPaused=true;
   updateMotivationTimerDisplay();
 }
+
 function resumeMotivationTimer(){
   if(!motivationPaused) return;
   startMotivationTimer();
@@ -2207,7 +2264,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v19_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v20_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

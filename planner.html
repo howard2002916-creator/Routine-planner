@@ -237,6 +237,62 @@ textarea{resize:vertical;min-height:58px}
   .push-actions button{flex:1 1 165px;min-height:44px}
 }
 
+
+.family-sync-panel{
+  margin-top:12px;border:1px solid #d7e6df;border-radius:16px;padding:12px;background:#f6fff9
+}
+.family-sync-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px
+}
+.family-sync-card{
+  border:1px solid #dce9e2;border-radius:14px;background:#fff;padding:11px
+}
+.family-sync-card h3{margin:0 0 6px;font-size:15px}
+.family-sync-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.family-sync-row input{flex:1 1 150px;min-width:0}
+.family-sync-status{
+  margin-top:10px;padding:10px 11px;border-radius:12px;background:#fff;border:1px solid #dce9e2;
+  font-size:12.5px;line-height:1.45;color:var(--muted)
+}
+.family-connected{
+  margin-top:10px;border:1px solid #cfe2d7;border-radius:14px;padding:10px;background:#fff
+}
+.family-code{
+  font-size:21px;font-weight:900;letter-spacing:1.5px;margin:5px 0
+}
+.role-badge{
+  display:inline-block;padding:4px 8px;border-radius:999px;background:#edf7f1;
+  font-size:11px;font-weight:850;text-transform:uppercase
+}
+body.sync-kid-mode #newTemplateBtn,
+body.sync-kid-mode #renameTemplateBtn,
+body.sync-kid-mode #deleteTemplateBtn,
+body.sync-kid-mode #sampleBtn,
+body.sync-kid-mode #clearBtn,
+body.sync-kid-mode #addCustom,
+body.sync-kid-mode #customText,
+body.sync-kid-mode #motivationNameInput,
+body.sync-kid-mode #motivationDurationInput,
+body.sync-kid-mode #addMotivationBtn,
+body.sync-kid-mode .custom-remove,
+body.sync-kid-mode .seq-item .up,
+body.sync-kid-mode .seq-item .down,
+body.sync-kid-mode .seq-item .remove,
+body.sync-kid-mode .seq-item .start,
+body.sync-kid-mode .seq-item .duration,
+body.sync-kid-mode .seq-item .priority,
+body.sync-kid-mode .seq-item .warning,
+body.sync-kid-mode .motivation-card .removeMotivation,
+body.sync-kid-mode .unlock-list input{
+  pointer-events:none!important;opacity:.42!important
+}
+body.sync-kid-mode #bank .activity{
+  pointer-events:none!important;opacity:.55!important
+}
+@media(max-width:680px){
+  .family-sync-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -422,6 +478,60 @@ textarea{resize:vertical;min-height:58px}
       <div class="small-note">Phone browsers may limit maximum loudness. The urgent alarm uses a repeated pattern so it is easier to notice even if the absolute volume is capped.</div>
     </div>
 
+    <div class="family-sync-panel">
+      <strong>👨‍👩‍👧 Shared Family Calendar</strong>
+      <div class="small-note">
+        Link the child’s device and a parent device to the same routine. Parent mode can edit the routine; Kid mode can run timers, mark tasks done and use the routine.
+      </div>
+
+      <div id="familyDisconnectedView">
+        <div class="family-sync-grid">
+          <div class="family-sync-card">
+            <h3>Create a shared calendar (Parent)</h3>
+            <div class="small-note">Uses the routine currently shown on this device as the starting calendar.</div>
+            <div class="family-sync-row">
+              <input id="familyCalendarName" type="text" maxlength="60" placeholder="Calendar name, e.g. Alex's Routine">
+              <input id="familyCreatePin" type="password" inputmode="numeric" maxlength="8" placeholder="Parent PIN (4–8 digits)">
+            </div>
+            <div class="family-sync-row">
+              <button id="familyCreateBtn" class="primary">＋ Create shared calendar</button>
+            </div>
+          </div>
+
+          <div class="family-sync-card">
+            <h3>Join an existing calendar</h3>
+            <div class="family-sync-row">
+              <input id="familyJoinCode" type="text" maxlength="9" autocapitalize="characters" placeholder="Calendar code, e.g. ABCD-2345">
+            </div>
+            <div class="family-sync-row">
+              <input id="familyJoinPin" type="password" inputmode="numeric" maxlength="8" placeholder="Parent PIN (only for Parent mode)">
+            </div>
+            <div class="family-sync-row">
+              <button id="familyJoinKidBtn">🧒 Join as Kid</button>
+              <button id="familyJoinParentBtn">👤 Join as Parent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="familyConnectedView" class="family-connected" style="display:none">
+        <span id="familyRoleBadge" class="role-badge">Parent</span>
+        <div class="small-note">Connected calendar</div>
+        <div id="familyCalendarNameDisplay" style="font-weight:850"></div>
+        <div id="familyCodeDisplay" class="family-code">—</div>
+        <div class="small-note">Share the Calendar Code with the child’s device. Keep the Parent PIN private.</div>
+        <div class="family-sync-row">
+          <button id="familyCopyCodeBtn">Copy code</button>
+          <button id="familySyncNowBtn">↻ Sync now</button>
+          <button id="familyDisconnectBtn" class="danger">Disconnect this device</button>
+        </div>
+      </div>
+
+      <div id="familySyncStatus" class="family-sync-status">
+        Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.
+      </div>
+    </div>
+
     <div class="save-state">
       <strong>💾 Save progress on phone / tablet</strong>
       <div class="small-note" id="saveStatus">Auto-save is on. Changes are saved in this browser on this device.</div>
@@ -580,6 +690,7 @@ let motivationActiveId=null;
 let expandedToolNames=new Set();
 
 
+const DEFAULT_SERVER_URL="https://routine-planner-notifications.routineplanner-ot.workers.dev";
 const PUSH_SERVER_KEY=`routinePushServer_${PROFILE_ID}`;
 const PUSH_ENABLED_KEY=`routinePushEnabled_${PROFILE_ID}`;
 const PUSH_CLIENT_ID_KEY=`routinePushClientId_${PROFILE_ID}`;
@@ -597,7 +708,7 @@ function getPushClientId(){
 }
 
 function getPushServerUrl(){
-  return String(localStorage.getItem(PUSH_SERVER_KEY)||"").trim().replace(/\/+$/,"");
+  return String(localStorage.getItem(PUSH_SERVER_KEY)||DEFAULT_SERVER_URL).trim().replace(/\/+$/,"");
 }
 
 function base64UrlToUint8Array(value){
@@ -784,6 +895,294 @@ async function initialiseClosedPush(){
   }
 }
 
+
+const FAMILY_SYNC_KEY=`routineFamilySync_${PROFILE_ID}`;
+let familySyncConfig=null;
+let familySyncPollTimer=null;
+let familySyncUploadTimer=null;
+let familySyncApplyingRemote=false;
+let familySyncSuppressUntil=0;
+let familySyncLastVersion=0;
+
+function cleanFamilyCode(value){
+  const raw=String(value||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,8);
+  return raw.length>4 ? `${raw.slice(0,4)}-${raw.slice(4)}` : raw;
+}
+
+function loadFamilySyncConfig(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(FAMILY_SYNC_KEY)||"null");
+    if(saved?.code && saved?.token && ["parent","kid"].includes(saved?.role)){
+      familySyncConfig=saved;
+      familySyncLastVersion=Number(saved.version||0);
+    }
+  }catch{}
+}
+
+function saveFamilySyncConfig(){
+  if(familySyncConfig){
+    familySyncConfig.version=familySyncLastVersion;
+    localStorage.setItem(FAMILY_SYNC_KEY,JSON.stringify(familySyncConfig));
+  }else{
+    localStorage.removeItem(FAMILY_SYNC_KEY);
+  }
+}
+
+function isKidSyncMode(){
+  return familySyncConfig?.role==="kid";
+}
+
+function familyStatus(message){
+  const el=document.getElementById("familySyncStatus");
+  if(el) el.textContent=message;
+}
+
+async function familyFetch(path,options={}){
+  const base=getPushServerUrl();
+  if(!base) throw new Error("Notification / sync server is not configured.");
+  const response=await fetch(base+path,{
+    ...options,
+    headers:{"Content-Type":"application/json",...(options.headers||{})}
+  });
+  const text=await response.text();
+  let data={};
+  try{ data=text?JSON.parse(text):{}; }catch{ data={message:text}; }
+  if(!response.ok) throw new Error(data.error||data.message||`Request failed (${response.status})`);
+  return data;
+}
+
+function applyFamilyModeUI(){
+  document.body.classList.toggle("sync-kid-mode",isKidSyncMode());
+
+  const disconnected=document.getElementById("familyDisconnectedView");
+  const connected=document.getElementById("familyConnectedView");
+  if(!disconnected || !connected) return;
+
+  const on=!!familySyncConfig;
+  disconnected.style.display=on?"none":"block";
+  connected.style.display=on?"block":"none";
+
+  if(on){
+    document.getElementById("familyRoleBadge").textContent=familySyncConfig.role==="parent"?"Parent mode":"Kid mode";
+    document.getElementById("familyCalendarNameDisplay").textContent=familySyncConfig.calendarName||"Shared Routine";
+    document.getElementById("familyCodeDisplay").textContent=familySyncConfig.code;
+    familyStatus(
+      familySyncConfig.role==="parent"
+        ? "Connected as Parent. Your routine edits are shared with the child’s linked device."
+        : "Connected as Kid. Parent routine changes will appear here automatically. Task progress is shared back to the parent."
+    );
+  }else{
+    familyStatus("Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.");
+  }
+}
+
+function applyRemoteFamilyState(payload){
+  if(!payload?.state || !Array.isArray(payload.state.templates)) return;
+
+  familySyncApplyingRemote=true;
+  familySyncSuppressUntil=Date.now()+1600;
+  state=payload.state;
+  state.templates.forEach(ensureTemplateShape);
+  familySyncLastVersion=Number(payload.version||familySyncLastVersion||0);
+
+  if(familySyncConfig){
+    familySyncConfig.calendarName=payload.calendarName||familySyncConfig.calendarName;
+    familySyncConfig.role=payload.role||familySyncConfig.role;
+    saveFamilySyncConfig();
+  }
+
+  try{
+    localStorage.setItem(APP_KEY,JSON.stringify(getState()));
+  }catch{}
+
+  refreshAll();
+  renderBank();
+  applyFamilyModeUI();
+  familySyncApplyingRemote=false;
+}
+
+async function createFamilyCalendar(){
+  const pin=String(document.getElementById("familyCreatePin").value||"").trim();
+  const calendarName=String(document.getElementById("familyCalendarName").value||"").trim()
+    || `${cleanProfileName(ACTIVE_PROFILE?.name)||"Child"}'s Routine`;
+
+  if(!/^[0-9]{4,8}$/.test(pin)){
+    familyStatus("Choose a Parent PIN with 4 to 8 digits.");
+    return;
+  }
+
+  familyStatus("Creating shared calendar…");
+  try{
+    const data=await familyFetch("/calendar/create",{
+      method:"POST",
+      body:JSON.stringify({
+        pin,
+        calendarName,
+        state:getState()
+      })
+    });
+
+    familySyncConfig={
+      code:data.code,
+      token:data.token,
+      role:"parent",
+      calendarName:data.calendarName
+    };
+    familySyncLastVersion=Number(data.version||1);
+    saveFamilySyncConfig();
+    applyRemoteFamilyState(data);
+    startFamilySyncPolling();
+    familyStatus(`Shared calendar created. Calendar Code: ${data.code}. Keep the Parent PIN private.`);
+  }catch(err){
+    familyStatus("Could not create shared calendar: "+err.message);
+  }
+}
+
+async function joinFamilyCalendar(role){
+  const code=cleanFamilyCode(document.getElementById("familyJoinCode").value);
+  const pin=String(document.getElementById("familyJoinPin").value||"").trim();
+
+  if(code.replace("-","").length!==8){
+    familyStatus("Enter the 8-character Calendar Code.");
+    return;
+  }
+  if(role==="parent" && !/^[0-9]{4,8}$/.test(pin)){
+    familyStatus("Parent mode also needs the 4–8 digit Parent PIN.");
+    return;
+  }
+
+  familyStatus(`Joining as ${role==="parent"?"Parent":"Kid"}…`);
+  try{
+    const data=await familyFetch("/calendar/join",{
+      method:"POST",
+      body:JSON.stringify({code,role,pin})
+    });
+
+    familySyncConfig={
+      code:data.code,
+      token:data.token,
+      role:data.role,
+      calendarName:data.calendarName
+    };
+    familySyncLastVersion=Number(data.version||0);
+    saveFamilySyncConfig();
+    applyRemoteFamilyState(data);
+    startFamilySyncPolling();
+    familyStatus(`Connected as ${data.role==="parent"?"Parent":"Kid"} to ${data.calendarName}.`);
+  }catch(err){
+    familyStatus("Could not join calendar: "+err.message);
+  }
+}
+
+async function pullFamilyState(showMessage=false){
+  if(!familySyncConfig || familySyncApplyingRemote) return;
+  try{
+    const params=new URLSearchParams({
+      code:familySyncConfig.code,
+      token:familySyncConfig.token
+    });
+    const data=await familyFetch("/calendar/state?"+params.toString(),{method:"GET"});
+    if(Number(data.version||0)>familySyncLastVersion){
+      applyRemoteFamilyState(data);
+      if(showMessage) familyStatus("✓ Latest shared calendar downloaded.");
+    }else if(showMessage){
+      familyStatus("✓ This device already has the latest shared calendar.");
+    }
+  }catch(err){
+    familyStatus("Sync check failed: "+err.message);
+  }
+}
+
+async function uploadFamilyState(){
+  if(!familySyncConfig || familySyncApplyingRemote || Date.now()<familySyncSuppressUntil) return;
+
+  try{
+    const data=await familyFetch("/calendar/update",{
+      method:"POST",
+      body:JSON.stringify({
+        code:familySyncConfig.code,
+        token:familySyncConfig.token,
+        state:getState(),
+        baseVersion:familySyncLastVersion
+      })
+    });
+
+    familySyncLastVersion=Number(data.version||familySyncLastVersion);
+    familySyncConfig.calendarName=data.calendarName||familySyncConfig.calendarName;
+    saveFamilySyncConfig();
+
+    // Kid updates are merged server-side with the parent-owned structure.
+    if(isKidSyncMode() && data.state){
+      applyRemoteFamilyState(data);
+    }
+  }catch(err){
+    familyStatus("Local changes were saved on this device, but cloud sync failed: "+err.message);
+  }
+}
+
+function scheduleFamilyUpload(){
+  if(!familySyncConfig || familySyncApplyingRemote || Date.now()<familySyncSuppressUntil) return;
+  clearTimeout(familySyncUploadTimer);
+  familySyncUploadTimer=setTimeout(uploadFamilyState,700);
+}
+
+function startFamilySyncPolling(){
+  clearInterval(familySyncPollTimer);
+  if(!familySyncConfig) return;
+  familySyncPollTimer=setInterval(()=>pullFamilyState(false),8000);
+}
+
+function disconnectFamilyCalendar(){
+  if(!familySyncConfig) return;
+  if(!confirm("Disconnect this device from the shared calendar? The cloud calendar will stay available to other linked devices.")) return;
+
+  familySyncConfig=null;
+  familySyncLastVersion=0;
+  saveFamilySyncConfig();
+  clearInterval(familySyncPollTimer);
+  document.body.classList.remove("sync-kid-mode");
+  applyFamilyModeUI();
+  familyStatus("This device is disconnected. Its local planner data is still saved on this device.");
+  refreshAll();
+  renderBank();
+}
+
+async function copyFamilyCode(){
+  if(!familySyncConfig?.code) return;
+  try{
+    await navigator.clipboard.writeText(familySyncConfig.code);
+    familyStatus(`Copied Calendar Code: ${familySyncConfig.code}`);
+  }catch{
+    familyStatus(`Calendar Code: ${familySyncConfig.code}`);
+  }
+}
+
+function initialiseFamilySync(){
+  loadFamilySyncConfig();
+
+  const nameInput=document.getElementById("familyCalendarName");
+  if(nameInput && !nameInput.value){
+    nameInput.value=`${cleanProfileName(ACTIVE_PROFILE?.name)||"Child"}'s Routine`;
+  }
+
+  document.getElementById("familyCreateBtn").onclick=createFamilyCalendar;
+  document.getElementById("familyJoinKidBtn").onclick=()=>joinFamilyCalendar("kid");
+  document.getElementById("familyJoinParentBtn").onclick=()=>joinFamilyCalendar("parent");
+  document.getElementById("familyCopyCodeBtn").onclick=copyFamilyCode;
+  document.getElementById("familySyncNowBtn").onclick=()=>pullFamilyState(true);
+  document.getElementById("familyDisconnectBtn").onclick=disconnectFamilyCalendar;
+
+  const codeInput=document.getElementById("familyJoinCode");
+  codeInput.addEventListener("input",()=>{
+    const pos=codeInput.selectionStart;
+    codeInput.value=cleanFamilyCode(codeInput.value);
+  });
+
+  applyFamilyModeUI();
+  startFamilySyncPolling();
+  if(familySyncConfig) pullFamilyState(false);
+}
+
 function uid(){return "id-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
 function toneClass(i){return "tone"+((i%5)+1)}
 function currentTemplate(){return state.templates.find(t=>t.id===state.currentTemplateId) || state.templates[0]}
@@ -854,7 +1253,7 @@ function renderBank(){
   combined.forEach((a,i)=>{
     const el=document.createElement("div");
     el.className="activity "+toneClass(i)+(a.custom?" custom-activity":"");
-    el.draggable=true;
+    el.draggable=!isKidSyncMode();
     el.innerHTML=`<span class="icon">${a.icon}</span><span class="label">${a.label}</span>${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
 
     el.addEventListener("dragstart",e=>{
@@ -863,6 +1262,7 @@ function renderBank(){
     });
 
     el.addEventListener("click",e=>{
+      if(isKidSyncMode()) return;
       if(e.target.closest(".custom-remove")) return;
       plan().push(newTask(a.icon,a.label));
       renderPlan();
@@ -1006,6 +1406,7 @@ function renderMotivationBank(){
     };
     el.querySelector(".removeMotivation").onclick=(e)=>{
       e.stopPropagation();
+      if(isKidSyncMode()) return;
       if(motivationActiveId===item.id || selectedMotivationId()===item.id) stopMotivationTimer(false);
       currentTemplate().motivationItems=motivationItems().filter(x=>x.id!==item.id);
       if(selectedMotivationId()===item.id) setSelectedMotivationId(null);
@@ -1034,6 +1435,7 @@ function renderUnlockTaskList(){
     row.innerHTML=`<input type="checkbox" ${checked?"checked":""}> <span>${t.icon} ${t.label}</span>`;
     const cb=row.querySelector("input");
     cb.onchange=()=>{
+      if(isKidSyncMode()) return;
       let ids=unlockTaskIds().slice();
       if(cb.checked && !ids.includes(t.id)) ids.push(t.id);
       if(!cb.checked) ids=ids.filter(id=>id!==t.id);
@@ -1308,7 +1710,7 @@ function renderPlan(){
     ensureTaskShape(t);
     const el=document.createElement("div");
     el.className="seq-item "+(t.status==="doing"?"doing":t.status==="done"?"done":"");
-    el.draggable=true;
+    el.draggable=!isKidSyncMode();
     el.innerHTML=`
       <div class="seq-top">
         <div class="num">${i+1}</div>
@@ -1382,17 +1784,18 @@ function renderPlan(){
       renderPlan();
     });
 
-    el.querySelector(".up").onclick=()=>{if(i>0){const p=plan(); [p[i-1],p[i]]=[p[i],p[i-1]]; renderPlan()}};
-    el.querySelector(".down").onclick=()=>{if(i<plan().length-1){const p=plan(); [p[i+1],p[i]]=[p[i],p[i+1]]; renderPlan()}};
-    el.querySelector(".remove").onclick=()=>{plan().splice(i,1); renderPlan()};
-    el.querySelector(".start").onchange=e=>{t.start=e.target.value; fired={}; updateDashboard(); scheduleAutoSave()};
+    el.querySelector(".up").onclick=()=>{if(isKidSyncMode()) return;if(i>0){const p=plan(); [p[i-1],p[i]]=[p[i],p[i-1]]; renderPlan()}};
+    el.querySelector(".down").onclick=()=>{if(isKidSyncMode()) return;if(i<plan().length-1){const p=plan(); [p[i+1],p[i]]=[p[i],p[i+1]]; renderPlan()}};
+    el.querySelector(".remove").onclick=()=>{if(isKidSyncMode()) return;plan().splice(i,1); renderPlan()};
+    el.querySelector(".start").onchange=e=>{if(isKidSyncMode()) return;t.start=e.target.value; fired={}; updateDashboard(); scheduleAutoSave()};
     el.querySelector(".duration").onchange=e=>{
+      if(isKidSyncMode()) return;
       t.duration=Math.max(1,Number(e.target.value)||1);
       if(!t.timerEndAt){t.timerPausedRemaining=t.duration*60;t.timerFinished=false;}
       fired={}; updateDashboard(); updateAllTaskTimers(); scheduleAutoSave();
     };
-    el.querySelector(".priority").onchange=e=>{t.priority=e.target.value; scheduleAutoSave()};
-    el.querySelector(".warning").onchange=e=>{t.warning=e.target.value; fired={}; scheduleAutoSave()};
+    el.querySelector(".priority").onchange=e=>{if(isKidSyncMode()) return;t.priority=e.target.value; scheduleAutoSave()};
+    el.querySelector(".warning").onchange=e=>{if(isKidSyncMode()) return;t.warning=e.target.value; fired={}; scheduleAutoSave()};
     el.querySelector(".taskTimerStart").onclick=()=>{t.timerEndAt?null:(t.timerPausedRemaining!==null&&Number(t.timerPausedRemaining)>0?resumeTaskTimer(t):startTaskTimer(t))};
     el.querySelector(".taskTimerPause").onclick=()=>pauseTaskTimer(t);
     el.querySelector(".taskTimerReset").onclick=()=>resetTaskTimer(t);
@@ -1994,6 +2397,7 @@ function saveState(silent=true){
   try{
     localStorage.setItem(APP_KEY, JSON.stringify(getState()));
     document.getElementById("saveStatus").textContent="Auto-saved on this device at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+".";
+    scheduleFamilyUpload();
     if(!silent){
       const b=document.getElementById("saveBtn"), old=b.textContent;
       b.textContent="✓ Saved";
@@ -2102,6 +2506,7 @@ document.getElementById("templateSelect").onchange=e=>{
   scheduleAutoSave();
 };
 document.getElementById("newTemplateBtn").onclick=()=>{
+  if(isKidSyncMode()) return;
   const name=prompt("Name the new routine template:", "Weekend");
   if(!name) return;
   const id=uid();
@@ -2111,6 +2516,7 @@ document.getElementById("newTemplateBtn").onclick=()=>{
   scheduleAutoSave();
 };
 document.getElementById("renameTemplateBtn").onclick=()=>{
+  if(isKidSyncMode()) return;
   const t=currentTemplate();
   const name=prompt("Rename this routine template:", t.name);
   if(!name) return;
@@ -2119,6 +2525,7 @@ document.getElementById("renameTemplateBtn").onclick=()=>{
   scheduleAutoSave();
 };
 document.getElementById("deleteTemplateBtn").onclick=()=>{
+  if(isKidSyncMode()) return;
   if(state.templates.length===1){
     alert("At least one template needs to stay in the planner.");
     return;
@@ -2134,6 +2541,7 @@ const sequence=document.getElementById("sequence");
 sequence.addEventListener("dragover",e=>e.preventDefault());
 sequence.addEventListener("drop",e=>{
   e.preventDefault();
+  if(isKidSyncMode()) return;
   if(e.target.closest(".seq-item")) return;
   const seqIndex=e.dataTransfer.getData("text/seq-index");
   if(seqIndex!==""){
@@ -2148,6 +2556,7 @@ sequence.addEventListener("drop",e=>{
 });
 
 document.getElementById("addCustom").onclick=()=>{
+  if(isKidSyncMode()) return;
   const input=document.getElementById("customText");
   const val=input.value.trim();
   if(!val) return;
@@ -2162,6 +2571,7 @@ document.getElementById("addCustom").onclick=()=>{
 document.getElementById("customText").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("addCustom").click(); });
 
 document.getElementById("addMotivationBtn").onclick=()=>{
+  if(isKidSyncMode()) return;
   const name=document.getElementById("motivationNameInput").value.trim();
   const duration=Math.max(1,Number(document.getElementById("motivationDurationInput").value)||20);
   if(!name) return;
@@ -2264,7 +2674,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v20_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v21_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -2303,6 +2713,7 @@ loadState();
 renderBank();
 refreshAll();
 initialiseClosedPush();
+initialiseFamilySync();
 </script>
 
 <script>

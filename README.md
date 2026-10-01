@@ -1,40 +1,53 @@
-# Routine Planner — GitHub Pages v20
+# Routine Planner — GitHub Pages v21
 
-This folder is the website.
+v21 adds **Shared Family Calendar** sync.
 
-Upload the **contents of this folder** to the root of your GitHub repository.
+## What it does
 
-It includes:
-- `index.html`
-- `planner.html`
-- `sw.js`
-- `manifest.webmanifest`
-- icons
-- GitHub Pages workflow
+A parent and child can use different devices but access the same routine.
 
-## Closed-app notifications
+### Parent mode
+- create the shared calendar
+- edit activity order and content
+- change duration / start time / priority / warnings
+- add/remove motivation items
+- change templates
+- see task progress synced back from the child device
 
-The website now has a **Background timer notifications** section.
+### Kid mode
+- receive the routine created by the parent
+- start / pause / reset activity timers
+- mark activities done
+- choose and run motivation
+- use the “I’m stuck” supports
+- send task progress back to the shared calendar
 
-After you deploy the companion Cloudflare Worker from the `cloudflare-worker` folder:
+Devices automatically check for updates about every 8 seconds.
 
-1. Copy the Worker URL, for example:
-   `https://routine-planner-notifications.your-subdomain.workers.dev`
-2. Open the planner.
-3. Paste the Worker URL into **Background timer notifications**.
-4. Tap **Save server**.
-5. On iPad/iPhone, add the GitHub Pages site to the Home Screen first.
-6. Open the Home Screen app.
-7. Tap **Enable notifications** and allow permission.
-8. Tap **Test notification**.
+## Calendar access
 
-The Worker URL is remembered on that device/browser.
+Creating a shared calendar gives you a random Calendar Code such as:
 
+`ABCD-2345`
 
-## v20 change
+The child joins using the Calendar Code.
 
-The Motivation timer is now connected to the same Cloudflare background push system as activity timers.
+Parent devices use:
+- Calendar Code
+- Parent PIN
 
-When Motivation is started, the planner schedules a push notification with the existing Worker. Pause / Stop cancels it, and Resume schedules a new finish time.
+Keep the Parent PIN private.
 
-You do **not** need to redeploy the Cloudflare Worker for this update. Only replace the GitHub Pages files and let GitHub Pages redeploy.
+## Deployment
+
+Upload the CONTENTS of this `github-pages` folder to the root of the existing GitHub repository and commit.
+
+Then redeploy the updated `cloudflare-worker` folder as well. The Worker URL stays the same.
+
+## Existing notifications
+
+Activity and Motivation background notifications are preserved.
+
+The Worker URL defaults to:
+
+`https://routine-planner-notifications.routineplanner-ot.workers.dev`

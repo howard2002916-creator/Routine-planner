@@ -45,7 +45,7 @@ textarea{resize:vertical;min-height:58px}
 .templatebar{margin-top:12px;padding:10px 12px;background:#fcfbff;border:1px solid #e9e5f4;border-radius:16px}
 .templatebar select{min-width:180px}
 .sequence{min-height:230px;border:2px dashed #cbc5e7;border-radius:18px;padding:9px;background:#fcfbff}
-.sequence.empty:before{content:"Drag activities here to build your routine";display:block;text-align:center;color:#9993ad;padding:78px 10px;font-weight:750}
+.sequence.empty:before{content:attr(data-empty-text);display:block;text-align:center;color:#9993ad;padding:78px 10px;font-weight:750}
 .seq-item{border:1px solid #dfdaee;border-radius:17px;background:#fff;margin:9px 0;padding:10px;box-shadow:0 2px 8px rgba(45,33,82,.05)}
 .seq-item.doing{background:var(--doing);border-color:#ead67d}.seq-item.done{background:var(--done);opacity:.86}
 .seq-top{display:grid;grid-template-columns:40px 1fr auto;gap:9px;align-items:center}
@@ -564,6 +564,30 @@ body.sync-kid-mode .editTask{display:none}
   .language-switcher select{width:100%}
 }
 
+
+/* ===== v33 Daily Use, Focus & Review ===== */
+.history-panel,.app-version-panel,.custom-translation-panel{margin-top:12px;border:1px solid #e3def1;border-radius:16px;padding:12px;background:#fff}
+.history-panel{background:#fbfffc}.history-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.history-head>div{flex:1 1 300px}
+.history-panel textarea{margin-top:9px}.history-list{display:grid;gap:8px;margin-top:10px}.history-card{border:1px solid #e0e8e2;border-radius:13px;padding:10px;background:#fff}
+.history-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.history-stat-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.history-stat{padding:5px 8px;border-radius:999px;background:#f5f7f6;font-size:11px;font-weight:800}.history-task-list{font-size:12px;line-height:1.45;margin-top:7px;color:#5e5870}
+.history-note{margin-top:7px;padding:8px;border-radius:10px;background:#faf8ff;font-size:12px;white-space:pre-wrap}.history-delete{padding:6px 8px;box-shadow:none}
+.focus-mode-banner{display:none;margin-bottom:10px;padding:10px 12px;border-radius:14px;background:#eef6ff;border:1px solid #cfe0f4}
+body.focus-mode .focus-mode-banner{display:block}body.focus-mode .layout{grid-template-columns:minmax(0,860px);justify-content:center}body.focus-mode .layout>.panel:first-child{display:none}
+body.focus-mode header .sub,body.focus-mode .templatebar,body.focus-mode #sampleBtn,body.focus-mode #clearBtn,body.focus-mode #saveBtn,body.focus-mode #printBtn,body.focus-mode #enableAlarmBtn,body.focus-mode #settingsBtn,body.focus-mode #startNewDayBtn,body.focus-mode .settings-shell,body.focus-mode .history-panel{display:none!important}
+body.focus-mode .seq-item.focus-hidden{display:none}body.focus-mode .seq-item .meta,body.focus-mode .seq-item .end-time-display,body.focus-mode .seq-item .task-edit-panel,body.focus-mode .seq-item .parent-comment-box,body.focus-mode .seq-item .controls .editTask,body.focus-mode .seq-item .controls .up,body.focus-mode .seq-item .controls .down,body.focus-mode .seq-item .controls .remove{display:none!important}
+body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{padding:35px 10px}body.focus-mode .panel{box-shadow:none}
+.app-version-panel{background:#f8fbff}.custom-translation-panel{background:#fffafd}.translation-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.translation-field label{display:block;font-size:11px;font-weight:850;color:var(--muted);margin-bottom:4px}.translation-field:first-child{grid-column:1/-1}.translation-field textarea,.translation-field select{width:100%}
+.custom-translation-list{display:grid;gap:7px;margin-top:9px}.translation-card{border:1px solid #e6deec;border-radius:12px;background:#fff;padding:9px}
+.translation-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;font-size:11.5px}.translation-card-grid div{padding:6px;border-radius:9px;background:#faf9ff;white-space:pre-wrap;word-break:break-word}
+.custom-photo-picker{display:flex;align-items:center;gap:6px;border:1px solid #dcd7eb;border-radius:10px;padding:8px 9px;background:#fff;font-size:12px;font-weight:800}
+.custom-photo-picker input{max-width:180px}.activity-photo,.task-visual-photo{width:38px;height:38px;border-radius:10px;object-fit:cover;border:1px solid rgba(70,60,100,.12)}
+.custom-activity{padding-right:104px!important}.custom-activity .custom-photo-btn{position:absolute;right:70px;top:6px;width:27px;height:27px;min-height:0;padding:0;border-radius:999px;border:1px solid #e2dceb;background:#fff;box-shadow:none}
+.task-photo-edit{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.task-photo-preview{width:58px;height:58px;border-radius:12px;border:1px solid #ded8e8;background:#fff;display:grid;place-items:center;overflow:hidden;font-size:28px}
+.task-photo-preview img{width:100%;height:100%;object-fit:cover}
+@media(max-width:650px){.translation-grid{grid-template-columns:1fr}.translation-field:first-child{grid-column:auto}.translation-card-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -596,6 +620,8 @@ body.sync-kid-mode .editTask{display:none}
   </div>
 
   <div class="toolbar">
+    <button id="focusModeBtn">🧒 Focus mode</button>
+    <button id="startNewDayBtn">🌞 Start a new day</button>
     <button id="sampleBtn" class="primary">Load example</button>
     <button id="clearBtn" class="danger">Clear current routine</button>
     <button id="saveBtn">Save now</button>
@@ -721,6 +747,10 @@ body.sync-kid-mode .editTask{display:none}
             <option value="📚">📚 Library</option>
           </optgroup>
         </select>
+        <label class="custom-photo-picker">
+          <span>🖼️ Optional photo</span>
+          <input id="customPhoto" type="file" accept="image/*">
+        </label>
         <button id="addCustom">➕ Add to Activity Bank</button>
       </div>
     </div>
@@ -728,6 +758,11 @@ body.sync-kid-mode .editTask{display:none}
   </section>
 
   <section class="panel">
+    <div class="focus-mode-banner">
+      <strong>🧒 FOCUS MODE</strong>
+      <div class="small-note">Only the current and next unfinished tasks are shown.</div>
+      <div id="focusModeSummary" class="small-note"></div>
+    </div>
     <h2>My Sequence</h2>
     <div class="hint">Drag tasks up or down. Each task can have a start time, duration, priority, warning, and status.</div>
     <div id="sequence" class="sequence empty"></div>
@@ -815,6 +850,18 @@ body.sync-kid-mode .editTask{display:none}
       </div>
 
       <div id="stuckBox" class="stuck-box">Try the task-specific steps first. If you are still stuck, choose one support above.</div>
+    </div>
+
+    <div class="history-panel">
+      <div class="history-head">
+        <div>
+          <strong>📊 Daily History / OT Review</strong>
+          <div class="small-note">A simple functional record of routine completion and supports used. This is not a clinical score.</div>
+        </div>
+        <button id="saveDaySnapshotBtn">💾 Save today to history</button>
+      </div>
+      <textarea id="historyNoteInput" maxlength="500" placeholder="Optional note: What worked today?"></textarea>
+      <div id="historyList" class="history-list"></div>
     </div>
 
     <details id="settingsShell" class="settings-shell">
@@ -929,6 +976,35 @@ body.sync-kid-mode .editTask{display:none}
       <div id="familySyncStatus" class="family-sync-status">
         Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.
       </div>
+    </div>
+
+    <div class="app-version-panel">
+      <strong>📱 App version</strong>
+      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V33</strong></div>
+      <div class="save-actions">
+        <button id="reloadLatestBtn">🔄 Reload latest version</button>
+        <button id="translationAuditBtn">🌐 Translation check</button>
+      </div>
+      <div id="versionStatus" class="small-note"></div>
+      <div id="translationAuditStatus" class="small-note"></div>
+    </div>
+
+    <div class="custom-translation-panel">
+      <strong>🌐 Custom text language versions</strong>
+      <div class="small-note">Save optional language versions for your own activity names, task names, parent comments and personalised support wording.</div>
+      <div class="translation-grid">
+        <div class="translation-field"><label>Original / source text</label><textarea id="translationSourceText" maxlength="500"></textarea></div>
+        <div class="translation-field"><label>Source language</label><select id="translationSourceLang"><option value="en">English</option><option value="zh-Hans">简体中文</option><option value="zh-Hant">繁體中文</option></select></div>
+        <div class="translation-field"><label>English version</label><textarea id="translationEnglish" maxlength="500"></textarea></div>
+        <div class="translation-field"><label>Simplified Chinese version</label><textarea id="translationHans" maxlength="500"></textarea></div>
+        <div class="translation-field"><label>Traditional Chinese version</label><textarea id="translationHant" maxlength="500"></textarea></div>
+      </div>
+      <div class="save-actions">
+        <button id="autoTranslateCustomBtn">✨ Try automatic translation</button>
+        <button id="saveCustomTranslationBtn" class="primary">💾 Save language versions</button>
+      </div>
+      <div id="customTranslationStatus" class="small-note"></div>
+      <div id="customTranslationList" class="custom-translation-list"></div>
     </div>
 
     <div class="save-state">
@@ -1087,6 +1163,31 @@ if(!ACTIVE_PROFILE || !ACTIVE_PROFILE.id || !ACTIVE_PROFILE.name){
 const PROFILE_ID=ACTIVE_PROFILE?.id || "default";
 const APP_KEY=`otRoutinePlannerV9App_${PROFILE_ID}`;
 
+const APP_VERSION="V33";
+const FOCUS_MODE_KEY=`routineFocusMode_${PROFILE_ID}`;
+const ACTIVITY_PHOTO_KEY=`routineActivityPhotos_${PROFILE_ID}`;
+const TASK_PHOTO_KEY=`routineTaskPhotos_${PROFILE_ID}`;
+let focusModeEnabled=localStorage.getItem(FOCUS_MODE_KEY)==="1";
+
+function readLocalPhotoMap(key){try{const x=JSON.parse(localStorage.getItem(key)||"{}");return x&&typeof x==="object"?x:{};}catch{return {}}}
+function writeLocalPhotoMap(key,data){try{localStorage.setItem(key,JSON.stringify(data||{}));}catch{alert(uiText("This browser could not save the photo. Try a smaller image."));}}
+function activityPhotoFor(id){return readLocalPhotoMap(ACTIVITY_PHOTO_KEY)[id]||""}
+function setActivityPhoto(id,data){const map=readLocalPhotoMap(ACTIVITY_PHOTO_KEY);if(data)map[id]=data;else delete map[id];writeLocalPhotoMap(ACTIVITY_PHOTO_KEY,map)}
+function taskPhotoFor(task){const map=readLocalPhotoMap(TASK_PHOTO_KEY);return map[task?.id]||(task?.sourceActivityId?activityPhotoFor(task.sourceActivityId):"")||""}
+function setTaskPhoto(id,data){const map=readLocalPhotoMap(TASK_PHOTO_KEY);if(data)map[id]=data;else delete map[id];writeLocalPhotoMap(TASK_PHOTO_KEY,map)}
+function renderTaskVisual(task){const photo=taskPhotoFor(task);return photo?`<img class="task-visual-photo" src="${photo}" alt="">`:escapeHtml(task?.icon||"⭐")}
+
+function normaliseCustomTranslationKey(text){return String(text||"").trim().replace(/\s+/g," ")}
+function customTranslationStore(){if(!state.customTranslations||typeof state.customTranslations!=="object")state.customTranslations={};return state.customTranslations}
+function findCustomTranslation(text){
+  const raw=normaliseCustomTranslationKey(text);if(!raw)return null;const store=customTranslationStore();
+  if(store[raw])return {key:raw,...store[raw]};
+  for(const [key,entry] of Object.entries(store)){const values=[key,entry?.en,entry?.["zh-Hans"],entry?.["zh-Hant"]].filter(Boolean).map(normaliseCustomTranslationKey);if(values.includes(raw))return {key,...entry}}
+  return null;
+}
+function displayUserText(text){const raw=String(text||"");const entry=findCustomTranslation(raw);if(!entry)return raw;return entry[CURRENT_LANG]||(CURRENT_LANG==="en"?entry.en:"")||raw}
+
+
 const GLOBAL_LANGUAGE_KEY="routinePlannerLanguage";
 const PROFILE_LANGUAGE_KEY=`routinePlannerLanguage_${PROFILE_ID}`;
 const SUPPORTED_LANGUAGES=["en","zh-Hans","zh-Hant"];
@@ -1141,8 +1242,8 @@ function displayTaskLabel(task){
   if(label===base && (ACTIVITY_LABEL_TRANSLATIONS["zh-Hant"]?.[base] || ACTIVITY_LABEL_TRANSLATIONS["zh-Hans"]?.[base])){
     return displayActivityLabel(base);
   }
-  // User-edited labels remain exactly as written.
-  return label;
+  // User-created / edited labels can optionally have saved language versions.
+  return displayUserText(label);
 }
 function translatedBuiltInBreakdown(key){
   const k=String(key||"").toLowerCase();
@@ -1159,6 +1260,21 @@ for(const lang of ["zh-Hant","zh-Hans"]){
     if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
   });
 }
+
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"Drag activities here to build your routine":"將活動拖到這裡，建立你的日程","Your saved supports:":"你已儲存的支援方法：","Try the first small step.":"先試做第一個小步驟。","If that is still hard, choose one support above.":"如果仍然覺得困難，可以從上面選一個支援方法。","Look at only the next small step.":"只看下一個小步驟。","Try the task for only 5 minutes.":"先只試做這個任務5分鐘。","Reduce distractions and keep only what you need nearby.":"減少干擾，只把需要的東西放在身邊。","Take a short timed break, then check the next step.":"先有計劃地短暫休息，再看看下一個步驟。","Ask someone to show or explain the part you are stuck on.":"請別人示範或解釋你卡住的部分。","Ask someone to sit nearby while you start.":"開始時，可以請別人坐在附近陪你。","Try the task-specific steps first. If you are still stuck, choose one support above.":"先試做這個任務的分步指引。如果仍然卡住，可以從上面選一個支援方法。"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"Drag activities here to build your routine":"将活动拖到这里，建立你的日程","Your saved supports:":"你已保存的支持方法：","Try the first small step.":"先试做第一个小步骤。","If that is still hard, choose one support above.":"如果仍然觉得困难，可以从上面选择一个支持方法。","Look at only the next small step.":"只看下一个小步骤。","Try the task for only 5 minutes.":"先只试做这个任务5分钟。","Reduce distractions and keep only what you need nearby.":"减少干扰，只把需要的东西放在身边。","Take a short timed break, then check the next step.":"先有计划地短暂休息，再看看下一个步骤。","Ask someone to show or explain the part you are stuck on.":"请别人示范或解释你卡住的部分。","Ask someone to sit nearby while you start.":"开始时，可以请别人坐在附近陪你。","Try the task-specific steps first. If you are still stuck, choose one support above.":"先试做这个任务的分步指引。如果仍然卡住，可以从上面选择一个支持方法。"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"🌞 Start a new day":"🌞 開始新一天","🧒 Focus mode":"🧒 專注模式","↩ Full planner":"↩ 完整日程","Start a new day? Today's progress will be saved to Daily History, then task status and timers will reset.":"要開始新一天嗎？今天的進度會先儲存到每日紀錄，然後重設任務狀態和計時器。","No routine tasks to reset.":"目前沒有日程任務需要重設。","New day started. Today's routine is ready.":"新一天已開始。今天的日程已準備好。","📊 Daily History / OT Review":"📊 每日紀錄／OT 回顧","A simple functional record of routine completion and supports used. This is not a clinical score.":"簡單記錄日程完成情況和使用過的支援方法；這不是臨床評分。","Optional note: What worked today?":"選填備註：今天甚麼方法有效？","💾 Save today to history":"💾 儲存今天的紀錄","No history yet. Use “Start a new day” or save today manually.":"暫時未有紀錄。可使用「開始新一天」或手動儲存今天。","Tasks completed":"已完成任務","Stuck helper used":"使用「我卡住了」小幫手","Supports tried":"試過的支援方法","No support use recorded":"未記錄支援方法","Delete this history entry?":"刪除這筆每日紀錄？","Today was saved to history.":"今天的紀錄已儲存。","Nothing meaningful to save yet.":"目前未有需要儲存的進度。","📱 App version":"📱 應用程式版本","Current version:":"目前版本：","🔄 Reload latest version":"🔄 重新載入最新版本","Checking for the latest app files…":"正在檢查最新應用程式檔案…","Reloading the latest version…":"正在重新載入最新版本…","🌐 Translation check":"🌐 翻譯完整性檢查","Run language check":"執行語言檢查","English, Simplified Chinese and Traditional Chinese core translations are complete.":"英文、簡體中文和繁體中文的核心翻譯完整。","Translation check found missing items:":"翻譯檢查發現缺少項目：","🌐 Custom text language versions":"🌐 自訂文字語言版本","Save optional language versions for your own activity names, task names, parent comments and personalised support wording.":"可為你自訂的活動名稱、任務名稱、家長留言和個人化支援文字儲存其他語言版本。","Original / source text":"原文／來源文字","Source language":"原文語言","English version":"英文版本","Simplified Chinese version":"簡體中文版本","Traditional Chinese version":"繁體中文版本","✨ Try automatic translation":"✨ 嘗試自動翻譯","💾 Save language versions":"💾 儲存語言版本","Automatic translation is not available in this browser. You can still enter the language versions manually.":"這個瀏覽器未提供自動翻譯。你仍可手動輸入各語言版本。","Automatic translation completed. Please review the wording before saving.":"自動翻譯已完成。儲存前請先檢查用字。","Could not complete automatic translation. You can enter the language versions manually.":"未能完成自動翻譯。你可以手動輸入各語言版本。","Please enter the original text first.":"請先輸入原文。","Language versions saved.":"語言版本已儲存。","No custom language versions saved yet.":"暫時未有自訂語言版本。","Remove these language versions?":"刪除這組語言版本？","🖼️ Optional photo":"🖼️ 選填相片","Choose photo":"選擇相片","Remove photo":"移除相片","Photo stays on this device only.":"相片只會儲存在這部裝置。","🖼️ Add / change photo":"🖼️ 新增／更換相片","FOCUS MODE":"專注模式","Only the current and next unfinished tasks are shown.":"只顯示目前和下一個未完成任務。","Current task":"目前任務","Next task":"下一個任務","No unfinished tasks":"沒有未完成任務","times":"次"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"🌞 Start a new day":"🌞 开始新一天","🧒 Focus mode":"🧒 专注模式","↩ Full planner":"↩ 完整日程","Start a new day? Today's progress will be saved to Daily History, then task status and timers will reset.":"要开始新一天吗？今天的进度会先保存到每日记录，然后重置任务状态和计时器。","No routine tasks to reset.":"目前没有日程任务需要重置。","New day started. Today's routine is ready.":"新一天已开始。今天的日程已准备好。","📊 Daily History / OT Review":"📊 每日记录／OT 回顾","A simple functional record of routine completion and supports used. This is not a clinical score.":"简单记录日程完成情况和使用过的支持方法；这不是临床评分。","Optional note: What worked today?":"选填备注：今天什么方法有效？","💾 Save today to history":"💾 保存今天的记录","No history yet. Use “Start a new day” or save today manually.":"暂时没有记录。可使用“开始新一天”或手动保存今天。","Tasks completed":"已完成任务","Stuck helper used":"使用“我卡住了”小助手","Supports tried":"试过的支持方法","No support use recorded":"未记录支持方法","Delete this history entry?":"删除这条每日记录？","Today was saved to history.":"今天的记录已保存。","Nothing meaningful to save yet.":"目前没有需要保存的进度。","📱 App version":"📱 应用版本","Current version:":"当前版本：","🔄 Reload latest version":"🔄 重新加载最新版本","Checking for the latest app files…":"正在检查最新应用文件…","Reloading the latest version…":"正在重新加载最新版本…","🌐 Translation check":"🌐 翻译完整性检查","Run language check":"运行语言检查","English, Simplified Chinese and Traditional Chinese core translations are complete.":"英文、简体中文和繁体中文的核心翻译完整。","Translation check found missing items:":"翻译检查发现缺少项目：","🌐 Custom text language versions":"🌐 自定义文字语言版本","Save optional language versions for your own activity names, task names, parent comments and personalised support wording.":"可为你自定义的活动名称、任务名称、家长留言和个性化支持文字保存其他语言版本。","Original / source text":"原文／来源文字","Source language":"原文语言","English version":"英文版本","Simplified Chinese version":"简体中文版本","Traditional Chinese version":"繁体中文版本","✨ Try automatic translation":"✨ 尝试自动翻译","💾 Save language versions":"💾 保存语言版本","Automatic translation is not available in this browser. You can still enter the language versions manually.":"这个浏览器未提供自动翻译。你仍可手动输入各语言版本。","Automatic translation completed. Please review the wording before saving.":"自动翻译已完成。保存前请先检查用词。","Could not complete automatic translation. You can enter the language versions manually.":"未能完成自动翻译。你可以手动输入各语言版本。","Please enter the original text first.":"请先输入原文。","Language versions saved.":"语言版本已保存。","No custom language versions saved yet.":"暂时没有自定义语言版本。","Remove these language versions?":"删除这组语言版本？","🖼️ Optional photo":"🖼️ 选填照片","Choose photo":"选择照片","Remove photo":"移除照片","Photo stays on this device only.":"照片只会保存在这台设备。","🖼️ Add / change photo":"🖼️ 新增／更换照片","FOCUS MODE":"专注模式","Only the current and next unfinished tasks are shown.":"只显示当前和下一个未完成任务。","Current task":"当前任务","Next task":"下一个任务","No unfinished tasks":"没有未完成任务","times":"次"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
 function shouldSkipAutoTranslation(node){
   const el=node?.parentElement;
   if(!el) return false;
@@ -1166,7 +1282,7 @@ function shouldSkipAutoTranslation(node){
     "script,style,textarea,#languageSelect,"+
     ".activity .label,.seq-main .label,.parent-comment-readonly,.space-setup-text,"+
     ".motivation-title,.family-code,#familyCalendarNameDisplay,#plannerNameTitle,"+
-    ".breakdown-step,#actionNowBox strong"
+    ".breakdown-step,#actionNowBox strong,.history-task-list,.history-note,.translation-card-grid"
   );
 }
 function applyLanguageToDom(root=document.body){
@@ -1244,6 +1360,7 @@ let state={
   ],
   customActivities:[],
   favoriteActivityKeys:[],
+  customTranslations:{},
   soundChoice:"chime",
   alarmVolume:0.70,
   alarmsEnabled:false
@@ -1837,6 +1954,7 @@ function ensureTaskShape(t){
   if(!("timerFinished" in t)) t.timerFinished=false;
   if(!("parentComment" in t)) t.parentComment="";
   if(!("baseLabel" in t) || !t.baseLabel) t.baseLabel=t.label||"";
+  if(!("sourceActivityId" in t)) t.sourceActivityId=null;
 }
 function plan(){return currentTemplate().plan}
 function setPlan(newPlan){currentTemplate().plan=newPlan}
@@ -1872,8 +1990,8 @@ function calculateTaskEndTime(start,duration){
   return d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
 }
 
-function newTask(icon,label){
-  return {id:uid(),icon,label,baseLabel:label,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false,parentComment:""};
+function newTask(icon,label,sourceActivityId=null){
+  return {id:uid(),icon,label,baseLabel:label,sourceActivityId,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false,parentComment:""};
 }
 
 const LEGACY_SUPPORT_NAME_MAP={
@@ -1896,6 +2014,7 @@ function migrateSelectedSupportNames(names){
 }
 function ensureTemplateShape(t){
   if(!Array.isArray(state.customActivities)) state.customActivities=[];
+  if(!state.customTranslations || typeof state.customTranslations!=="object") state.customTranslations={};
   if(!Array.isArray(state.favoriteActivityKeys)) state.favoriteActivityKeys=[];
   if(!Array.isArray(t.plan)) t.plan=[];
   t.plan.forEach(ensureTaskShape);
@@ -1978,7 +2097,7 @@ function renderBank(){
       activeBankCategory==="All" ||
       (activeBankCategory==="Favourites" && isActivityFavourite(favKey)) ||
       a.category===activeBankCategory;
-    const visibleLabel=a.custom?a.label:displayActivityLabel(a.label);
+    const visibleLabel=a.custom?displayUserText(a.label):displayActivityLabel(a.label);
     const searchMatch=!q || `${a.label} ${visibleLabel} ${a.category} ${uiText(a.category)}`.toLowerCase().includes(q);
     return categoryMatch && searchMatch;
   });
@@ -1990,20 +2109,22 @@ function renderBank(){
     el.className="activity "+toneClass(i)+(a.custom?" custom-activity":"");
     el.draggable=!isKidSyncMode();
     el.title=uiText(a.category);
-    const shownLabel=a.custom?a.label:displayActivityLabel(a.label);
-    el.innerHTML=`<span class="icon">${escapeHtml(a.icon)}</span><span class="label">${escapeHtml(shownLabel)}</span>
+    const shownLabel=a.custom?displayUserText(a.label):displayActivityLabel(a.label);
+    const customPhoto=a.custom?activityPhotoFor(a.bankId):"";
+    el.innerHTML=`<span class="icon">${customPhoto?`<img class="activity-photo" src="${customPhoto}" alt="">`:escapeHtml(a.icon)}</span><span class="label">${escapeHtml(shownLabel)}</span>
+      ${a.custom?'<button class="custom-photo-btn" title="🖼️ Add / change photo">🖼️</button>':""}
       <button class="activity-favourite ${favourite?"on":""}" title="${uiText(favourite?"Remove from favourites":"Add to favourites")}">${favourite?"⭐":"☆"}</button>
       ${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
 
     el.addEventListener("dragstart",e=>{
-      e.dataTransfer.setData("text/plain",JSON.stringify({icon:a.icon,label:a.label}));
+      e.dataTransfer.setData("text/plain",JSON.stringify({icon:a.icon,label:a.label,sourceActivityId:a.custom?a.bankId:null}));
       e.dataTransfer.effectAllowed="copy";
     });
 
     el.addEventListener("click",e=>{
       if(isKidSyncMode()) return;
       if(e.target.closest(".custom-remove")||e.target.closest(".activity-favourite")) return;
-      plan().push(newTask(a.icon,a.label));
+      plan().push(newTask(a.icon,a.label,a.custom?a.bankId:null));
       renderPlan();
     });
 
@@ -2014,13 +2135,19 @@ function renderBank(){
     };
 
     if(a.custom){
+      el.querySelector(".custom-photo-btn").onclick=e=>{
+        e.stopPropagation();if(isKidSyncMode())return;const input=document.createElement("input");input.type="file";input.accept="image/*";
+        input.onchange=ev=>{const file=ev.target.files?.[0];if(!file)return;compressSpacePhoto(file,data=>{if(!data)return;setActivityPhoto(a.bankId,data);renderBank()})};input.click();
+      };
       el.querySelector(".custom-remove").onclick=(e)=>{
         e.stopPropagation();
         if(isKidSyncMode()) return;
         if(!confirm(`Remove “${a.label}” from My activities?`)) return;
         const oldIndex=(state.customActivities||[]).findIndex(x=>x.id===a.bankId);
         const removed=deepClone((state.customActivities||[])[oldIndex]);
+        const removedPhoto=activityPhotoFor(a.bankId);
         state.customActivities=(state.customActivities||[]).filter(x=>x.id!==a.bankId);
+        setActivityPhoto(a.bankId,"");
         const oldFavs=[...(state.favoriteActivityKeys||[])];
         state.favoriteActivityKeys=(state.favoriteActivityKeys||[]).filter(x=>x!==favKey);
         renderBank();
@@ -2029,6 +2156,7 @@ function renderBank(){
           const arr=state.customActivities||[];
           arr.splice(Math.max(0,oldIndex),0,removed);
           state.customActivities=arr;
+          if(removedPhoto)setActivityPhoto(a.bankId,removedPhoto);
           state.favoriteActivityKeys=oldFavs;
           renderBank();
           scheduleAutoSave();
@@ -2079,6 +2207,7 @@ function finishSupportTimer(){
   renderTools();
 }
 function startSupportTimer(kind,minutes){
+  recordDailySupportUse(kind==="break"?"Take a planned break":"Just start for 5 minutes");
   clearInterval(supportTimerInterval);
   if(supportTimerKind) cancelClosedPush({id:`support-${supportTimerKind}`});
   supportTimerKind=kind;
@@ -2098,7 +2227,7 @@ function startSupportTimer(kind,minutes){
 }
 function openCurrentTaskInStuck(){
   const task=currentSupportTask();
-  if(!task){alert("Add a routine task first.");return;}
+  if(!task){alert(uiText("Add a routine task first."));return;}
   const select=document.getElementById("stuckTaskSelect");
   if(select) select.value=task.id;
   renderTaskBreakdown(task.id);
@@ -2275,7 +2404,7 @@ function spaceSetupMarkup(){
         <div class="space-setup-item" data-space-id="${escapeHtml(item.id)}">
           <input type="checkbox" class="space-check" data-space-id="${escapeHtml(item.id)}">
           <div class="space-setup-visual">${spaceItemVisual(item)}</div>
-          <div class="space-setup-text">${escapeHtml(item.text)}</div>
+          <div class="space-setup-text">${escapeHtml(displayUserText(item.text))}</div>
           <div class="space-setup-actions">
             <button class="space-edit" title="Edit">✏️</button>
             <button class="space-up" title="Move up">↑</button>
@@ -2288,7 +2417,7 @@ function spaceSetupMarkup(){
       <strong>⭐ My usual setup</strong>
       <div class="small-note">Tick the items you usually use, then save them as your usual setup.</div>
       <div class="space-usual-chips">
-        ${usualItems.length?usualItems.map(x=>`<span class="space-usual-chip">${escapeHtml(x.icon)} ${escapeHtml(x.text)}</span>`).join(""):'<span class="small-note">No usual setup saved yet.</span>'}
+        ${usualItems.length?usualItems.map(x=>`<span class="space-usual-chip">${escapeHtml(x.icon)} ${escapeHtml(displayUserText(x.text))}</span>`).join(""):'<span class="small-note">No usual setup saved yet.</span>'}
       </div>
       <div class="space-custom-actions">
         <button class="space-save-usual">⭐ Save checked as my usual setup</button>
@@ -2373,7 +2502,7 @@ function supportToolDetails(t){
       <div class="support-action-row"><button class="primary support-start5">${running?"Restart 5 minutes":"▶ Start 5-minute timer"}</button>${running?'<button class="support-stop-timer">■ Stop</button>':""}</div>${feedback}${save}</div>`;
   }
   if(t.type==="oneStep"){
-    let firstStep="Add a routine task first.";
+    let firstStep=uiText("Add a routine task first.");
     if(task){
       const steps=getBreakdownForTask(task);
       const done=taskBreakdownProgress()[task.id]?.completed||[];
@@ -2433,8 +2562,9 @@ function renderTools(){
     const saveBtn=el.querySelector(".support-save-btn");
     if(saveBtn) saveBtn.onclick=e=>{
       e.stopPropagation();
-      const current=selectedTools();
-      setSelectedTools(current.includes(t.name)?current.filter(x=>x!==t.name):[...current,t.name]);
+      const current=selectedTools(),adding=!current.includes(t.name);
+      setSelectedTools(adding?[...current,t.name]:current.filter(x=>x!==t.name));
+      if(adding&&t.name==="Work with someone nearby")recordDailySupportUse(t.name);
       renderTools(); renderSelectedTools(); updateStuckBox(); scheduleAutoSave();
     };
     const start5=el.querySelector(".support-start5");
@@ -2442,10 +2572,11 @@ function renderTools(){
     el.querySelectorAll(".support-break-min").forEach(btn=>btn.onclick=e=>{e.stopPropagation();startSupportTimer("break",Number(btn.dataset.min)||5)});
     el.querySelectorAll(".support-stop-timer").forEach(btn=>btn.onclick=e=>{e.stopPropagation();stopSupportTimer()});
     const open=el.querySelector(".support-open-breakdown");
-    if(open) open.onclick=e=>{e.stopPropagation();openCurrentTaskInStuck()};
+    if(open) open.onclick=e=>{e.stopPropagation();recordDailySupportUse("One step at a time");openCurrentTaskInStuck()};
     el.querySelectorAll(".help-phrase").forEach(btn=>btn.onclick=async e=>{
       e.stopPropagation();
       const phrase=btn.textContent||btn.dataset.phrase;
+      recordDailySupportUse("Ask for help");
       const feedback=el.querySelector(".support-copy-feedback");
       try{await navigator.clipboard.writeText(phrase);if(feedback) feedback.textContent="✓ Sentence copied.";}
       catch{if(feedback) feedback.textContent=`You can say: “${phrase}”`;}
@@ -2475,6 +2606,7 @@ function renderTools(){
         resetSpaceSetupDefaults();
       });
 
+      el.querySelectorAll(".space-check").forEach(cb=>cb.addEventListener("change",ev=>{if(ev.target.checked)recordDailySupportUse("Make my space easier")}));
       el.querySelector(".space-save-usual")?.addEventListener("click",e=>{
         e.stopPropagation();
         const checked=[...el.querySelectorAll(".space-check:checked")].map(x=>x.dataset.spaceId);
@@ -2638,7 +2770,7 @@ function renderMotivationBank(){
     const el=document.createElement("div");
     const selected=item.id===selectedMotivationId();
     el.className="motivation-card"+(selected?" selected":"");
-    el.innerHTML=`<div class="motivation-title"><span>${item.icon||"⭐"}</span><span>${item.name}</span></div>
+    el.innerHTML=`<div class="motivation-title"><span>${item.icon||"⭐"}</span><span>${escapeHtml(displayUserText(item.name))}</span></div>
                   <div class="motivation-meta">${item.duration} min</div>
                   <div class="motivation-actions">
                     <button class="selectMotivation">${selected?"✓ Selected":"Choose"}</button>
@@ -2859,6 +2991,46 @@ function taskTimerText(t){
   return formatSeconds(taskTimerRemaining(t));
 }
 
+
+function dailyMetricsStore(){const meta=taskBreakdownProgress();if(!meta.__dailyMetrics||typeof meta.__dailyMetrics!=="object")meta.__dailyMetrics={startedAt:Date.now(),stuckCount:0,supportUses:{}};if(!meta.__dailyMetrics.supportUses||typeof meta.__dailyMetrics.supportUses!=="object")meta.__dailyMetrics.supportUses={};return meta.__dailyMetrics}
+function recordDailySupportUse(name){const m=dailyMetricsStore();const key=String(name||"Support");m.supportUses[key]=Number(m.supportUses[key]||0)+1;scheduleAutoSave()}
+function recordStuckHelperUse(){const m=dailyMetricsStore();m.stuckCount=Number(m.stuckCount||0)+1;scheduleAutoSave()}
+function dailyHistoryStore(){const meta=taskBreakdownProgress();if(!Array.isArray(meta.__dailyHistory))meta.__dailyHistory=[];return meta.__dailyHistory}
+function localDateKey(ts=Date.now()){const d=new Date(ts);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function currentDaySnapshot(note=""){
+ const tasks=plan(),done=tasks.filter(t=>t.status==="done").length,metrics=deepClone(dailyMetricsStore());
+ return {id:`day-${uid()}`,date:localDateKey(),savedAt:Date.now(),templateName:currentTemplate()?.name||"",total:tasks.length,done,
+ tasks:tasks.map(t=>({label:t.label,baseLabel:t.baseLabel||t.label,icon:t.icon||"⭐",status:t.status||"not"})),
+ stuckCount:Number(metrics.stuckCount||0),supportUses:metrics.supportUses||{},note:String(note||"").trim().slice(0,500)}
+}
+function hasMeaningfulDayProgress(){return plan().some(t=>t.status==="done"||t.status==="doing"||t.timerFinished)||Number(dailyMetricsStore().stuckCount||0)>0||Object.values(dailyMetricsStore().supportUses||{}).some(n=>Number(n)>0)||String(document.getElementById("historyNoteInput")?.value||"").trim().length>0}
+function saveTodayToHistory(showMessage=true){
+ if(!plan().length||!hasMeaningfulDayProgress()){if(showMessage)alert(uiText("Nothing meaningful to save yet."));return null}
+ const note=document.getElementById("historyNoteInput")?.value||"",snap=currentDaySnapshot(note),history=dailyHistoryStore();history.unshift(snap);if(history.length>60)history.length=60;
+ if(document.getElementById("historyNoteInput"))document.getElementById("historyNoteInput").value="";
+ renderDailyHistory();scheduleAutoSave();if(showMessage)alert(uiText("Today was saved to history."));return snap
+}
+function resetDailyProgress(){
+ plan().forEach(t=>{cancelClosedPush(t);t.status="not";t.startedAt=null;t.timerEndAt=null;t.timerPausedRemaining=Math.max(1,Number(t.duration)||15)*60;t.timerFinished=false;const entry=taskBreakdownProgress()[t.id];if(entry&&typeof entry==="object")entry.completed=[]});
+ const meta=taskBreakdownProgress();meta.__dailyMetrics={startedAt:Date.now(),stuckCount:0,supportUses:{}};meta.__changeRequests={};stopMotivationTimer(false);
+ const m=selectedMotivation();motivationRemainingSeconds=m?Number(m.duration||0)*60:0;motivationRunning=false;motivationPaused=false;fired={}
+}
+function startNewDay(){if(isKidSyncMode())return;if(!plan().length){alert(uiText("No routine tasks to reset."));return}if(!confirm(uiText("Start a new day? Today's progress will be saved to Daily History, then task status and timers will reset.")))return;if(hasMeaningfulDayProgress())saveTodayToHistory(false);resetDailyProgress();refreshAll();scheduleAutoSave();alert(uiText("New day started. Today's routine is ready."))}
+function renderDailyHistory(){
+ const box=document.getElementById("historyList");if(!box)return;const history=dailyHistoryStore();box.innerHTML="";
+ if(!history.length){box.innerHTML=`<div class="small-note">${uiText("No history yet. Use “Start a new day” or save today manually.")}</div>`;return}
+ history.slice(0,20).forEach(entry=>{const card=document.createElement("div");card.className="history-card";const pct=entry.total?Math.round(Number(entry.done||0)/Number(entry.total)*100):0;
+ const supportEntries=Object.entries(entry.supportUses||{}).filter(([,n])=>Number(n)>0);
+ const taskText=(entry.tasks||[]).map(t=>{const label=t.label===t.baseLabel?displayActivityLabel(t.baseLabel):displayUserText(t.label);return `${t.status==="done"?"✅":t.status==="doing"?"▶️":"○"} ${t.icon||""} ${label}`}).join(" · ");
+ const dateLabel=new Date(entry.savedAt||Date.now()).toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"});
+ card.innerHTML=`<div class="history-card-head"><div><strong>${escapeHtml(dateLabel)}</strong><div class="small-note">${escapeHtml(entry.templateName||"")}</div></div><button class="history-delete danger">✕</button></div>
+ <div class="history-stat-row"><span class="history-stat">${uiText("Tasks completed")}: ${Number(entry.done||0)} / ${Number(entry.total||0)} (${pct}%)</span><span class="history-stat">${uiText("Stuck helper used")}: ${Number(entry.stuckCount||0)} ${uiText("times")}</span></div>
+ <div class="history-task-list">${escapeHtml(taskText)}</div><div class="small-note" style="margin-top:7px"><strong>${uiText("Supports tried")}:</strong> ${supportEntries.length?supportEntries.map(([name,n])=>`${escapeHtml(uiText(name))} ×${Number(n)}`).join(" · "):uiText("No support use recorded")}</div>${entry.note?`<div class="history-note">${escapeHtml(entry.note)}</div>`:""}`;
+ card.querySelector(".history-delete").onclick=()=>{if(!confirm(uiText("Delete this history entry?")))return;const arr=dailyHistoryStore(),i=arr.findIndex(x=>x.id===entry.id);if(i>=0)arr.splice(i,1);renderDailyHistory();scheduleAutoSave()};box.appendChild(card)})
+}
+function applyFocusModeUI(render=true){document.body.classList.toggle("focus-mode",focusModeEnabled);const btn=document.getElementById("focusModeBtn");if(btn)btn.textContent=focusModeEnabled?uiText("↩ Full planner"):uiText("🧒 Focus mode");localStorage.setItem(FOCUS_MODE_KEY,focusModeEnabled?"1":"0");if(render)renderPlan()}
+function toggleFocusMode(){focusModeEnabled=!focusModeEnabled;applyFocusModeUI(true)}
+function updateFocusSummary(){const el=document.getElementById("focusModeSummary");if(!el)return;const unfinished=plan().filter(t=>t.status!=="done"),current=plan().find(t=>t.status==="doing")||unfinished[0]||null;let next=null;if(current){const idx=plan().indexOf(current);next=plan().slice(idx+1).find(t=>t.status!=="done")||null}el.textContent=current?`${uiText("Current task")}: ${displayTaskLabel(current)}${next?` · ${uiText("Next task")}: ${displayTaskLabel(next)}`:""}`:uiText("No unfinished tasks")}
 function startTaskTimer(t){
   ensureTaskShape(t);
   plan().forEach(x=>{
@@ -3044,17 +3216,23 @@ function renderTaskChangeRequestHtml(t){
 function renderPlan(){
   const sequence=document.getElementById("sequence");
   sequence.innerHTML="";
+  sequence.dataset.emptyText=uiText("Drag activities here to build your routine");
   sequence.classList.toggle("empty",plan().length===0);
+
+  const currentFocus=plan().find(t=>t.status==="doing")||plan().find(t=>t.status!=="done")||null;
+  const currentFocusIndex=currentFocus?plan().indexOf(currentFocus):-1;
+  const nextFocusIndex=currentFocusIndex>=0?plan().findIndex((t,idx)=>idx>currentFocusIndex&&t.status!=="done"):-1;
 
   plan().forEach((t,i)=>{
     ensureTaskShape(t);
     const el=document.createElement("div");
-    el.className="seq-item "+(t.status==="doing"?"doing":t.status==="done"?"done":"");
+    const focusClass=focusModeEnabled&&i!==currentFocusIndex&&i!==nextFocusIndex?" focus-hidden":(i===currentFocusIndex?" focus-primary":i===nextFocusIndex?" focus-next":"");
+    el.className="seq-item "+(t.status==="doing"?"doing":t.status==="done"?"done":"")+focusClass;
     el.draggable=!isKidSyncMode();
     el.innerHTML=`
       <div class="seq-top">
         <div class="num">${i+1}</div>
-        <div class="seq-main"><span class="icon">${escapeHtml(t.icon)}</span><span class="label">${escapeHtml(displayTaskLabel(t))}</span></div>
+        <div class="seq-main"><span class="icon">${renderTaskVisual(t)}</span><span class="label">${escapeHtml(displayTaskLabel(t))}</span></div>
         <div class="controls">
           <button class="mini editTask" title="Edit activity">✏️</button>
           <button class="mini up">↑</button>
@@ -3106,6 +3284,12 @@ function renderPlan(){
           <input class="taskEditName" type="text" maxlength="80" value="${escapeHtml(displayTaskLabel(t))}" aria-label="Activity name">
           <select class="taskEditIcon" aria-label="Activity icon"></select>
         </div>
+        <div class="task-photo-edit">
+          <div class="task-photo-preview">${taskPhotoFor(t)?`<img src="${taskPhotoFor(t)}" alt="">`:escapeHtml(t.icon||"⭐")}</div>
+          <label class="custom-photo-picker"><span>🖼️ Optional photo</span><input class="taskPhotoInput" type="file" accept="image/*"></label>
+          <button class="removeTaskPhoto">Remove photo</button>
+        </div>
+        <div class="small-note">Photo stays on this device only.</div>
         <div class="task-edit-actions">
           <button class="saveTaskEdit primary">Save activity</button>
           <button class="cancelTaskEdit">Cancel</button>
@@ -3120,7 +3304,7 @@ function renderPlan(){
       ` : (isKidSyncMode() && t.parentComment ? `
         <div class="parent-comment-box">
           <label>Parent comment</label>
-          <div class="parent-comment-readonly">${escapeHtml(t.parentComment||"")}</div>
+          <div class="parent-comment-readonly">${escapeHtml(displayUserText(t.parentComment||""))}</div>
         </div>
       ` : "")}
     `;
@@ -3144,7 +3328,7 @@ function renderPlan(){
       }else{
         try{
           const d=JSON.parse(e.dataTransfer.getData("text/plain"));
-          plan().splice(i,0,newTask(d.icon,d.label));
+          plan().splice(i,0,newTask(d.icon,d.label,d.sourceActivityId||null));
         }catch{}
       }
       renderPlan();
@@ -3162,6 +3346,10 @@ function renderPlan(){
       }
       editIcon.value=t.icon;
     }
+    const taskPhotoInput=el.querySelector(".taskPhotoInput");
+    if(taskPhotoInput)taskPhotoInput.onchange=e=>{const file=e.target.files?.[0];if(!file)return;compressSpacePhoto(file,data=>{if(!data)return;setTaskPhoto(t.id,data);const preview=el.querySelector(".task-photo-preview");if(preview)preview.innerHTML=`<img src="${data}" alt="">`})};
+    const removeTaskPhotoBtn=el.querySelector(".removeTaskPhoto");
+    if(removeTaskPhotoBtn)removeTaskPhotoBtn.onclick=()=>{setTaskPhoto(t.id,"");const preview=el.querySelector(".task-photo-preview");if(preview)preview.textContent=t.icon||"⭐"};
     el.querySelector(".editTask").onclick=()=>{
       if(isKidSyncMode()) return;
       editPanel.style.display=editPanel.style.display==="none"?"block":"none";
@@ -3182,6 +3370,8 @@ function renderPlan(){
     el.querySelector(".remove").onclick=()=>{
       if(isKidSyncMode()) return;
       const removed=deepClone(plan()[i]);
+      const removedTaskPhoto=readLocalPhotoMap(TASK_PHOTO_KEY)[removed.id]||"";
+      setTaskPhoto(removed.id,"");
       const progress=taskBreakdownProgress();
       const removedProgress=progress[removed.id] ? deepClone(progress[removed.id]) : null;
       const requestStore=progress.__changeRequests||{};
@@ -3195,6 +3385,7 @@ function renderPlan(){
       scheduleAutoSave();
       showUndo(`Removed “${removed.label}”.`,()=>{
         plan().splice(Math.min(i,plan().length),0,removed);
+        if(removedTaskPhoto)setTaskPhoto(removed.id,removedTaskPhoto);
         if(removedProgress) taskBreakdownProgress()[removed.id]=removedProgress;
         if(removedRequest){
           if(!taskBreakdownProgress().__changeRequests) taskBreakdownProgress().__changeRequests={};
@@ -3256,6 +3447,7 @@ function renderPlan(){
   populateStuckTaskSelect();
   renderTaskBreakdown(document.getElementById("stuckTaskSelect")?.value || null);
   updateMotivationTimerDisplay();
+  updateFocusSummary();
   scheduleAutoSave();
   translateSoon();
 }
@@ -4229,7 +4421,7 @@ function renderTaskBreakdown(taskId=null){
 
   list.innerHTML="";
   if(!task){
-    action.innerHTML='<small>DO THIS NOW</small><strong>Add a routine task first.</strong>';
+    action.innerHTML=`<small>${uiText("DO THIS NOW")}</small><strong>${uiText("Add a routine task first.")}</strong>`;
     const editor=document.getElementById("breakdownEditor");
     if(editor){editor.style.display="none";editor.innerHTML="";}
     const editBtn=document.getElementById("editBreakdownBtn");
@@ -4325,20 +4517,23 @@ function getStuckSuggestions(){
   const chosen=selectedTools();
   const tips=[];
   if(task) tips.push(`✅ ${uiText("My task is")}: <strong>${escapeHtml(displayTaskLabel(task))}</strong>.`);
-  if(chosen.includes("One step at a time")) tips.push("1️⃣ Look at only the next small step.");
-  if(chosen.includes("Just start for 5 minutes")) tips.push("🚀 Try the task for only 5 minutes.");
-  if(chosen.includes("Make my space easier")) tips.push("🎧 Reduce distractions and keep only what you need nearby.");
-  if(chosen.includes("Take a planned break")) tips.push("⏸️ Take a short timed break, then check the next step.");
-  if(chosen.includes("Ask for help")) tips.push("🙋 Ask someone to show or explain the part you are stuck on.");
-  if(chosen.includes("Work with someone nearby")) tips.push("👥 Ask someone to sit nearby while you start.");
-  if(!tips.length){tips.push("1️⃣ Try the first small step.");tips.push("🧰 If that is still hard, choose one support above.");}
+  if(chosen.includes("One step at a time")) tips.push(`1️⃣ ${uiText("Look at only the next small step.")}`);
+  if(chosen.includes("Just start for 5 minutes")) tips.push(`🚀 ${uiText("Try the task for only 5 minutes.")}`);
+  if(chosen.includes("Make my space easier")) tips.push(`🎧 ${uiText("Reduce distractions and keep only what you need nearby.")}`);
+  if(chosen.includes("Take a planned break")) tips.push(`⏸️ ${uiText("Take a short timed break, then check the next step.")}`);
+  if(chosen.includes("Ask for help")) tips.push(`🙋 ${uiText("Ask someone to show or explain the part you are stuck on.")}`);
+  if(chosen.includes("Work with someone nearby")) tips.push(`👥 ${uiText("Ask someone to sit nearby while you start.")}`);
+  if(!tips.length){
+    tips.push(`1️⃣ ${uiText("Try the first small step.")}`);
+    tips.push(`🧰 ${uiText("If that is still hard, choose one support above.")}`);
+  }
   return tips;
 }
 function updateStuckBox(){
   const box=document.getElementById("stuckBox");
   if(!box) return;
   const lines=getStuckSuggestions();
-  box.innerHTML='<strong>Your saved supports:</strong>'+lines.map(x=>`<div style="margin:4px 0">${x}</div>`).join("");
+  box.innerHTML=`<strong>${uiText("Your saved supports:")}</strong>`+lines.map(x=>`<div style="margin:4px 0">${x}</div>`).join("");
 }
 
 function getAudioCtx(){
@@ -4409,6 +4604,31 @@ setInterval(alarmTick,10000);
 
 function getState(){ return JSON.parse(JSON.stringify(state)); }
 
+
+function renderCustomTranslationList(){
+ const box=document.getElementById("customTranslationList");if(!box)return;const entries=Object.entries(customTranslationStore());box.innerHTML="";
+ if(!entries.length){box.innerHTML=`<div class="small-note">${uiText("No custom language versions saved yet.")}</div>`;return}
+ entries.slice(0,30).forEach(([key,entry])=>{const card=document.createElement("div");card.className="translation-card";card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><strong>${escapeHtml(key)}</strong><button class="translation-delete danger">✕</button></div><div class="translation-card-grid"><div><strong>EN</strong><br>${escapeHtml(entry.en||"—")}</div><div><strong>简</strong><br>${escapeHtml(entry["zh-Hans"]||"—")}</div><div><strong>繁</strong><br>${escapeHtml(entry["zh-Hant"]||"—")}</div></div>`;
+ card.querySelector(".translation-delete").onclick=()=>{if(!confirm(uiText("Remove these language versions?")))return;delete customTranslationStore()[key];renderCustomTranslationList();refreshAll();scheduleAutoSave()};box.appendChild(card)})
+}
+function saveCustomTranslation(){
+ const source=normaliseCustomTranslationKey(document.getElementById("translationSourceText")?.value||"");if(!source){alert(uiText("Please enter the original text first."));return}
+ const sourceLang=document.getElementById("translationSourceLang")?.value||"en",entry={en:(document.getElementById("translationEnglish")?.value||"").trim(),"zh-Hans":(document.getElementById("translationHans")?.value||"").trim(),"zh-Hant":(document.getElementById("translationHant")?.value||"").trim(),sourceLang};
+ if(sourceLang==="en"&&!entry.en)entry.en=source;if(sourceLang==="zh-Hans"&&!entry["zh-Hans"])entry["zh-Hans"]=source;if(sourceLang==="zh-Hant"&&!entry["zh-Hant"])entry["zh-Hant"]=source;
+ customTranslationStore()[source]=entry;document.getElementById("customTranslationStatus").textContent=uiText("Language versions saved.");renderCustomTranslationList();refreshAll();scheduleAutoSave()
+}
+async function tryBrowserAutoTranslation(){
+ const source=(document.getElementById("translationSourceText")?.value||"").trim(),sourceLang=document.getElementById("translationSourceLang")?.value||"en",status=document.getElementById("customTranslationStatus");
+ if(!source){alert(uiText("Please enter the original text first."));return}const TranslatorClass=globalThis.Translator;
+ if(!TranslatorClass||typeof TranslatorClass.create!=="function"){if(status)status.textContent=uiText("Automatic translation is not available in this browser. You can still enter the language versions manually.");return}
+ try{const targets=["en","zh-Hans","zh-Hant"],fields={en:"translationEnglish","zh-Hans":"translationHans","zh-Hant":"translationHant"};document.getElementById(fields[sourceLang]).value=source;
+ for(const target of targets){if(target===sourceLang)continue;const translator=await TranslatorClass.create({sourceLanguage:sourceLang,targetLanguage:target});document.getElementById(fields[target]).value=await translator.translate(source);if(typeof translator.destroy==="function")translator.destroy()}
+ if(status)status.textContent=uiText("Automatic translation completed. Please review the wording before saving.")}catch{if(status)status.textContent=uiText("Could not complete automatic translation. You can enter the language versions manually.")}
+}
+const V33_TRANSLATION_AUDIT_KEYS=["🌞 Start a new day","🧒 Focus mode","↩ Full planner","📊 Daily History / OT Review","💾 Save today to history","📱 App version","🔄 Reload latest version","🌐 Translation check","🌐 Custom text language versions","🖼️ Optional photo","FOCUS MODE","Current task","Next task","Drag activities here to build your routine","Your saved supports:","Try the first small step.","If that is still hard, choose one support above."];
+function runTranslationAudit(){const missing=[];for(const lang of ["zh-Hans","zh-Hant"]){for(const key of V33_TRANSLATION_AUDIT_KEYS){if(!UI_TRANSLATIONS[lang]?.[key])missing.push(`${lang}: ${key}`)}if(Object.keys(ACTIVITY_LABEL_TRANSLATIONS[lang]||{}).length<98)missing.push(`${lang}: Activity Bank <98`);if(Object.keys(TASK_BREAKDOWN_TRANSLATIONS[lang]||{}).length<98)missing.push(`${lang}: I’m stuck guides <98`)}
+ const status=document.getElementById("translationAuditStatus");if(status)status.textContent=missing.length?`${uiText("Translation check found missing items:")} ${missing.join(" | ")}`:uiText("English, Simplified Chinese and Traditional Chinese core translations are complete.");return missing}
+async function reloadLatestVersion(){const status=document.getElementById("versionStatus");if(status)status.textContent=uiText("Checking for the latest app files…");try{if("serviceWorker"in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update()}}catch{}if(status)status.textContent=uiText("Reloading the latest version…");const url=new URL(location.href);url.searchParams.set("_appUpdate",Date.now());location.replace(url.toString())}
 function saveState(silent=true){
   try{
     localStorage.setItem(APP_KEY, JSON.stringify(getState()));
@@ -4544,6 +4764,11 @@ function refreshAll(){
   document.getElementById("volumeSlider").value=Math.round(state.alarmVolume*100);
   document.getElementById("volumeLabel").textContent=Math.round(state.alarmVolume*100)+"%";
   document.getElementById("alarmStatus").textContent=state.alarmsEnabled ? uiText("In-page alarms are ON.") : uiText("Alarms are off. Click “Enable alarms” above.");
+  document.getElementById("appVersionText").textContent=APP_VERSION;
+  renderDailyHistory();
+  renderCustomTranslationList();
+  applyFocusModeUI(false);
+  updateFocusSummary();
   translateSoon();
 }
 
@@ -4636,7 +4861,7 @@ sequence.addEventListener("drop",e=>{
   }else{
     try{
       const d=JSON.parse(e.dataTransfer.getData("text/plain"));
-      plan().push(newTask(d.icon,d.label));
+      plan().push(newTask(d.icon,d.label,d.sourceActivityId||null));
     }catch{}
   }
   renderPlan();
@@ -4644,17 +4869,11 @@ sequence.addEventListener("drop",e=>{
 
 document.getElementById("addCustom").onclick=()=>{
   if(isKidSyncMode()) return;
-  const input=document.getElementById("customText");
-  const val=input.value.trim();
-  if(!val) return;
-  if(!Array.isArray(state.customActivities)) state.customActivities=[];
-  const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())
-    || activities.some(x=>String(x.label||"").trim().toLowerCase()===val.toLowerCase());
-  const icon=document.getElementById("customIcon")?.value || "⭐";
-  if(!exists) state.customActivities.push({id:uid(),icon,label:val});
-  input.value="";
-  renderBank();
-  scheduleAutoSave();
+  const input=document.getElementById("customText"),val=input.value.trim();if(!val)return;if(!Array.isArray(state.customActivities))state.customActivities=[];
+  const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())||activities.some(x=>String(x.label||"").trim().toLowerCase()===val.toLowerCase());
+  const icon=document.getElementById("customIcon")?.value||"⭐";if(exists)return;const id=uid();state.customActivities.push({id,icon,label:val});
+  const photoFile=document.getElementById("customPhoto")?.files?.[0];if(photoFile)compressSpacePhoto(photoFile,data=>{if(data){setActivityPhoto(id,data);renderBank()}});
+  input.value="";const photoInput=document.getElementById("customPhoto");if(photoInput)photoInput.value="";renderBank();scheduleAutoSave();
 };
 document.getElementById("customText").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("addCustom").click(); });
 
@@ -4688,6 +4907,7 @@ document.getElementById("useCurrentTaskBtn").onclick=()=>{
 document.getElementById("breakTaskBtn").onclick=async()=>{
   const task=selectedStuckTask();
   if(!task) return;
+  recordStuckHelperUse();
   await requestSmartBreakdown(task);
 };
 document.getElementById("nextSmallStepBtn").onclick=()=>completeNextSmallStep();
@@ -4752,7 +4972,14 @@ document.getElementById("clearBtn").onclick=()=>{
   t.motivationItems=[];
   t.selectedMotivationId=null;
   t.unlockTaskIds=[];
-  t.taskBreakdownProgress={};
+  const oldMeta=t.taskBreakdownProgress||{};
+  t.taskBreakdownProgress={
+    __dailyHistory:Array.isArray(oldMeta.__dailyHistory)?oldMeta.__dailyHistory:[],
+    __supportFeedback:oldMeta.__supportFeedback||{},
+    __spaceSetup:oldMeta.__spaceSetup||undefined,
+    __selectedSupports:Array.isArray(oldMeta.__selectedSupports)?oldMeta.__selectedSupports:[],
+    __dailyMetrics:{startedAt:Date.now(),stuckCount:0,supportUses:{}}
+  };
   stopMotivationTimer(false);
   motivationRemainingSeconds=0;
   fired={};
@@ -4774,7 +5001,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v31_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v33_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -4806,6 +5033,14 @@ document.getElementById("importFile").onchange=e=>{
 updateProfileUI();
 
 document.getElementById("changeProfileNameBtn").onclick=changeProfileName;
+document.getElementById("focusModeBtn").onclick=toggleFocusMode;
+document.getElementById("startNewDayBtn").onclick=startNewDay;
+document.getElementById("saveDaySnapshotBtn").onclick=()=>saveTodayToHistory(true);
+document.getElementById("reloadLatestBtn").onclick=reloadLatestVersion;
+document.getElementById("translationAuditBtn").onclick=runTranslationAudit;
+document.getElementById("saveCustomTranslationBtn").onclick=saveCustomTranslation;
+document.getElementById("autoTranslateCustomBtn").onclick=tryBrowserAutoTranslation;
+
 const languageSelect=document.getElementById("languageSelect");
 if(languageSelect){
   languageSelect.value=CURRENT_LANG;

@@ -245,3 +245,36 @@ V31 preserves the existing V9 profile/data keys and all V30 features, including:
 - notifications and timers
 
 Frontend only — no Cloudflare Worker redeploy is required.
+
+
+## v31.1 — Multilingual display fix
+
+Fixes dynamic English text that could remain visible after switching to Simplified or Traditional Chinese.
+
+Corrected areas include:
+- empty My Sequence message
+- no-task message in “I’m stuck”
+- “Your saved supports” heading
+- all fallback / selected support suggestions
+
+The empty-sequence message now uses a translated data attribute instead of CSS hard-coded text, so it changes correctly with the selected language.
+
+No Cloudflare Worker update is required.
+
+## v33 — Daily Use, Child Focus & OT Review
+
+V33 is cumulative and includes the planned V32 and V33 improvements.
+
+### V32 included
+- Start a new day: archives meaningful progress, then resets daily statuses/timers while keeping the routine.
+- Child Focus Mode: hides the Activity Bank and advanced controls and shows only the current + next unfinished task.
+- App version / reload latest.
+- Translation completeness check across core UI plus 98 Activity Bank labels and 98 task guides.
+
+### V33 included
+- Daily History / OT Review: completion, task statuses, stuck-helper use, support strategies tried, and an optional reflection note.
+- Optional custom-text language versions (English / 简体中文 / 繁體中文).
+- Browser-native automatic translation is attempted only where the browser exposes a Translator API; manual language versions always remain available.
+- Richer personalised photos for custom Activity Bank items and individual routine tasks. Photos are local to the device and are not sent through Family Sync.
+
+V33 keeps the existing `otRoutinePlannerV9App_...` storage key and current Family Calendar backend structure. No Cloudflare Worker redeploy is required.

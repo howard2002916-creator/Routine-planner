@@ -1,4 +1,4 @@
-# Routine Planner — GitHub Pages v21
+# Routine Planner — GitHub Pages v23
 
 v21 adds **Shared Family Calendar** sync.
 
@@ -51,3 +51,24 @@ Activity and Motivation background notifications are preserved.
 The Worker URL defaults to:
 
 `https://routine-planner-notifications.routineplanner-ot.workers.dev`
+
+
+## v22 updates
+
+- Added calculated **End Time** for each task using Start time + Duration.
+- Added an icon picker for newly created custom activities.
+- Existing routines, templates, progress and Shared Family Calendar data remain compatible.
+- Existing custom activities keep their current icon; older items without one continue to fall back to ⭐.
+- No Cloudflare Worker redeploy is required for these two changes.
+
+
+## v23 update — Parent Comments
+
+When a device is connected in **Parent mode**, each activity now has a Parent Comment box.
+
+- Parent can type a note under any activity.
+- The comment is synced through the existing Shared Family Calendar.
+- Kid mode shows the Parent Comment as read-only.
+- Standalone mode does not show Parent Comments.
+- Existing users and existing routines are preserved; old tasks simply receive an empty `parentComment` field automatically.
+- No Cloudflare backend redeploy is required because the existing shared calendar already syncs the task state.

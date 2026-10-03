@@ -293,6 +293,46 @@ body.sync-kid-mode #bank .activity{
   .family-sync-grid{grid-template-columns:1fr}
 }
 
+
+.end-time-display{margin-top:6px;font-size:12px;font-weight:800;color:#5c5682}
+.custom-icon-select{max-width:160px}
+
+.parent-comment-box{
+  margin-top:8px;
+  border:1px solid #e1dced;
+  border-radius:12px;
+  padding:9px 10px;
+  background:#fffdf7;
+}
+.parent-comment-box label{
+  display:block;
+  font-size:11px;
+  font-weight:850;
+  color:#6b617f;
+  margin-bottom:5px;
+  text-transform:uppercase;
+}
+.parent-comment-box textarea{
+  width:100%;
+  min-height:64px;
+  resize:vertical;
+  border:1px solid #dcd5e9;
+  border-radius:10px;
+  padding:8px 9px;
+  font:inherit;
+  box-sizing:border-box;
+}
+.parent-comment-readonly{
+  white-space:pre-wrap;
+  font-size:12.5px;
+  line-height:1.4;
+  color:#49425f;
+}
+.parent-comment-empty{
+  color:#8b849a;
+  font-style:italic;
+}
+
 </style>
 </head>
 <body>
@@ -329,6 +369,22 @@ body.sync-kid-mode #bank .activity{
       <h2 style="font-size:20px">Add my own activity to the Activity Bank</h2>
       <div class="top-tools">
         <input id="customText" type="text" placeholder="e.g. Feed the pet">
+        <select id="customIcon" class="custom-icon-select" title="Choose icon">
+          <option value="⭐">⭐ Other</option>
+          <option value="📚">📚 Study</option>
+          <option value="🚿">🚿 Shower</option>
+          <option value="🍽️">🍽️ Meal</option>
+          <option value="🎮">🎮 Gaming</option>
+          <option value="🎨">🎨 Drawing</option>
+          <option value="⚽">⚽ Sport</option>
+          <option value="🎵">🎵 Music</option>
+          <option value="🚌">🚌 Travel</option>
+          <option value="🧺">🧺 Chores</option>
+          <option value="🐾">🐾 Pet</option>
+          <option value="💬">💬 Social</option>
+          <option value="🧠">🧠 Thinking</option>
+          <option value="🛏️">🛏️ Rest</option>
+        </select>
         <button id="addCustom">➕ Add to Activity Bank</button>
       </div>
     </div>
@@ -932,6 +988,10 @@ function isKidSyncMode(){
   return familySyncConfig?.role==="kid";
 }
 
+function isParentSyncMode(){
+  return familySyncConfig?.role==="parent";
+}
+
 function familyStatus(message){
   const el=document.getElementById("familySyncStatus");
   if(el) el.textContent=message;
@@ -1190,6 +1250,7 @@ function ensureTaskShape(t){
   if(!("timerEndAt" in t)) t.timerEndAt=null;
   if(!("timerPausedRemaining" in t)) t.timerPausedRemaining=null;
   if(!("timerFinished" in t)) t.timerFinished=false;
+  if(!("parentComment" in t)) t.parentComment="";
 }
 function plan(){return currentTemplate().plan}
 function setPlan(newPlan){currentTemplate().plan=newPlan}
@@ -1204,8 +1265,18 @@ function unlockTaskIds(){return currentTemplate().unlockTaskIds||[]}
 function setUnlockTaskIds(ids){currentTemplate().unlockTaskIds=ids}
 function selectedMotivation(){return motivationItems().find(x=>x.id===selectedMotivationId())||null}
 
+function calculateTaskEndTime(start,duration){
+  if(!start || !/^\d{2}:\d{2}$/.test(start)) return "";
+  const [h,m]=start.split(":").map(Number);
+  const mins=Math.max(1,Number(duration)||0);
+  const total=(h*60+m+mins)%(24*60);
+  const d=new Date();
+  d.setHours(Math.floor(total/60),total%60,0,0);
+  return d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+}
+
 function newTask(icon,label){
-  return {id:uid(),icon,label,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false};
+  return {id:uid(),icon,label,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false,parentComment:""};
 }
 
 function ensureTemplateShape(t){
@@ -1757,6 +1828,20 @@ function renderPlan(){
           </div>
         </div>
       </div>
+      <div class="end-time-display" data-end-time="${t.id}">
+        ${t.start ? `Ends at ${calculateTaskEndTime(t.start,t.duration)}` : "Set a start time to see end time"}
+      </div>
+      ${isParentSyncMode() ? `
+        <div class="parent-comment-box">
+          <label>Parent comment</label>
+          <textarea class="parentComment" maxlength="500" placeholder="e.g. We agreed to try homework before gaming today.">${String(t.parentComment||"")}</textarea>
+        </div>
+      ` : (isKidSyncMode() && t.parentComment ? `
+        <div class="parent-comment-box">
+          <label>Parent comment</label>
+          <div class="parent-comment-readonly">${String(t.parentComment||"")}</div>
+        </div>
+      ` : "")}
     `;
 
     el.addEventListener("dragstart",e=>{
@@ -1787,15 +1872,31 @@ function renderPlan(){
     el.querySelector(".up").onclick=()=>{if(isKidSyncMode()) return;if(i>0){const p=plan(); [p[i-1],p[i]]=[p[i],p[i-1]]; renderPlan()}};
     el.querySelector(".down").onclick=()=>{if(isKidSyncMode()) return;if(i<plan().length-1){const p=plan(); [p[i+1],p[i]]=[p[i],p[i+1]]; renderPlan()}};
     el.querySelector(".remove").onclick=()=>{if(isKidSyncMode()) return;plan().splice(i,1); renderPlan()};
-    el.querySelector(".start").onchange=e=>{if(isKidSyncMode()) return;t.start=e.target.value; fired={}; updateDashboard(); scheduleAutoSave()};
+    el.querySelector(".start").onchange=e=>{
+      if(isKidSyncMode()) return;
+      t.start=e.target.value;
+      const endNode=el.querySelector(`[data-end-time="${t.id}"]`);
+      if(endNode) endNode.textContent=t.start?`Ends at ${calculateTaskEndTime(t.start,t.duration)}`:"Set a start time to see end time";
+      fired={}; updateDashboard(); scheduleAutoSave();
+    };
     el.querySelector(".duration").onchange=e=>{
       if(isKidSyncMode()) return;
       t.duration=Math.max(1,Number(e.target.value)||1);
       if(!t.timerEndAt){t.timerPausedRemaining=t.duration*60;t.timerFinished=false;}
+      const endNode=el.querySelector(`[data-end-time="${t.id}"]`);
+      if(endNode) endNode.textContent=t.start?`Ends at ${calculateTaskEndTime(t.start,t.duration)}`:"Set a start time to see end time";
       fired={}; updateDashboard(); updateAllTaskTimers(); scheduleAutoSave();
     };
     el.querySelector(".priority").onchange=e=>{if(isKidSyncMode()) return;t.priority=e.target.value; scheduleAutoSave()};
     el.querySelector(".warning").onchange=e=>{if(isKidSyncMode()) return;t.warning=e.target.value; fired={}; scheduleAutoSave()};
+    const parentCommentInput=el.querySelector(".parentComment");
+    if(parentCommentInput){
+      parentCommentInput.oninput=e=>{
+        if(!isParentSyncMode()) return;
+        t.parentComment=e.target.value;
+        scheduleAutoSave();
+      };
+    }
     el.querySelector(".taskTimerStart").onclick=()=>{t.timerEndAt?null:(t.timerPausedRemaining!==null&&Number(t.timerPausedRemaining)>0?resumeTaskTimer(t):startTaskTimer(t))};
     el.querySelector(".taskTimerPause").onclick=()=>pauseTaskTimer(t);
     el.querySelector(".taskTimerReset").onclick=()=>resetTaskTimer(t);
@@ -2563,7 +2664,8 @@ document.getElementById("addCustom").onclick=()=>{
   if(!Array.isArray(state.customActivities)) state.customActivities=[];
   const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())
     || activities.some(x=>String(x[1]).trim().toLowerCase()===val.toLowerCase());
-  if(!exists) state.customActivities.push({id:uid(),icon:"⭐",label:val});
+  const icon=document.getElementById("customIcon")?.value || "⭐";
+  if(!exists) state.customActivities.push({id:uid(),icon,label:val});
   input.value="";
   renderBank();
   scheduleAutoSave();
@@ -2674,7 +2776,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v21_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v23_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

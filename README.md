@@ -1,4 +1,4 @@
-# Routine Planner — GitHub Pages v29
+# Routine Planner — GitHub Pages v30
 
 v21 adds **Shared Family Calendar** sync.
 
@@ -181,3 +181,27 @@ This is a frontend-only release. No Cloudflare Worker redeploy is required.
 - My Support Toolkit selections are mirrored into `taskBreakdownProgress.__selectedSupports`, allowing Kid-mode selections to travel through the current restricted family-sync merge.
 - User-editable task text is escaped in the new support-card displays.
 - Removing a routine item also clears its old step/request data, and Undo restores it.
+
+
+## v30 — Personalised Environment Setup
+
+The **🎧 Make my space easier** support is now fully customisable.
+
+### New features
+- Existing checklist items now include visual emoji cues.
+- Every item can be edited and reordered.
+- Families can add their own personalised environmental supports.
+- Custom supports can choose an emoji and use personalised wording.
+- Custom supports can be removed with confirmation + Undo.
+- Any item can have an optional photo added from the device.
+- Photos are compressed and stored locally on that device only.
+- Emoji + text + order + usual-setup choices are stored inside `taskBreakdownProgress.__spaceSetup`, so they can travel through the current family-sync structure.
+- Families can save a **⭐ My usual setup** and re-tick those items quickly.
+
+### Important photo behaviour
+Photos do **not** sync between devices in v30. This avoids putting large image data inside the shared routine JSON. The synced representation remains the emoji + text version.
+
+### Compatibility
+V30 keeps the same profile/local-storage keys as V29 and preserves existing routines, templates, parent comments, task-specific steps, support feedback, favourites, Family Calendar, notifications and child name.
+
+Frontend only — no Cloudflare Worker redeploy is required.

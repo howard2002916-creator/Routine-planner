@@ -506,6 +506,47 @@ body.sync-kid-mode #bank .activity{
 
 body.sync-kid-mode .editTask{display:none}
 
+
+/* ===== v30 Personalised Environment Setup ===== */
+.space-setup-list{display:grid;gap:8px}
+.space-setup-item{
+  display:grid;grid-template-columns:auto 42px 1fr auto;gap:8px;align-items:center;
+  border:1px solid #e4deef;background:#fff;border-radius:12px;padding:8px 9px
+}
+.space-setup-item input[type="checkbox"]{transform:scale(1.15)}
+.space-setup-visual{
+  width:38px;height:38px;border-radius:10px;background:#f6f3ff;
+  display:grid;place-items:center;font-size:24px;overflow:hidden
+}
+.space-setup-visual img{width:100%;height:100%;object-fit:cover}
+.space-setup-text{font-size:12.5px;line-height:1.35;font-weight:750}
+.space-setup-actions{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.space-setup-actions button{padding:6px 7px;box-shadow:none}
+.space-custom-panel{
+  border:1px solid #ded7ed;border-radius:13px;background:#fbfaff;padding:10px;margin-top:8px
+}
+.space-custom-grid{display:grid;grid-template-columns:110px 1fr;gap:8px}
+.space-custom-grid select,.space-custom-grid input{width:100%}
+.space-custom-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.space-photo-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.space-photo-preview{
+  width:54px;height:54px;border-radius:12px;border:1px solid #e0daea;
+  display:grid;place-items:center;background:#fff;overflow:hidden;font-size:25px
+}
+.space-photo-preview img{width:100%;height:100%;object-fit:cover}
+.space-usual-box{
+  margin-top:9px;border:1px solid #d7e8dc;background:#f4fbf6;border-radius:12px;padding:9px 10px
+}
+.space-usual-box strong{display:block;margin-bottom:4px}
+.space-usual-chips{display:flex;gap:5px;flex-wrap:wrap}
+.space-usual-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 7px;border-radius:999px;background:#fff;border:1px solid #dce9df;font-size:11px}
+.space-local-note{font-size:11px;color:var(--muted);line-height:1.35;margin-top:6px}
+@media(max-width:620px){
+  .space-setup-item{grid-template-columns:auto 38px 1fr}
+  .space-setup-actions{grid-column:2/4;justify-content:flex-start}
+  .space-custom-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1703,6 +1744,12 @@ function ensureTemplateShape(t){
     t.taskBreakdownProgress.__selectedSupports=migrateSelectedSupportNames(t.taskBreakdownProgress.__selectedSupports);
     t.selectedToolNames=[...t.taskBreakdownProgress.__selectedSupports];
   }
+  if(!t.taskBreakdownProgress.__spaceSetup || typeof t.taskBreakdownProgress.__spaceSetup!=="object"){
+    t.taskBreakdownProgress.__spaceSetup={
+      items:DEFAULT_SPACE_SETUP_ITEMS.map(x=>({...x})),
+      usualIds:[]
+    };
+  }
 }
 function renderTemplateBar(){
   state.templates.forEach(ensureTemplateShape);
@@ -1887,6 +1934,226 @@ function openCurrentTaskInStuck(){
   document.querySelector(".stuck-panel")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
+
+const SPACE_PHOTO_KEY=`routineSpacePhotos_${PROFILE_ID}`;
+
+const DEFAULT_SPACE_SETUP_ITEMS=[
+  {id:"declutter",icon:"🧹",text:"Put away things I do not need.",builtin:true},
+  {id:"noise",icon:"🎧",text:"Reduce noise or use headphones if helpful.",builtin:true},
+  {id:"water",icon:"💧",text:"Get a drink of water.",builtin:true},
+  {id:"materials",icon:"🎯",text:"Keep only the things I need in front of me.",builtin:true},
+  {id:"position",icon:"🪑",text:"Sit or stand in a comfortable working position.",builtin:true}
+];
+
+function spaceSetupStore(){
+  const p=taskBreakdownProgress();
+  if(!p.__spaceSetup || typeof p.__spaceSetup!=="object"){
+    p.__spaceSetup={
+      items:DEFAULT_SPACE_SETUP_ITEMS.map(x=>({...x})),
+      usualIds:[]
+    };
+  }
+  if(!Array.isArray(p.__spaceSetup.items) || !p.__spaceSetup.items.length){
+    p.__spaceSetup.items=DEFAULT_SPACE_SETUP_ITEMS.map(x=>({...x}));
+  }
+  if(!Array.isArray(p.__spaceSetup.usualIds)) p.__spaceSetup.usualIds=[];
+  return p.__spaceSetup;
+}
+
+function normaliseSpaceSetup(){
+  const store=spaceSetupStore();
+  const seen=new Set();
+  store.items=store.items
+    .filter(x=>x && x.id && !seen.has(x.id))
+    .map(x=>{
+      seen.add(x.id);
+      return {
+        id:String(x.id),
+        icon:String(x.icon||"⭐").slice(0,8),
+        text:String(x.text||"").trim().slice(0,120),
+        builtin:!!x.builtin
+      };
+    })
+    .filter(x=>x.text);
+  if(!store.items.length) store.items=DEFAULT_SPACE_SETUP_ITEMS.map(x=>({...x}));
+  store.usualIds=store.usualIds.filter(id=>store.items.some(x=>x.id===id));
+  return store;
+}
+
+function readSpacePhotos(){
+  try{
+    const data=JSON.parse(localStorage.getItem(SPACE_PHOTO_KEY)||"{}");
+    return data && typeof data==="object" ? data : {};
+  }catch{return {}}
+}
+function writeSpacePhotos(data){
+  try{
+    localStorage.setItem(SPACE_PHOTO_KEY,JSON.stringify(data||{}));
+  }catch{
+    alert("This browser could not save the photo. Try a smaller image.");
+  }
+}
+function spacePhotoFor(id){
+  return readSpacePhotos()[id]||"";
+}
+function setSpacePhoto(id,dataUrl){
+  const photos=readSpacePhotos();
+  if(dataUrl) photos[id]=dataUrl;
+  else delete photos[id];
+  writeSpacePhotos(photos);
+}
+function compressSpacePhoto(file,callback){
+  if(!file){callback("");return;}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=280;
+      const scale=Math.min(1,max/Math.max(img.width,img.height));
+      const canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(img.width*scale));
+      canvas.height=Math.max(1,Math.round(img.height*scale));
+      const ctx=canvas.getContext("2d");
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      callback(canvas.toDataURL("image/jpeg",0.72));
+    };
+    img.onerror=()=>callback("");
+    img.src=reader.result;
+  };
+  reader.onerror=()=>callback("");
+  reader.readAsDataURL(file);
+}
+
+function spaceItemVisual(item){
+  const photo=spacePhotoFor(item.id);
+  return photo ? `<img src="${photo}" alt="">` : escapeHtml(item.icon||"⭐");
+}
+function addSpaceSetupItem(icon,text){
+  const store=normaliseSpaceSetup();
+  const clean=String(text||"").trim();
+  if(!clean) return false;
+  const item={id:`space-${uid()}`,icon:String(icon||"⭐"),text:clean,builtin:false};
+  store.items.push(item);
+  scheduleAutoSave();
+  return item.id;
+}
+function updateSpaceSetupItem(id,icon,text){
+  const store=normaliseSpaceSetup();
+  const item=store.items.find(x=>x.id===id);
+  if(!item) return;
+  const clean=String(text||"").trim();
+  if(!clean) return;
+  item.icon=String(icon||item.icon||"⭐");
+  item.text=clean.slice(0,120);
+  scheduleAutoSave();
+}
+function removeSpaceSetupItem(id){
+  const store=normaliseSpaceSetup();
+  const idx=store.items.findIndex(x=>x.id===id);
+  if(idx<0) return;
+  const removed=deepClone(store.items[idx]);
+  const wasUsual=store.usualIds.includes(id);
+  const photo=spacePhotoFor(id);
+  store.items.splice(idx,1);
+  store.usualIds=store.usualIds.filter(x=>x!==id);
+  setSpacePhoto(id,"");
+  scheduleAutoSave();
+  showUndo(`Removed “${removed.text}”.`,()=>{
+    const s=normaliseSpaceSetup();
+    s.items.splice(Math.min(idx,s.items.length),0,removed);
+    if(wasUsual && !s.usualIds.includes(id)) s.usualIds.push(id);
+    if(photo) setSpacePhoto(id,photo);
+    renderTools();
+    scheduleAutoSave();
+  });
+}
+function moveSpaceSetupItem(id,dir){
+  const store=normaliseSpaceSetup();
+  const idx=store.items.findIndex(x=>x.id===id);
+  if(idx<0) return;
+  const next=idx+dir;
+  if(next<0 || next>=store.items.length) return;
+  [store.items[idx],store.items[next]]=[store.items[next],store.items[idx]];
+  scheduleAutoSave();
+}
+function setSpaceUsual(ids){
+  const store=normaliseSpaceSetup();
+  store.usualIds=[...new Set((ids||[]).filter(id=>store.items.some(x=>x.id===id)))];
+  scheduleAutoSave();
+}
+function resetSpaceSetupDefaults(){
+  if(!confirm("Reset the environment checklist to the five default options? Custom items will be removed.")) return;
+  const store=spaceSetupStore();
+  store.items=DEFAULT_SPACE_SETUP_ITEMS.map(x=>({...x}));
+  store.usualIds=[];
+  scheduleAutoSave();
+  renderTools();
+}
+function spaceSetupMarkup(){
+  const store=normaliseSpaceSetup();
+  const usual=new Set(store.usualIds||[]);
+  const ordered=[...store.items].sort((a,b)=>{
+    const au=usual.has(a.id)?0:1, bu=usual.has(b.id)?0:1;
+    return au-bu;
+  });
+  const usualItems=store.items.filter(x=>usual.has(x.id));
+  return `
+    <div class="support-current-task"><small>PERSONALISED SETUP</small><strong>Choose what would make this space easier.</strong></div>
+    <div class="space-setup-list">
+      ${ordered.map((item,idx)=>`
+        <div class="space-setup-item" data-space-id="${escapeHtml(item.id)}">
+          <input type="checkbox" class="space-check" data-space-id="${escapeHtml(item.id)}">
+          <div class="space-setup-visual">${spaceItemVisual(item)}</div>
+          <div class="space-setup-text">${escapeHtml(item.text)}</div>
+          <div class="space-setup-actions">
+            <button class="space-edit" title="Edit">✏️</button>
+            <button class="space-up" title="Move up">↑</button>
+            <button class="space-down" title="Move down">↓</button>
+            ${item.builtin?"":'<button class="space-remove danger" title="Remove">✕</button>'}
+          </div>
+        </div>`).join("")}
+    </div>
+    <div class="space-usual-box">
+      <strong>⭐ My usual setup</strong>
+      <div class="small-note">Tick the items you usually use, then save them as your usual setup.</div>
+      <div class="space-usual-chips">
+        ${usualItems.length?usualItems.map(x=>`<span class="space-usual-chip">${escapeHtml(x.icon)} ${escapeHtml(x.text)}</span>`).join(""):'<span class="small-note">No usual setup saved yet.</span>'}
+      </div>
+      <div class="space-custom-actions">
+        <button class="space-save-usual">⭐ Save checked as my usual setup</button>
+        <button class="space-apply-usual">✓ Tick my usual setup</button>
+      </div>
+    </div>
+    <div class="space-custom-panel">
+      <strong>➕ Add my own support</strong>
+      <div class="small-note">Add a personalised environmental support with an emoji and your own wording.</div>
+      <div class="space-custom-grid">
+        <select class="space-new-icon">
+          <option value="⭐">⭐ Other</option>
+          <option value="🎧">🎧 Headphones</option>
+          <option value="🧸">🧸 Fidget / comfort item</option>
+          <option value="💡">💡 Light</option>
+          <option value="🪟">🪟 Window / curtains</option>
+          <option value="🧢">🧢 Hat / cap</option>
+          <option value="🪑">🪑 Chair</option>
+          <option value="💧">💧 Drink</option>
+          <option value="📱">📱 Device</option>
+          <option value="🐾">🐾 Pet</option>
+          <option value="🌿">🌿 Calm space</option>
+          <option value="🔇">🔇 Quiet</option>
+          <option value="🧹">🧹 Clear space</option>
+        </select>
+        <input class="space-new-text" type="text" maxlength="120" placeholder="e.g. Use the small lamp">
+      </div>
+      <div class="space-custom-actions">
+        <button class="space-add-custom primary">＋ Add support</button>
+        <button class="space-reset-defaults">↺ Reset defaults</button>
+      </div>
+    </div>
+    <div class="space-local-note">📷 You can add a photo when editing any item. Photos are saved on this device only and are not synced to other devices. Emoji and text are synced through the shared calendar.</div>
+  `;
+}
+
 function supportFeedbackStore(){
   const p=taskBreakdownProgress();
   if(!p.__supportFeedback || typeof p.__supportFeedback!=="object") p.__supportFeedback={};
@@ -1950,13 +2217,7 @@ function supportToolDetails(t){
   if(t.type==="space"){
     return `<div class="support-action-card">
       <div class="support-current-task"><small>GET READY FOR</small><strong>${taskName}</strong></div>
-      <div class="support-checklist">
-        <label><input type="checkbox"> Put away things I do not need.</label>
-        <label><input type="checkbox"> Reduce noise or use headphones if helpful.</label>
-        <label><input type="checkbox"> Get a drink of water.</label>
-        <label><input type="checkbox"> Keep only the things I need in front of me.</label>
-        <label><input type="checkbox"> Sit or stand in a comfortable working position.</label>
-      </div>
+      ${spaceSetupMarkup()}
       <div class="support-ready-note">✅ When the space feels ready, start only the first small step.</div>${feedback}${save}</div>`;
   }
   if(t.type==="break"){
@@ -2022,6 +2283,142 @@ function renderTools(){
       e.stopPropagation();
       recordSupportFeedback(t.name,btn.dataset.rating);
     });
+
+    if(t.type==="space"){
+      const rerenderSpace=()=>{
+        expandedToolNames.add(t.name);
+        renderTools();
+      };
+
+      el.querySelector(".space-add-custom")?.addEventListener("click",e=>{
+        e.stopPropagation();
+        const icon=el.querySelector(".space-new-icon")?.value||"⭐";
+        const text=el.querySelector(".space-new-text")?.value||"";
+        if(!text.trim()){alert("Please enter a support name.");return;}
+        addSpaceSetupItem(icon,text);
+        rerenderSpace();
+      });
+
+      el.querySelector(".space-reset-defaults")?.addEventListener("click",e=>{
+        e.stopPropagation();
+        resetSpaceSetupDefaults();
+      });
+
+      el.querySelector(".space-save-usual")?.addEventListener("click",e=>{
+        e.stopPropagation();
+        const checked=[...el.querySelectorAll(".space-check:checked")].map(x=>x.dataset.spaceId);
+        setSpaceUsual(checked);
+        rerenderSpace();
+      });
+
+      el.querySelector(".space-apply-usual")?.addEventListener("click",e=>{
+        e.stopPropagation();
+        const ids=new Set(normaliseSpaceSetup().usualIds||[]);
+        el.querySelectorAll(".space-check").forEach(cb=>{cb.checked=ids.has(cb.dataset.spaceId)});
+      });
+
+      el.querySelectorAll(".space-up").forEach(btn=>btn.onclick=e=>{
+        e.stopPropagation();
+        const id=btn.closest("[data-space-id]")?.dataset.spaceId;
+        if(id){moveSpaceSetupItem(id,-1);rerenderSpace();}
+      });
+      el.querySelectorAll(".space-down").forEach(btn=>btn.onclick=e=>{
+        e.stopPropagation();
+        const id=btn.closest("[data-space-id]")?.dataset.spaceId;
+        if(id){moveSpaceSetupItem(id,1);rerenderSpace();}
+      });
+      el.querySelectorAll(".space-remove").forEach(btn=>btn.onclick=e=>{
+        e.stopPropagation();
+        const id=btn.closest("[data-space-id]")?.dataset.spaceId;
+        if(id){
+          const item=normaliseSpaceSetup().items.find(x=>x.id===id);
+          if(item && confirm(`Remove “${item.text}”?`)){removeSpaceSetupItem(id);rerenderSpace();}
+        }
+      });
+
+      el.querySelectorAll(".space-edit").forEach(btn=>btn.onclick=e=>{
+        e.stopPropagation();
+        const id=btn.closest("[data-space-id]")?.dataset.spaceId;
+        const item=normaliseSpaceSetup().items.find(x=>x.id===id);
+        if(!item) return;
+
+        const wrapper=document.createElement("div");
+        wrapper.className="space-custom-panel";
+        wrapper.innerHTML=`
+          <strong>✏️ Edit support</strong>
+          <div class="space-custom-grid" style="margin-top:8px">
+            <select class="space-edit-icon">
+              <option value="⭐">⭐ Other</option>
+              <option value="🎧">🎧 Headphones</option>
+              <option value="🧸">🧸 Fidget / comfort item</option>
+              <option value="💡">💡 Light</option>
+              <option value="🪟">🪟 Window / curtains</option>
+              <option value="🧢">🧢 Hat / cap</option>
+              <option value="🪑">🪑 Chair</option>
+              <option value="💧">💧 Drink</option>
+              <option value="📱">📱 Device</option>
+              <option value="🐾">🐾 Pet</option>
+              <option value="🌿">🌿 Calm space</option>
+              <option value="🔇">🔇 Quiet</option>
+              <option value="🧹">🧹 Clear space</option>
+            </select>
+            <input class="space-edit-text" type="text" maxlength="120" value="${escapeHtml(item.text)}">
+          </div>
+          <div class="space-photo-row">
+            <div class="space-photo-preview">${spacePhotoFor(id)?`<img src="${spacePhotoFor(id)}" alt="">`:escapeHtml(item.icon)}</div>
+            <input class="space-photo-input" type="file" accept="image/*">
+            <button class="space-remove-photo">Remove photo</button>
+          </div>
+          <div class="space-custom-actions">
+            <button class="space-save-edit primary">Save</button>
+            <button class="space-cancel-edit">Cancel</button>
+          </div>
+          <div class="space-local-note">Photo stays on this device only. The emoji and text can sync across family devices.</div>
+        `;
+        const row=btn.closest(".space-setup-item");
+        row.insertAdjacentElement("afterend",wrapper);
+        const iconSel=wrapper.querySelector(".space-edit-icon");
+        if(![...iconSel.options].some(o=>o.value===item.icon)){
+          const opt=document.createElement("option");
+          opt.value=item.icon; opt.textContent=`${item.icon} Current`;
+          iconSel.insertBefore(opt,iconSel.firstChild);
+        }
+        iconSel.value=item.icon;
+
+        let pendingPhoto=spacePhotoFor(id);
+        const preview=wrapper.querySelector(".space-photo-preview");
+        wrapper.querySelector(".space-photo-input").onchange=ev=>{
+          const file=ev.target.files?.[0];
+          if(!file) return;
+          compressSpacePhoto(file,data=>{
+            if(!data){alert("Could not read that photo.");return;}
+            pendingPhoto=data;
+            preview.innerHTML=`<img src="${data}" alt="">`;
+          });
+        };
+        wrapper.querySelector(".space-remove-photo").onclick=ev=>{
+          ev.stopPropagation();
+          pendingPhoto="";
+          preview.textContent=iconSel.value||item.icon||"⭐";
+        };
+        iconSel.onchange=()=>{
+          if(!pendingPhoto) preview.textContent=iconSel.value||"⭐";
+        };
+        wrapper.querySelector(".space-save-edit").onclick=ev=>{
+          ev.stopPropagation();
+          const text=wrapper.querySelector(".space-edit-text").value.trim();
+          if(!text){alert("Please enter a support name.");return;}
+          updateSpaceSetupItem(id,iconSel.value,text);
+          setSpacePhoto(id,pendingPhoto);
+          rerenderSpace();
+        };
+        wrapper.querySelector(".space-cancel-edit").onclick=ev=>{
+          ev.stopPropagation();
+          wrapper.remove();
+        };
+      });
+    }
+
     grid.appendChild(el);
   });
   updateSupportTimerDisplays();
@@ -4175,7 +4572,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v29_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v30_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

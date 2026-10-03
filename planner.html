@@ -266,6 +266,7 @@ textarea{resize:vertical;min-height:58px}
 }
 body.sync-kid-mode #newTemplateBtn,
 body.sync-kid-mode #renameTemplateBtn,
+body.sync-kid-mode #duplicateTemplateBtn,
 body.sync-kid-mode #deleteTemplateBtn,
 body.sync-kid-mode #sampleBtn,
 body.sync-kid-mode #clearBtn,
@@ -388,6 +389,123 @@ body.sync-kid-mode #bank .activity{
   .bank-category-chip{padding:7px 9px;font-size:12px}
 }
 
+
+/* v27 actionable support tools */
+.support-tools-section{margin-top:14px;padding-top:13px;border-top:1px solid #e1ddec}
+.support-tools-section h3{margin:0 0 3px;font-size:18px}
+.tools-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}
+.tool-card{border:1px solid #ded8ec;border-radius:15px;padding:0;background:#fff;overflow:hidden;cursor:default}
+.tool-card.selected{border:2px solid #7666be;background:#fbfaff}
+.tool-card.expanded{grid-column:1/-1}
+.tool-title{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;padding:11px;cursor:pointer}
+.tool-title-main{display:flex;align-items:flex-start;gap:9px;min-width:0}
+.support-main-icon{font-size:27px;line-height:1.1;flex:0 0 auto}
+.tool-desc{font-size:12px;color:var(--muted);line-height:1.35;margin-top:3px;font-weight:600}
+.tool-chevron{color:#746d89;font-weight:900;flex:0 0 auto}
+.support-expanded{border-top:1px solid #ebe6f2;padding:11px;background:#faf9ff}
+.support-action-card{display:grid;gap:10px}
+.support-current-task{border:1px solid #e4dff0;border-radius:12px;padding:9px 10px;background:#fff}
+.support-current-task small,.one-step-now small,.body-double-script small{display:block;color:var(--muted);font-size:10.5px;font-weight:900;letter-spacing:.03em;margin-bottom:3px}
+.support-current-task strong{font-size:14px}
+.support-mini-steps{margin:0;padding-left:24px;display:grid;gap:5px;font-size:12.5px;line-height:1.35}
+.support-timer{font-size:34px;font-weight:950;text-align:center;letter-spacing:1px;color:#32296e;padding:7px 0}
+.support-action-row,.break-length-row{display:flex;gap:7px;flex-wrap:wrap}
+.support-action-row button,.break-length-row button{flex:1 1 120px}
+.support-save-btn{justify-self:start;border-radius:999px}
+.support-save-btn.saved{background:#f5efff;border-color:#a794d3;color:#493b7f}
+.one-step-now{border:2px solid #a9c3ef;background:#f3f8ff;border-radius:14px;padding:11px}
+.one-step-now strong{font-size:15px;line-height:1.35}
+.support-checklist{display:grid;gap:7px}
+.support-checklist label{display:flex;gap:8px;align-items:flex-start;border:1px solid #e3deed;background:#fff;border-radius:11px;padding:8px 9px;font-size:12.5px;line-height:1.35}
+.support-checklist input{margin-top:2px}
+.support-ready-note{border-radius:11px;background:#f1fbf4;border:1px solid #d4ebda;padding:8px 10px;font-size:12px;line-height:1.35}
+.help-phrases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.help-phrase{text-align:left;min-height:48px;white-space:normal;line-height:1.3}
+.support-copy-feedback{min-height:16px;font-size:11.5px;color:#4e7a5d;font-weight:800}
+.body-double-script{padding:11px;border-radius:13px;border:1px solid #d7e4f4;background:#f3f8ff}
+.body-double-script strong{font-size:15px;line-height:1.35}
+.selected-tool{text-align:left;cursor:pointer}
+.selected-tool small{display:block!important}
+@media(max-width:650px){.tools-grid{grid-template-columns:1fr}.tool-card.expanded{grid-column:auto}.help-phrases{grid-template-columns:1fr}}
+
+
+/* ===== v29 Personalisation + collaboration ===== */
+.activity{position:relative;padding-right:38px}
+.activity-favourite{
+  position:absolute;right:6px;top:6px;width:29px;height:29px;padding:0;
+  border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.82);
+  border:1px solid rgba(80,70,120,.12);box-shadow:none;font-size:16px
+}
+.activity-favourite.on{background:#fff5c9}
+.custom-activity{padding-right:72px}
+.custom-activity .activity-favourite{right:38px}
+.task-edit-panel{
+  margin-top:9px;padding:10px;border:1px solid #ddd7eb;border-radius:13px;background:#faf9ff
+}
+.task-edit-grid{display:grid;grid-template-columns:1fr 160px;gap:8px}
+.task-edit-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+@media(max-width:620px){.task-edit-grid{grid-template-columns:1fr}}
+
+.change-request-box{
+  margin-top:9px;padding:10px;border:1px solid #d8e2f2;border-radius:13px;background:#f6f9ff
+}
+.change-request-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.change-request-row select{flex:1 1 180px}
+.request-badge{display:inline-block;margin-top:6px;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:850}
+.request-pending{background:#fff4cc;color:#6e5716}
+.request-accepted{background:#eaf8ee;color:#2e6e45}
+.request-dismissed{background:#f3f1f7;color:#6d667b}
+.parent-request-card{
+  margin-top:9px;padding:10px;border:1px solid #e7d9a8;border-radius:13px;background:#fffaf0
+}
+.parent-request-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+
+.breakdown-editor{
+  margin-top:10px;border:1px solid #dcd6ea;border-radius:14px;padding:10px;background:#fbfaff
+}
+.breakdown-editor-row{
+  display:grid;grid-template-columns:34px 1fr auto;gap:7px;align-items:center;margin:7px 0
+}
+.breakdown-editor-row .step-number{font-weight:900;text-align:center}
+.breakdown-editor-actions{display:flex;gap:5px}
+.breakdown-editor-actions button{padding:7px 8px;box-shadow:none}
+.breakdown-editor-footer{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:650px){
+  .breakdown-editor-row{grid-template-columns:30px 1fr}
+  .breakdown-editor-actions{grid-column:2}
+}
+
+.support-feedback{
+  border-top:1px solid #e8e3f0;padding-top:9px;margin-top:2px
+}
+.support-feedback-title{font-size:12px;font-weight:900;margin-bottom:6px}
+.support-feedback-actions{display:flex;gap:6px;flex-wrap:wrap}
+.support-feedback-actions button{padding:7px 9px;box-shadow:none}
+.support-feedback-stats{font-size:11px;color:var(--muted);margin-top:5px}
+.selected-tool .feedback-mini{display:block!important;color:#77708d;font-size:10.5px;margin-top:3px}
+
+.settings-shell{
+  margin-top:14px;border:1px solid #dfdaec;border-radius:16px;background:#fbfaff;overflow:hidden
+}
+.settings-shell>summary{
+  cursor:pointer;padding:12px 13px;font-weight:900;list-style:none
+}
+.settings-shell>summary::-webkit-details-marker{display:none}
+.settings-shell>summary:after{content:"⌄";float:right;color:#77708d}
+.settings-shell[open]>summary:after{content:"⌃"}
+.settings-inner{padding:0 12px 12px}
+
+.undo-toast{
+  position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
+  display:none;align-items:center;gap:12px;z-index:9999;
+  max-width:min(90vw,520px);padding:10px 12px;border-radius:14px;
+  background:#312861;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,.22)
+}
+.undo-toast.show{display:flex}
+.undo-toast button{padding:7px 10px;white-space:nowrap}
+
+body.sync-kid-mode .editTask{display:none}
+
 </style>
 </head>
 <body>
@@ -404,6 +522,7 @@ body.sync-kid-mode #bank .activity{
     <select id="templateSelect"></select>
     <button id="newTemplateBtn" class="softbtn">＋ New template</button>
     <button id="renameTemplateBtn" class="softbtn">Rename</button>
+    <button id="duplicateTemplateBtn" class="softbtn">⧉ Duplicate</button>
     <button id="deleteTemplateBtn" class="danger">Delete</button>
     <span class="small-note">Use different templates for weekdays, therapy days, weekends, etc.</span>
   </div>
@@ -414,6 +533,7 @@ body.sync-kid-mode #bank .activity{
     <button id="saveBtn">Save now</button>
     <button id="printBtn">Print / Save PDF</button>
     <button id="enableAlarmBtn">🔔 Enable alarms</button>
+    <button id="settingsBtn">⚙️ Settings</button>
   </div>
 </header>
 
@@ -537,11 +657,6 @@ body.sync-kid-mode #bank .activity{
       </div>
     </div>
 
-    <div class="section">
-      <h2 style="font-size:20px">🧰 Tools that may help</h2>
-      <div class="hint">Tap a tool to open a simple picture guide. You can open more than one tool at the same time.</div>
-      <div id="toolsGrid" class="tools-grid"></div>
-    </div>
   </section>
 
   <section class="panel">
@@ -597,7 +712,7 @@ body.sync-kid-mode #bank .activity{
 
     <div class="stuck-panel">
       <strong>🆘 “I’m stuck” helper</strong>
-      <div class="small-note">If a task feels too big, choose the task and break it into 4–5 concrete actions. Complete one small action at a time.</div>
+      <div class="small-note">If a task feels too big, choose it to see a task-specific step-by-step guide. Complete one small action at a time.</div>
 
       <div class="task-breakdown-controls">
         <select id="stuckTaskSelect"></select>
@@ -615,16 +730,28 @@ body.sync-kid-mode #bank .activity{
       <div class="breakdown-toolbar">
         <button id="nextSmallStepBtn">➡ Next small step</button>
         <button id="copyBreakdownBtn">📋 Copy steps</button>
-        <button id="resetBreakdownBtn">↺ Reset steps</button>
+        <button id="resetBreakdownBtn">↺ Reset progress</button>
+        <button id="editBreakdownBtn">✏️ Edit steps</button>
+        <button id="resetDefaultStepsBtn">↺ Reset default steps</button>
       </div>
+      <div id="breakdownEditor" class="breakdown-editor" style="display:none"></div>
       <div id="copyFeedback" class="copy-feedback"></div>
       <div id="aiBreakdownStatus" class="ai-breakdown-status">
-        Built-in activities use the local step library. New/custom activities will try AI first; if AI is unavailable, the planner will create an offline 4–5 step fallback.
+        Every built-in Activity Bank task has its own prepared step-by-step guide. Custom activities use the offline helper when a prepared guide is not available.
       </div>
 
-      <div id="stuckBox" class="stuck-box">The helper will also suggest supports from the selected toolkit.</div>
+      <div id="supportToolsSection" class="support-tools-section">
+        <h3>🧰 What might help me right now?</h3>
+        <div class="small-note">Choose one support if starting, focusing, or changing activities feels hard.</div>
+        <div id="toolsGrid" class="tools-grid"></div>
+      </div>
+
+      <div id="stuckBox" class="stuck-box">Try the task-specific steps first. If you are still stuck, choose one support above.</div>
     </div>
 
+    <details id="settingsShell" class="settings-shell">
+      <summary>⚙️ Settings & connections</summary>
+      <div class="settings-inner">
     <div class="alarm-panel">
       <strong>🔔 Alarm / reminder function</strong>
       <div class="small-note" id="alarmStatus">Alarms are off. Click “Enable alarms” above.</div>
@@ -746,7 +873,14 @@ body.sync-kid-mode #bank .activity{
       </div>
       <div class="small-note">For the most reliable phone use, keep a backup file. Some mobile browsers may clear local file data, especially when the HTML is opened from the Files app rather than a regular website.</div>
     </div>
+      </div>
+    </details>
   </section>
+</div>
+
+<div id="undoToast" class="undo-toast" aria-live="polite">
+  <span id="undoMessage">Item removed.</span>
+  <button id="undoBtn">↩ Undo</button>
 </div>
 
 <div class="footer">Best used collaboratively: first let the child choose the order and supports, then review what seems realistic, what is hardest, and what needs adjusting.</div>
@@ -867,54 +1001,12 @@ const activities=[
 
 
 const tools=[
-{
-  icon:"⏱️",name:"Visual timer",
-  diagram:{leftIcon:"▶️",left:"Start",midIcon:"⏱️",mid:"Watch time",rightIcon:"✅",right:"Finish"}
-},
-{
-  icon:"✅",name:"Checklist",
-  diagram:{leftIcon:"👀",left:"Look",midIcon:"☑️",mid:"Tick one",rightIcon:"➡️",right:"Next"}
-},
-{
-  icon:"🔁",name:"First–Then",
-  diagram:{leftIcon:"1️⃣",left:"First",midIcon:"➡️",mid:"Finish it",rightIcon:"2️⃣",right:"Then"}
-},
-{
-  icon:"🔔",name:"5-minute warning",
-  diagram:{leftIcon:"🔔",left:"5 min left",midIcon:"🧩",mid:"Finish part",rightIcon:"➡️",right:"Change"}
-},
-{
-  icon:"1️⃣",name:"One step at a time",
-  diagram:{leftIcon:"👀",left:"See 1 step",midIcon:"✋",mid:"Do it",rightIcon:"➡️",right:"Next step"}
-},
-{
-  icon:"🚀",name:"5-minute start",
-  diagram:{leftIcon:"⏱️",left:"5 minutes",midIcon:"🚀",mid:"Start",rightIcon:"❓",right:"Keep going?"}
-},
-{
-  icon:"👥",name:"Body doubling",
-  diagram:{leftIcon:"🧑",left:"You work",midIcon:"＋",mid:"Together",rightIcon:"🧑‍🦱",right:"Person nearby"}
-},
-{
-  icon:"⏸️",name:"Planned break",
-  diagram:{leftIcon:"📝",left:"Plan break",midIcon:"⏸️",mid:"Take break",rightIcon:"▶️",right:"Go back"}
-},
-{
-  icon:"🎧",name:"Low-distraction setup",
-  diagram:{leftIcon:"🔇",left:"Less noise",midIcon:"🧹",mid:"Clear space",rightIcon:"🎯",right:"Focus"}
-},
-{
-  icon:"🧺",name:"Ready station",
-  diagram:{leftIcon:"📍",left:"One place",midIcon:"🎒",mid:"Put things",rightIcon:"👀",right:"Check before go"}
-},
-{
-  icon:"📱",name:"Reminder / alarm",
-  diagram:{leftIcon:"📝",left:"Set reminder",midIcon:"🔔",mid:"Alarm rings",rightIcon:"▶️",right:"Start task"}
-},
-{
-  icon:"🙋",name:"Ask-for-help cue",
-  diagram:{leftIcon:"🛑",left:"I’m stuck",midIcon:"🙋",mid:"Ask",rightIcon:"➡️",right:"Try next step"}
-}
+{icon:"🚀",name:"Just start for 5 minutes",type:"start5",desc:"Try the task for only five minutes. Decide what to do when the timer finishes."},
+{icon:"1️⃣",name:"One step at a time",type:"oneStep",desc:"Look at only the next small step instead of the whole task."},
+{icon:"🎧",name:"Make my space easier",type:"space",desc:"Reduce distractions and get the space ready for the task."},
+{icon:"⏸️",name:"Take a planned break",type:"break",desc:"Take a short timed break, then decide whether you are ready to return."},
+{icon:"🙋",name:"Ask for help",type:"help",desc:"Choose a simple sentence to tell someone what kind of help you need."},
+{icon:"👥",name:"Work with someone nearby",type:"bodyDouble",desc:"Ask someone to sit nearby while you get started. They do not need to do the task for you."}
 ];
 
 const PROFILE_KEY="otRoutinePlannerActiveProfileV9";
@@ -943,6 +1035,7 @@ let state={
     {id:"default",name:"Weekday",plan:[],selectedToolNames:[],reward:"",motivationItems:[],selectedMotivationId:null,unlockTaskIds:[],taskBreakdownProgress:{}}
   ],
   customActivities:[],
+  favoriteActivityKeys:[],
   soundChoice:"chime",
   alarmVolume:0.70,
   alarmsEnabled:false
@@ -958,8 +1051,17 @@ let motivationRunning=false;
 let motivationPaused=false;
 let motivationEndAt=null;
 let motivationActiveId=null;
-// Expanded tool cards are UI-only and reset on every refresh.
+let supportTimerInterval=null;
+let supportTimerEndAt=null;
+let supportTimerKind=null;
+let supportTimerDurationSeconds=0;
+// Expanded support cards are UI-only and reset on every refresh.
 let expandedToolNames=new Set();
+
+let undoAction=null;
+let undoTimer=null;
+let editingBreakdownTaskId=null;
+let breakdownEditDraft=null;
 
 
 const DEFAULT_SERVER_URL="https://routine-planner-notifications.routineplanner-ot.workers.dev";
@@ -1459,9 +1561,13 @@ function initialiseFamilySync(){
   if(familySyncConfig) pullFamilyState(false);
 }
 
+function escapeHtml(value){
+  return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
 function uid(){return "id-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
 const BANK_CATEGORIES=[
   {name:"All",icon:"✨"},
+  {name:"Favourites",icon:"⭐"},
   {name:"Daily life",icon:"🏠"},
   {name:"Meals",icon:"🍽️"},
   {name:"School",icon:"🎒"},
@@ -1477,6 +1583,44 @@ const BANK_CATEGORIES=[
 let activeBankCategory="All";
 let bankSearchText="";
 
+
+function showUndo(message,fn){
+  undoAction=fn;
+  clearTimeout(undoTimer);
+  const toast=document.getElementById("undoToast");
+  const msg=document.getElementById("undoMessage");
+  if(msg) msg.textContent=message;
+  if(toast) toast.classList.add("show");
+  undoTimer=setTimeout(()=>{
+    undoAction=null;
+    toast?.classList.remove("show");
+  },8000);
+}
+function runUndo(){
+  if(!undoAction) return;
+  const fn=undoAction;
+  undoAction=null;
+  clearTimeout(undoTimer);
+  document.getElementById("undoToast")?.classList.remove("show");
+  fn();
+}
+function deepClone(value){return JSON.parse(JSON.stringify(value));}
+
+function activityFavouriteKey(a){
+  return a.custom?`custom:${a.bankId}`:`builtin:${a.label}`;
+}
+function isActivityFavourite(key){
+  return Array.isArray(state.favoriteActivityKeys)&&state.favoriteActivityKeys.includes(key);
+}
+function toggleActivityFavourite(key){
+  if(!Array.isArray(state.favoriteActivityKeys)) state.favoriteActivityKeys=[];
+  state.favoriteActivityKeys=isActivityFavourite(key)
+    ? state.favoriteActivityKeys.filter(x=>x!==key)
+    : [...state.favoriteActivityKeys,key];
+  renderBank();
+  scheduleAutoSave();
+}
+
 function toneClass(i){return "tone"+((i%5)+1)}
 function currentTemplate(){return state.templates.find(t=>t.id===state.currentTemplateId) || state.templates[0]}
 function ensureTaskShape(t){
@@ -1484,11 +1628,23 @@ function ensureTaskShape(t){
   if(!("timerPausedRemaining" in t)) t.timerPausedRemaining=null;
   if(!("timerFinished" in t)) t.timerFinished=false;
   if(!("parentComment" in t)) t.parentComment="";
+  if(!("baseLabel" in t) || !t.baseLabel) t.baseLabel=t.label||"";
 }
 function plan(){return currentTemplate().plan}
 function setPlan(newPlan){currentTemplate().plan=newPlan}
-function selectedTools(){return currentTemplate().selectedToolNames}
-function setSelectedTools(arr){currentTemplate().selectedToolNames=arr}
+function selectedTools(){
+  const t=currentTemplate();
+  const meta=t?.taskBreakdownProgress?.__selectedSupports;
+  return Array.isArray(meta)?meta:(t.selectedToolNames||[]);
+}
+function setSelectedTools(arr){
+  const clean=migrateSelectedSupportNames(arr);
+  currentTemplate().selectedToolNames=clean;
+  if(!currentTemplate().taskBreakdownProgress || typeof currentTemplate().taskBreakdownProgress!=="object"){
+    currentTemplate().taskBreakdownProgress={};
+  }
+  currentTemplate().taskBreakdownProgress.__selectedSupports=[...clean];
+}
 function reward(){return currentTemplate().reward||""}
 function setReward(v){currentTemplate().reward=v}
 function motivationItems(){return currentTemplate().motivationItems||[]}
@@ -1509,19 +1665,44 @@ function calculateTaskEndTime(start,duration){
 }
 
 function newTask(icon,label){
-  return {id:uid(),icon,label,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false,parentComment:""};
+  return {id:uid(),icon,label,baseLabel:label,start:"",duration:15,priority:"Must do",warning:"5",status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:null,timerFinished:false,parentComment:""};
 }
 
+const LEGACY_SUPPORT_NAME_MAP={
+  "5-minute start":"Just start for 5 minutes",
+  "One step at a time":"One step at a time",
+  "Low-distraction setup":"Make my space easier",
+  "Ready station":"Make my space easier",
+  "Planned break":"Take a planned break",
+  "Ask-for-help cue":"Ask for help",
+  "Body doubling":"Work with someone nearby"
+};
+function migrateSelectedSupportNames(names){
+  const valid=new Set(tools.map(t=>t.name));
+  const migrated=[];
+  (Array.isArray(names)?names:[]).forEach(name=>{
+    const next=LEGACY_SUPPORT_NAME_MAP[name]||name;
+    if(valid.has(next)&&!migrated.includes(next)) migrated.push(next);
+  });
+  return migrated;
+}
 function ensureTemplateShape(t){
   if(!Array.isArray(state.customActivities)) state.customActivities=[];
+  if(!Array.isArray(state.favoriteActivityKeys)) state.favoriteActivityKeys=[];
   if(!Array.isArray(t.plan)) t.plan=[];
   t.plan.forEach(ensureTaskShape);
-  if(!Array.isArray(t.selectedToolNames)) t.selectedToolNames=[];
+  t.selectedToolNames=migrateSelectedSupportNames(t.selectedToolNames);
   if(!Array.isArray(t.motivationItems)) t.motivationItems=[];
   if(!Array.isArray(t.unlockTaskIds)) t.unlockTaskIds=[];
   if(!("selectedMotivationId" in t)) t.selectedMotivationId=null;
   if(!("reward" in t)) t.reward="";
   if(!t.taskBreakdownProgress || typeof t.taskBreakdownProgress!=="object") t.taskBreakdownProgress={};
+  if(!Array.isArray(t.taskBreakdownProgress.__selectedSupports)){
+    t.taskBreakdownProgress.__selectedSupports=[...t.selectedToolNames];
+  }else{
+    t.taskBreakdownProgress.__selectedSupports=migrateSelectedSupportNames(t.taskBreakdownProgress.__selectedSupports);
+    t.selectedToolNames=[...t.taskBreakdownProgress.__selectedSupports];
+  }
 }
 function renderTemplateBar(){
   state.templates.forEach(ensureTemplateShape);
@@ -1577,17 +1758,25 @@ function renderBank(){
 
   const q=String(bankSearchText||"").trim().toLowerCase();
   const visible=combined.filter(a=>{
-    const categoryMatch=activeBankCategory==="All" || a.category===activeBankCategory;
+    const favKey=activityFavouriteKey(a);
+    const categoryMatch=
+      activeBankCategory==="All" ||
+      (activeBankCategory==="Favourites" && isActivityFavourite(favKey)) ||
+      a.category===activeBankCategory;
     const searchMatch=!q || `${a.label} ${a.category}`.toLowerCase().includes(q);
     return categoryMatch && searchMatch;
   });
 
   visible.forEach((a,i)=>{
     const el=document.createElement("div");
+    const favKey=activityFavouriteKey(a);
+    const favourite=isActivityFavourite(favKey);
     el.className="activity "+toneClass(i)+(a.custom?" custom-activity":"");
     el.draggable=!isKidSyncMode();
     el.title=a.category;
-    el.innerHTML=`<span class="icon">${a.icon}</span><span class="label">${a.label}</span>${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
+    el.innerHTML=`<span class="icon">${escapeHtml(a.icon)}</span><span class="label">${escapeHtml(a.label)}</span>
+      <button class="activity-favourite ${favourite?"on":""}" title="${favourite?"Remove from favourites":"Add to favourites"}">${favourite?"⭐":"☆"}</button>
+      ${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
 
     el.addEventListener("dragstart",e=>{
       e.dataTransfer.setData("text/plain",JSON.stringify({icon:a.icon,label:a.label}));
@@ -1596,17 +1785,37 @@ function renderBank(){
 
     el.addEventListener("click",e=>{
       if(isKidSyncMode()) return;
-      if(e.target.closest(".custom-remove")) return;
+      if(e.target.closest(".custom-remove")||e.target.closest(".activity-favourite")) return;
       plan().push(newTask(a.icon,a.label));
       renderPlan();
     });
 
+    el.querySelector(".activity-favourite").onclick=e=>{
+      e.stopPropagation();
+      if(isKidSyncMode()) return;
+      toggleActivityFavourite(favKey);
+    };
+
     if(a.custom){
       el.querySelector(".custom-remove").onclick=(e)=>{
         e.stopPropagation();
+        if(isKidSyncMode()) return;
+        if(!confirm(`Remove “${a.label}” from My activities?`)) return;
+        const oldIndex=(state.customActivities||[]).findIndex(x=>x.id===a.bankId);
+        const removed=deepClone((state.customActivities||[])[oldIndex]);
         state.customActivities=(state.customActivities||[]).filter(x=>x.id!==a.bankId);
+        const oldFavs=[...(state.favoriteActivityKeys||[])];
+        state.favoriteActivityKeys=(state.favoriteActivityKeys||[]).filter(x=>x!==favKey);
         renderBank();
         scheduleAutoSave();
+        showUndo(`Removed “${a.label}”.`,()=>{
+          const arr=state.customActivities||[];
+          arr.splice(Math.max(0,oldIndex),0,removed);
+          state.customActivities=arr;
+          state.favoriteActivityKeys=oldFavs;
+          renderBank();
+          scheduleAutoSave();
+        });
       };
     }
 
@@ -1617,101 +1826,234 @@ function renderBank(){
   if(empty) empty.style.display=visible.length?"none":"block";
 }
 
+function currentSupportTask(){
+  return plan().find(t=>t.status==="doing") || plan().find(t=>t.status!=="done") || plan()[0] || null;
+}
+function formatSupportTimer(seconds){
+  const total=Math.max(0,Math.ceil(Number(seconds)||0));
+  return `${String(Math.floor(total/60)).padStart(2,"0")}:${String(total%60).padStart(2,"0")}`;
+}
+function supportTimerRemainingSeconds(){
+  return supportTimerEndAt?Math.max(0,Math.ceil((supportTimerEndAt-Date.now())/1000)):(supportTimerDurationSeconds||0);
+}
+function updateSupportTimerDisplays(){
+  const text=formatSupportTimer(supportTimerRemainingSeconds());
+  document.querySelectorAll("[data-support-timer]").forEach(el=>{
+    if(el.dataset.supportTimer===supportTimerKind) el.textContent=text;
+  });
+}
+function stopSupportTimer(){
+  clearInterval(supportTimerInterval);
+  supportTimerInterval=null;
+  if(supportTimerKind) cancelClosedPush({id:`support-${supportTimerKind}`});
+  supportTimerEndAt=null; supportTimerKind=null; supportTimerDurationSeconds=0;
+  renderTools();
+}
+function finishSupportTimer(){
+  const finished=supportTimerKind;
+  clearInterval(supportTimerInterval);
+  supportTimerInterval=null;
+  if(finished) cancelClosedPush({id:`support-${finished}`});
+  supportTimerEndAt=null; supportTimerKind=null; supportTimerDurationSeconds=0;
+  playAlarmSound();
+  if(finished==="start5") alert("5 minutes finished.\\n\\nDo you want to continue, or take a planned break?");
+  if(finished==="break") alert("Break finished.\\n\\nCheck your task and decide whether you are ready to go back.");
+  renderTools();
+}
+function startSupportTimer(kind,minutes){
+  clearInterval(supportTimerInterval);
+  if(supportTimerKind) cancelClosedPush({id:`support-${supportTimerKind}`});
+  supportTimerKind=kind;
+  supportTimerDurationSeconds=Math.max(1,Number(minutes)||1)*60;
+  supportTimerEndAt=Date.now()+supportTimerDurationSeconds*1000;
+  scheduleClosedPush({
+    id:`support-${kind}`,
+    label:kind==="break"?"Planned break finished":"5-minute start finished",
+    timerEndAt:supportTimerEndAt
+  });
+  supportTimerInterval=setInterval(()=>{
+    updateSupportTimerDisplays();
+    if(supportTimerRemainingSeconds()<=0) finishSupportTimer();
+  },250);
+  renderTools();
+  updateSupportTimerDisplays();
+}
+function openCurrentTaskInStuck(){
+  const task=currentSupportTask();
+  if(!task){alert("Add a routine task first.");return;}
+  const select=document.getElementById("stuckTaskSelect");
+  if(select) select.value=task.id;
+  renderTaskBreakdown(task.id);
+  document.querySelector(".stuck-panel")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function supportFeedbackStore(){
+  const p=taskBreakdownProgress();
+  if(!p.__supportFeedback || typeof p.__supportFeedback!=="object") p.__supportFeedback={};
+  return p.__supportFeedback;
+}
+function supportFeedbackCounts(name){
+  const store=supportFeedbackStore();
+  const current=store[name]||{};
+  return {yes:Number(current.yes||0),little:Number(current.little||0),no:Number(current.no||0)};
+}
+function recordSupportFeedback(name,rating){
+  const store=supportFeedbackStore();
+  const current=supportFeedbackCounts(name);
+  current[rating]=Number(current[rating]||0)+1;
+  store[name]=current;
+  scheduleAutoSave();
+  renderTools();
+  renderSelectedTools();
+}
+function supportFeedbackMarkup(name){
+  const c=supportFeedbackCounts(name);
+  return `<div class="support-feedback">
+    <div class="support-feedback-title">Did this help?</div>
+    <div class="support-feedback-actions">
+      <button class="support-feedback-btn" data-rating="yes">👍 Yes</button>
+      <button class="support-feedback-btn" data-rating="little">😐 A little</button>
+      <button class="support-feedback-btn" data-rating="no">👎 Not really</button>
+    </div>
+    <div class="support-feedback-stats">So far: 👍 ${c.yes} · 😐 ${c.little} · 👎 ${c.no}</div>
+  </div>`;
+}
+
+function supportToolDetails(t){
+  const task=currentSupportTask();
+  const taskName=task?escapeHtml(`${task.icon||""} ${task.label}`.trim()):"No task selected yet";
+  const selected=selectedTools().includes(t.name);
+  const save=`<button class="support-save-btn ${selected?"saved":""}">${selected?"❤️ In My Support Toolkit":"♡ This helps me"}</button>`;
+  const feedback=supportFeedbackMarkup(t.name);
+
+  if(t.type==="start5"){
+    const running=supportTimerKind==="start5"&&supportTimerEndAt;
+    return `<div class="support-action-card">
+      <div class="support-current-task"><small>TRY THIS WITH</small><strong>${taskName}</strong></div>
+      <ol class="support-mini-steps"><li>Get the things you need.</li><li>Set a 5-minute timer.</li><li>Focus only on this task until the timer finishes.</li><li>Then choose: continue, or take a planned break.</li></ol>
+      <div class="support-timer" data-support-timer="start5">${running?formatSupportTimer(supportTimerRemainingSeconds()):"05:00"}</div>
+      <div class="support-action-row"><button class="primary support-start5">${running?"Restart 5 minutes":"▶ Start 5-minute timer"}</button>${running?'<button class="support-stop-timer">■ Stop</button>':""}</div>${feedback}${save}</div>`;
+  }
+  if(t.type==="oneStep"){
+    let firstStep="Add a routine task first.";
+    if(task){
+      const steps=getBreakdownForTask(task);
+      const done=taskBreakdownProgress()[task.id]?.completed||[];
+      const idx=steps.findIndex((_,i)=>!done.includes(i));
+      firstStep=idx>=0?escapeHtml(steps[idx]):"All small steps are complete.";
+    }
+    return `<div class="support-action-card">
+      <div class="support-current-task"><small>FOCUS ON JUST ONE STEP</small><strong>${taskName}</strong></div>
+      <div class="one-step-now"><small>DO THIS NOW</small><strong>${firstStep}</strong></div>
+      <div class="support-action-row"><button class="primary support-open-breakdown">Show all task steps</button></div>${feedback}${save}</div>`;
+  }
+  if(t.type==="space"){
+    return `<div class="support-action-card">
+      <div class="support-current-task"><small>GET READY FOR</small><strong>${taskName}</strong></div>
+      <div class="support-checklist">
+        <label><input type="checkbox"> Put away things I do not need.</label>
+        <label><input type="checkbox"> Reduce noise or use headphones if helpful.</label>
+        <label><input type="checkbox"> Get a drink of water.</label>
+        <label><input type="checkbox"> Keep only the things I need in front of me.</label>
+        <label><input type="checkbox"> Sit or stand in a comfortable working position.</label>
+      </div>
+      <div class="support-ready-note">✅ When the space feels ready, start only the first small step.</div>${feedback}${save}</div>`;
+  }
+  if(t.type==="break"){
+    const running=supportTimerKind==="break"&&supportTimerEndAt;
+    return `<div class="support-action-card">
+      <div class="support-current-task"><small>PAUSE FROM</small><strong>${taskName}</strong></div>
+      <div class="small-note">Choose a short break with a clear ending.</div>
+      <div class="break-length-row"><button class="support-break-min" data-min="3">3 min</button><button class="support-break-min primary" data-min="5">5 min</button><button class="support-break-min" data-min="10">10 min</button></div>
+      <div class="support-timer" data-support-timer="break">${running?formatSupportTimer(supportTimerRemainingSeconds()):"05:00"}</div>
+      ${running?'<div class="support-action-row"><button class="support-stop-timer">■ Stop break timer</button></div>':""}
+      <div class="support-ready-note">🔔 When the break finishes, look at your next small step before deciding what to do.</div>${feedback}${save}</div>`;
+  }
+  if(t.type==="help"){
+    const phrases=["Can you show me the first step?","I don’t understand this part.","Can you do the first one with me?","I need a short break.","Can you remind me what to do next?"];
+    return `<div class="support-action-card">
+      <div class="support-current-task"><small>I NEED HELP WITH</small><strong>${taskName}</strong></div>
+      <div class="small-note">Tap a sentence to copy it, or say it out loud.</div>
+      <div class="help-phrases">${phrases.map(p=>`<button class="help-phrase" data-phrase="${p.replace(/"/g,"&quot;")}">${p}</button>`).join("")}</div>
+      <div class="support-copy-feedback"></div>${feedback}${save}</div>`;
+  }
+  return `<div class="support-action-card">
+    <div class="support-current-task"><small>STARTING</small><strong>${taskName}</strong></div>
+    <p class="support-script">Having someone nearby can make it easier to start and keep going.</p>
+    <div class="body-double-script"><small>YOU CAN SAY</small><strong>“Can you sit near me while I start?”</strong></div>
+    <div class="small-note">They do not need to do the task for you. They can simply stay nearby while you begin.</div>${feedback}${save}</div>`;
+}
 function renderTools(){
   const grid=document.getElementById("toolsGrid");
+  if(!grid) return;
   grid.innerHTML="";
-
   tools.forEach(t=>{
     const selected=selectedTools().includes(t.name);
     const expanded=expandedToolNames.has(t.name);
-    const d=t.diagram;
-
     const el=document.createElement("div");
     el.className="tool-card"+(selected?" selected":"")+(expanded?" expanded":"");
-
-    el.innerHTML=`
-      <div class="tool-title">
-        <div class="tool-title-main">
-          <span style="font-size:23px">${t.icon}</span>
-          <span>${t.name}</span>
-        </div>
-        <span class="tool-chevron" aria-hidden="true">⌄</span>
-      </div>
-
-      ${expanded?`
-        <div class="tool-diagram">
-          <div class="tool-diagram-title">How to use it</div>
-          <div class="diagram-flow" role="img" aria-label="${t.name} simple visual guide">
-            <div class="diagram-node">
-              <span class="diagram-icon">${d.leftIcon}</span>
-              <span class="diagram-label">${d.left}</span>
-            </div>
-            <div class="diagram-arrow">→</div>
-            <div class="diagram-node">
-              <span class="diagram-icon">${d.midIcon}</span>
-              <span class="diagram-label">${d.mid}</span>
-            </div>
-            <div class="diagram-arrow">→</div>
-            <div class="diagram-node">
-              <span class="diagram-icon">${d.rightIcon}</span>
-              <span class="diagram-label">${d.right}</span>
-            </div>
-          </div>
-
-          <div class="tool-use-row">
-            <button class="tool-use-btn">${selected?"✓ I’m using this":"＋ Use this tool"}</button>
-          </div>
-        </div>
-      `:""}
-    `;
-
-    // Multi-expandable: each card toggles itself only.
-    el.onclick=(e)=>{
-      if(e.target.closest(".tool-use-btn")) return;
-      if(expandedToolNames.has(t.name)){
-        expandedToolNames.delete(t.name);
-      }else{
-        expandedToolNames.add(t.name);
-      }
+    el.dataset.supportName=t.name;
+    el.innerHTML=`<div class="tool-title"><div class="tool-title-main"><span class="support-main-icon">${t.icon}</span><div><strong>${t.name}</strong><div class="tool-desc">${t.desc}</div></div></div><span class="tool-chevron">${expanded?"⌃":"⌄"}</span></div>${expanded?`<div class="support-expanded">${supportToolDetails(t)}</div>`:""}`;
+    el.querySelector(".tool-title").onclick=()=>{
+      expandedToolNames.has(t.name)?expandedToolNames.delete(t.name):expandedToolNames.add(t.name);
       renderTools();
     };
-
-    const useBtn=el.querySelector(".tool-use-btn");
-    if(useBtn){
-      useBtn.onclick=(e)=>{
-        e.stopPropagation();
-        if(selectedTools().includes(t.name)){
-          setSelectedTools(selectedTools().filter(x=>x!==t.name));
-        }else{
-          setSelectedTools([...selectedTools(),t.name]);
-        }
-        renderTools();
-        renderSelectedTools();
-        updateStuckBox();
-        scheduleAutoSave();
-      };
-    }
-
+    const saveBtn=el.querySelector(".support-save-btn");
+    if(saveBtn) saveBtn.onclick=e=>{
+      e.stopPropagation();
+      const current=selectedTools();
+      setSelectedTools(current.includes(t.name)?current.filter(x=>x!==t.name):[...current,t.name]);
+      renderTools(); renderSelectedTools(); updateStuckBox(); scheduleAutoSave();
+    };
+    const start5=el.querySelector(".support-start5");
+    if(start5) start5.onclick=e=>{e.stopPropagation();startSupportTimer("start5",5)};
+    el.querySelectorAll(".support-break-min").forEach(btn=>btn.onclick=e=>{e.stopPropagation();startSupportTimer("break",Number(btn.dataset.min)||5)});
+    el.querySelectorAll(".support-stop-timer").forEach(btn=>btn.onclick=e=>{e.stopPropagation();stopSupportTimer()});
+    const open=el.querySelector(".support-open-breakdown");
+    if(open) open.onclick=e=>{e.stopPropagation();openCurrentTaskInStuck()};
+    el.querySelectorAll(".help-phrase").forEach(btn=>btn.onclick=async e=>{
+      e.stopPropagation();
+      const phrase=btn.dataset.phrase||btn.textContent;
+      const feedback=el.querySelector(".support-copy-feedback");
+      try{await navigator.clipboard.writeText(phrase);if(feedback) feedback.textContent="✓ Sentence copied.";}
+      catch{if(feedback) feedback.textContent=`You can say: “${phrase}”`;}
+    });
+    el.querySelectorAll(".support-feedback-btn").forEach(btn=>btn.onclick=e=>{
+      e.stopPropagation();
+      recordSupportFeedback(t.name,btn.dataset.rating);
+    });
     grid.appendChild(el);
   });
+  updateSupportTimerDisplays();
 }
-
+function openSupportTool(name){
+  if(!tools.some(t=>t.name===name)) return;
+  expandedToolNames.add(name);
+  renderTools();
+  setTimeout(()=>{
+    const card=[...document.querySelectorAll("[data-support-name]")].find(x=>x.dataset.supportName===name);
+    card?.scrollIntoView({behavior:"smooth",block:"center"});
+  },30);
+}
 function renderSelectedTools(){
   const box=document.getElementById("selectedTools");
+  if(!box) return;
   box.innerHTML="";
   const chosen=tools.filter(t=>selectedTools().includes(t.name));
   if(!chosen.length){
-    box.innerHTML='<span class="small-note">No tools selected yet.</span>';
+    box.innerHTML='<span class="small-note">No favourite supports yet. When a strategy works well, tap “This helps me”.</span>';
     return;
   }
   chosen.forEach(t=>{
-    const el=document.createElement("div");
+    const el=document.createElement("button");
+    el.type="button";
     el.className="selected-tool";
-    el.innerHTML=`<span style="font-size:21px">${t.icon}</span><div><strong>${t.name}</strong></div>`;
+    const c=supportFeedbackCounts(t.name);
+    el.innerHTML=`<span style="font-size:21px">${t.icon}</span><div><strong>${t.name}</strong><small>Tap to use this support</small><span class="feedback-mini">👍 ${c.yes} · 😐 ${c.little} · 👎 ${c.no}</span></div>`;
+    el.onclick=()=>openSupportTool(t.name);
     box.appendChild(el);
   });
 }
-
 
 function renderMotivationBank(){
   const bank=document.getElementById("motivationBank");
@@ -2037,6 +2379,98 @@ function updateAllTaskTimers(){
 }
 setInterval(updateAllTaskTimers,1000);
 
+
+const CHANGE_REQUEST_LABELS={
+  later:"Do it later",
+  moretime:"I need more time",
+  help:"I need help",
+  break:"I want a break first"
+};
+function changeRequestStore(){
+  const p=taskBreakdownProgress();
+  if(!p.__changeRequests || typeof p.__changeRequests!=="object") p.__changeRequests={};
+  return p.__changeRequests;
+}
+function taskChangeRequest(taskId){
+  return changeRequestStore()[taskId]||null;
+}
+function submitTaskChangeRequest(taskId,type){
+  if(!isKidSyncMode()) return;
+  changeRequestStore()[taskId]={
+    type,
+    status:"pending",
+    createdAt:Date.now()
+  };
+  renderPlan();
+  scheduleAutoSave();
+}
+function resolveTaskChangeRequest(taskId,accepted){
+  if(!isParentSyncMode()) return;
+  const store=changeRequestStore();
+  const req=store[taskId];
+  if(!req) return;
+  const p=plan();
+  const idx=p.findIndex(x=>x.id===taskId);
+  const task=p[idx];
+
+  if(accepted && task){
+    if(req.type==="later" && idx>=0 && idx<p.length-1){
+      const [moved]=p.splice(idx,1);
+      p.push(moved);
+    }else if(req.type==="moretime"){
+      task.duration=Math.min(240,Math.max(1,Number(task.duration)||15)+10);
+      if(!task.timerEndAt) task.timerPausedRemaining=task.duration*60;
+    }else if(req.type==="break"){
+      const b=newTask("🛋️","Short break");
+      b.duration=5;
+      b.priority="Optional";
+      p.splice(Math.max(0,idx),0,b);
+    }
+  }
+
+  req.status=accepted?"accepted":"dismissed";
+  req.resolvedAt=Date.now();
+  store[taskId]=req;
+  renderPlan();
+  scheduleAutoSave();
+}
+function requestStatusClass(status){
+  return status==="accepted"?"request-accepted":status==="dismissed"?"request-dismissed":"request-pending";
+}
+function renderTaskChangeRequestHtml(t){
+  const req=taskChangeRequest(t.id);
+  if(isKidSyncMode()){
+    if(req?.status==="pending"){
+      return `<div class="change-request-box"><strong>💬 Request sent</strong><div class="small-note">${escapeHtml(CHANGE_REQUEST_LABELS[req.type]||req.type)}. Waiting for Parent mode.</div><span class="request-badge request-pending">Pending</span></div>`;
+    }
+    const previous=req?`<span class="request-badge ${requestStatusClass(req.status)}">${req.status==="accepted"?"✓ Agreed":"Not changed"}</span>`:"";
+    return `<div class="change-request-box">
+      <strong>💬 Can we change this?</strong>
+      <div class="change-request-row">
+        <select class="changeRequestType">
+          <option value="later">Do it later</option>
+          <option value="moretime">I need more time</option>
+          <option value="help">I need help</option>
+          <option value="break">I want a break first</option>
+        </select>
+        <button class="sendChangeRequest">Send request</button>
+      </div>
+      ${previous}
+    </div>`;
+  }
+  if(isParentSyncMode() && req?.status==="pending"){
+    return `<div class="parent-request-card">
+      <strong>💬 Child request: ${escapeHtml(CHANGE_REQUEST_LABELS[req.type]||req.type)}</strong>
+      <div class="small-note">${req.type==="later"?"Agree moves this task to the end of the routine.":req.type==="moretime"?"Agree adds 10 minutes.":req.type==="break"?"Agree adds a 5-minute Short break before this task.":"Agree acknowledges that help is needed."}</div>
+      <div class="parent-request-actions">
+        <button class="agreeRequest primary">✓ Agree</button>
+        <button class="dismissRequest">Dismiss</button>
+      </div>
+    </div>`;
+  }
+  return "";
+}
+
 function renderPlan(){
   const sequence=document.getElementById("sequence");
   sequence.innerHTML="";
@@ -2050,8 +2484,9 @@ function renderPlan(){
     el.innerHTML=`
       <div class="seq-top">
         <div class="num">${i+1}</div>
-        <div class="seq-main"><span class="icon">${t.icon}</span><span class="label">${t.label}</span></div>
+        <div class="seq-main"><span class="icon">${escapeHtml(t.icon)}</span><span class="label">${escapeHtml(t.label)}</span></div>
         <div class="controls">
+          <button class="mini editTask" title="Edit activity">✏️</button>
           <button class="mini up">↑</button>
           <button class="mini down">↓</button>
           <button class="mini remove">✕</button>
@@ -2096,15 +2531,26 @@ function renderPlan(){
       <div class="end-time-display" data-end-time="${t.id}">
         ${t.start ? `Ends at ${calculateTaskEndTime(t.start,t.duration)}` : "Set a start time to see end time"}
       </div>
+      <div class="task-edit-panel" style="display:none">
+        <div class="task-edit-grid">
+          <input class="taskEditName" type="text" maxlength="80" value="${escapeHtml(t.label)}" aria-label="Activity name">
+          <select class="taskEditIcon" aria-label="Activity icon"></select>
+        </div>
+        <div class="task-edit-actions">
+          <button class="saveTaskEdit primary">Save activity</button>
+          <button class="cancelTaskEdit">Cancel</button>
+        </div>
+      </div>
+      ${renderTaskChangeRequestHtml(t)}
       ${isParentSyncMode() ? `
         <div class="parent-comment-box">
           <label>Parent comment</label>
-          <textarea class="parentComment" maxlength="500" placeholder="e.g. We agreed to try homework before gaming today.">${String(t.parentComment||"")}</textarea>
+          <textarea class="parentComment" maxlength="500" placeholder="e.g. We agreed to try homework before gaming today.">${escapeHtml(t.parentComment||"")}</textarea>
         </div>
       ` : (isKidSyncMode() && t.parentComment ? `
         <div class="parent-comment-box">
           <label>Parent comment</label>
-          <div class="parent-comment-readonly">${String(t.parentComment||"")}</div>
+          <div class="parent-comment-readonly">${escapeHtml(t.parentComment||"")}</div>
         </div>
       ` : "")}
     `;
@@ -2136,7 +2582,67 @@ function renderPlan(){
 
     el.querySelector(".up").onclick=()=>{if(isKidSyncMode()) return;if(i>0){const p=plan(); [p[i-1],p[i]]=[p[i],p[i-1]]; renderPlan()}};
     el.querySelector(".down").onclick=()=>{if(isKidSyncMode()) return;if(i<plan().length-1){const p=plan(); [p[i+1],p[i]]=[p[i],p[i+1]]; renderPlan()}};
-    el.querySelector(".remove").onclick=()=>{if(isKidSyncMode()) return;plan().splice(i,1); renderPlan()};
+
+    const editPanel=el.querySelector(".task-edit-panel");
+    const editIcon=el.querySelector(".taskEditIcon");
+    if(editIcon){
+      editIcon.innerHTML=document.getElementById("customIcon")?.innerHTML||"";
+      if(![...editIcon.options].some(o=>o.value===t.icon)){
+        const opt=document.createElement("option");opt.value=t.icon;opt.textContent=`${t.icon} Current`;editIcon.insertBefore(opt,editIcon.firstChild);
+      }
+      editIcon.value=t.icon;
+    }
+    el.querySelector(".editTask").onclick=()=>{
+      if(isKidSyncMode()) return;
+      editPanel.style.display=editPanel.style.display==="none"?"block":"none";
+    };
+    el.querySelector(".cancelTaskEdit").onclick=()=>{editPanel.style.display="none"};
+    el.querySelector(".saveTaskEdit").onclick=()=>{
+      if(isKidSyncMode()) return;
+      const nextName=el.querySelector(".taskEditName").value.trim();
+      if(!nextName){alert("Please enter an activity name.");return;}
+      t.label=nextName;
+      t.icon=editIcon.value||t.icon||"⭐";
+      renderPlan();
+      scheduleAutoSave();
+    };
+
+    el.querySelector(".remove").onclick=()=>{
+      if(isKidSyncMode()) return;
+      const removed=deepClone(plan()[i]);
+      const progress=taskBreakdownProgress();
+      const removedProgress=progress[removed.id] ? deepClone(progress[removed.id]) : null;
+      const requestStore=progress.__changeRequests||{};
+      const removedRequest=requestStore[removed.id] ? deepClone(requestStore[removed.id]) : null;
+
+      plan().splice(i,1);
+      delete progress[removed.id];
+      if(progress.__changeRequests) delete progress.__changeRequests[removed.id];
+
+      renderPlan();
+      scheduleAutoSave();
+      showUndo(`Removed “${removed.label}”.`,()=>{
+        plan().splice(Math.min(i,plan().length),0,removed);
+        if(removedProgress) taskBreakdownProgress()[removed.id]=removedProgress;
+        if(removedRequest){
+          if(!taskBreakdownProgress().__changeRequests) taskBreakdownProgress().__changeRequests={};
+          taskBreakdownProgress().__changeRequests[removed.id]=removedRequest;
+        }
+        renderPlan();
+        scheduleAutoSave();
+      });
+    };
+
+    const sendReq=el.querySelector(".sendChangeRequest");
+    if(sendReq) sendReq.onclick=()=>{
+      const type=el.querySelector(".changeRequestType")?.value||"help";
+      submitTaskChangeRequest(t.id,type);
+    };
+    const agreeReq=el.querySelector(".agreeRequest");
+    if(agreeReq) agreeReq.onclick=()=>resolveTaskChangeRequest(t.id,true);
+    const dismissReq=el.querySelector(".dismissRequest");
+    if(dismissReq) dismissReq.onclick=()=>resolveTaskChangeRequest(t.id,false);
+
     el.querySelector(".start").onchange=e=>{
       if(isKidSyncMode()) return;
       t.start=e.target.value;
@@ -2213,243 +2719,691 @@ function updateFirstThen(){
 
 const taskBreakdownLibrary={
   "arrive home":[
-    "Walk inside and close the door.",
-    "Put your shoes and personal items in their usual place.",
-    "Take your school bag to the usual bag area.",
-    "Check what the next activity is.",
-    "Start the next activity on the planner."
-  ],
-  "put school bag away":[
-    "Carry the school bag to its usual place.",
-    "Put the bag down or hang it up.",
-    "Take out the lunchbox and drink bottle.",
-    "Put homework or important papers in the homework area.",
-    "Check the planner for the next task."
-  ],
-  "toilet":[
-    "Go into the bathroom and use the toilet.",
-    "Wipe as needed.",
-    "Flush the toilet.",
-    "Wash your hands with soap.",
-    "Dry your hands and return to the planner."
-  ],
-  "change clothes":[
-    "Choose the clothes you want to wear at home.",
-    "Take off your school clothes.",
-    "Put school clothes in the laundry basket or usual place.",
-    "Put on your home clothes.",
-    "Put shoes and other clothing away."
-  ],
-  "breakfast":[
-    "Go to the kitchen or eating area.",
-    "Choose or get your breakfast and a drink.",
-    "Sit down and eat your breakfast.",
-    "Put dishes, wrappers or containers in the correct place.",
-    "Check what comes next on the planner."
-  ],
-  "lunch":[
-    "Go to the eating area and get your lunch.",
-    "Get a drink if needed.",
-    "Sit down and eat your lunch.",
-    "Put rubbish, dishes or containers away.",
-    "Check what comes next on the planner."
-  ],
-  "snack":[
-    "Choose one snack.",
-    "Get a drink or fill your water bottle.",
-    "Sit down and have your snack.",
-    "Put rubbish, dishes or containers away.",
-    "Check the next task on the planner."
-  ],
-  "drink water":[
-    "Get your cup or water bottle.",
-    "Fill it with water.",
-    "Drink some water.",
-    "Put the cup or bottle back.",
-    "Check the next task."
-  ],
+  "Walk inside and put your shoes in their usual place.",
+  "Put your school bag and other belongings in the usual area.",
+  "Take out your lunchbox, drink bottle, or important papers if needed.",
+  "Have a quick look at the planner.",
+  "Start the first activity in your routine."
+],
+  "morning routine":[
+  "Get out of bed and open the curtains or turn on the light.",
+  "Use the toilet and wash your hands.",
+  "Get dressed in the clothes prepared for today.",
+  "Have breakfast and get your school or day items ready.",
+  "Check the planner before leaving or starting the day."
+],
+  "check schedule":[
+  "Open the planner and look at today's routine.",
+  "Find the first activity that is not finished.",
+  "Check its start time and duration.",
+  "Notice anything you need to get ready first.",
+  "Start the first small step."
+],
+  "pack up":[
+  "Look around for the things you have been using.",
+  "Put each item back in its usual place.",
+  "Throw away rubbish and put dirty items where they belong.",
+  "Check that the area is clear enough.",
+  "Look at the planner for the next activity."
+],
   "short break":[
-    "Choose one short break activity.",
-    "Set the break timer.",
-    "Start the break.",
-    "Stop when the timer finishes.",
-    "Check the next activity on the planner."
-  ],
+  "Choose one short break activity.",
+  "Set the agreed break timer.",
+  "Start the break and stay with that activity.",
+  "Stop when the timer finishes.",
+  "Return to the planner and start the next task."
+],
   "quiet time":[
-    "Choose one quiet activity.",
-    "Go to a comfortable quiet space.",
-    "Set a timer if needed.",
-    "Do the quiet activity until the timer finishes.",
-    "Return to the planner."
-  ],
-  "check homework":[
-    "Open your school planner, portal or homework list.",
-    "Check which subjects have homework.",
-    "Look at the due dates.",
-    "Choose which homework task to do first.",
-    "Get the materials needed for that task."
-  ],
-  "start homework":[
-    "Clear a small space to work.",
-    "Get the materials you need.",
-    "Choose the first question or first small part.",
-    "Set a timer if that helps.",
-    "Start the first small part."
-  ],
-  "movement break":[
-    "Choose one movement activity.",
-    "Set a short timer.",
-    "Do the movement activity.",
-    "Stop when the timer finishes.",
-    "Return to the next task."
-  ],
-  "free time":[
-    "Choose what you want to do for free time.",
-    "Set the agreed timer.",
-    "Start the activity.",
-    "Stop or save your activity when the timer finishes.",
-    "Check what comes next."
-  ],
-  "shower":[
-    "Get a towel and clean clothes ready.",
-    "Turn on the shower and get in.",
-    "Wash your body and hair as needed.",
-    "Rinse, turn off the shower and dry yourself.",
-    "Put on clean clothes and put used clothes in the laundry."
-  ],
-  "dinner":[
-    "Go to the eating area.",
-    "Get your meal, drink and utensils.",
-    "Sit down and eat your meal.",
-    "Put your plate, cup and utensils in the usual place.",
-    "Check the next activity."
-  ],
-  "brush teeth":[
-    "Get your toothbrush and toothpaste.",
-    "Put toothpaste on the toothbrush.",
-    "Brush all sides of your teeth for about 2 minutes.",
-    "Spit and rinse as needed.",
-    "Put the toothbrush and toothpaste away."
-  ],
-  "pack school bag":[
-    "Check tomorrow’s timetable or school schedule.",
-    "Put the books and homework you need into the bag.",
-    "Pack your laptop, charger or school equipment if needed.",
-    "Prepare your lunchbox and water bottle area.",
-    "Zip the bag and put it in the ready-to-go place."
-  ],
-  "get clothes ready":[
-    "Check tomorrow’s weather and activities.",
-    "Choose a top.",
-    "Choose bottoms and underwear/socks.",
-    "Choose shoes or any extra items you need.",
-    "Put everything together in one ready-to-wear place."
-  ],
-  "homework break":[
-    "Stop at a clear point in the homework.",
-    "Choose one short break activity.",
-    "Set the break timer.",
-    "Stop when the timer finishes.",
-    "Return to the next homework step."
-  ],
-  "reading":[
-    "Choose the book or reading material.",
-    "Choose a comfortable place to read.",
-    "Set a timer or page goal if needed.",
-    "Read until the goal is reached.",
-    "Bookmark your place and put the book away."
-  ],
-  "drawing":[
-    "Choose what you want to draw.",
-    "Get paper and drawing materials.",
-    "Set up your drawing space.",
-    "Start with one simple part of the drawing.",
-    "Pack the materials away when finished."
-  ],
+  "Choose one quiet activity.",
+  "Go to a comfortable, low-distraction space.",
+  "Set a timer if that helps you know when quiet time ends.",
+  "Do the quiet activity until the timer finishes.",
+  "Return to the planner and check what comes next."
+],
   "family time":[
-    "Find out what the family activity is.",
-    "Join the agreed space or activity.",
-    "Take part in the activity.",
-    "Tell someone if you need a short break.",
-    "Finish and check what comes next."
-  ],
-  "chores":[
-    "Check which chore you are doing.",
-    "Get the things you need for the chore.",
-    "Start with one small area or action.",
-    "Check that the chore is finished.",
-    "Put the equipment away."
-  ],
-  "hang clothes":[
-    "Take the wet clothes out of the washing machine or laundry basket.",
-    "Carry the clothes and pegs or hangers to the drying area.",
-    "Pick up one item at a time and straighten it out.",
-    "Hang each item on the clothesline or hanger and secure it if needed.",
-    "Put the empty basket and pegs or hangers back in their usual place."
-  ],
-  "fold clothes":[
-    "Bring the clean, dry clothes to a clear surface.",
-    "Sort the clothes into simple groups, such as tops, bottoms, socks and underwear.",
-    "Pick up one item, flatten it out and fold it.",
-    "Place the folded item into the correct pile or basket.",
-    "Put the folded clothes away in their usual drawers or cupboard."
-  ],
-  "outdoor play":[
-    "Choose what you want to do outside.",
-    "Put on suitable shoes and clothing.",
-    "Take any equipment you need.",
-    "Go to the agreed outdoor area and start the activity.",
-    "Come back when the timer or agreed time finishes."
-  ],
-  "sport / class":[
-    "Check the class time and when you need to leave.",
-    "Change into the clothes or uniform you need.",
-    "Pack your water bottle and any equipment you need.",
-    "Put on your shoes, take your bag and get ready to leave.",
-    "Travel to the class and check in or join the group."
-  ],
-  "appointment":[
-    "Check the appointment time and where you are going.",
-    "Get dressed and collect anything you need to bring.",
-    "Pack a drink or documents if needed.",
-    "Leave with enough travel time.",
-    "Arrive and check in or wait for your turn."
-  ],
-  "library":[
-    "Collect any books or items you need to return.",
-    "Get your library card or bag if needed.",
-    "Travel to the library.",
-    "Return books and choose what you want to borrow or do.",
-    "Check out your items and pack them safely."
-  ],
-  "shopping":[
-    "Check what you need to buy.",
-    "Get your bag, list or money if needed.",
-    "Travel to the shop.",
-    "Find the items on the list.",
-    "Pay, pack the items and return home."
-  ],
-  "take medication":[
-    "Go to the usual medication area or responsible adult.",
-    "Check that it is the correct scheduled medication time.",
-    "Take only the medication prepared or approved by the responsible adult or health professional.",
-    "Take it with water or as directed.",
-    "Confirm that the medication task is finished."
-  ],
-  "bedtime":[
-    "Put on your sleep clothes.",
-    "Brush your teeth and finish bathroom tasks.",
-    "Prepare your bed and bedroom.",
-    "Choose a short quiet activity if this is part of your routine.",
-    "Finish the activity and get into bed."
-  ],
+  "Find out what the family is doing together.",
+  "Put away other screens or activities if needed.",
+  "Join the family in the agreed space.",
+  "Take part in the shared activity or conversation.",
+  "When family time is finished, check the planner."
+],
+  "breakfast":[
+  "Go to the kitchen or eating area.",
+  "Get your breakfast and a drink.",
+  "Sit down and eat your breakfast.",
+  "Put dishes, wrappers, or containers in the correct place.",
+  "Check what comes next on the planner."
+],
+  "snack":[
+  "Choose one snack.",
+  "Get a drink or fill your water bottle.",
+  "Sit down and have your snack.",
+  "Put rubbish, dishes, or containers away.",
+  "Check the next task on the planner."
+],
+  "lunch":[
+  "Go to the eating area and get your lunch.",
+  "Get a drink if needed.",
+  "Sit down and eat your lunch.",
+  "Put rubbish, dishes, or containers away.",
+  "Check what comes next on the planner."
+],
+  "dinner":[
+  "Go to the eating area when dinner is ready.",
+  "Get your drink and sit in your usual place.",
+  "Eat your dinner at a comfortable pace.",
+  "Put your plate, cup, or rubbish in the usual place.",
+  "Check the planner for the next activity."
+],
+  "drink water":[
+  "Get your cup or water bottle.",
+  "Fill it with water if needed.",
+  "Drink some water.",
+  "Put the cup or bottle back in its usual place.",
+  "Check the next task."
+],
+  "drink milk":[
+  "Get a cup and the milk.",
+  "Pour the agreed amount of milk into the cup.",
+  "Put the milk back in the fridge.",
+  "Drink the milk.",
+  "Put the cup in the sink or dishwasher."
+],
+  "fruit break":[
+  "Choose a piece of fruit or the prepared fruit.",
+  "Wash or prepare it if needed.",
+  "Sit down and eat the fruit.",
+  "Put peels, cores, or rubbish in the correct place.",
+  "Wash your hands if they are sticky and check the planner."
+],
+  "help with cooking":[
+  "Ask which cooking job you are doing.",
+  "Wash your hands and get the items you need.",
+  "Complete one safe cooking step at a time with adult guidance as needed.",
+  "Put used items in the sink or the place the adult asks.",
+  "Wipe the area or help pack away when finished."
+],
+  "put school bag away":[
+  "Carry the school bag to its usual place.",
+  "Put the bag down or hang it up.",
+  "Take out the lunchbox and drink bottle.",
+  "Put homework or important papers in the homework area.",
+  "Check the planner for the next task."
+],
+  "check homework":[
+  "Open your school planner, portal, or homework list.",
+  "Check which subjects have homework.",
+  "Look at the due dates.",
+  "Choose which homework task to do first.",
+  "Get the materials needed for that task."
+],
+  "start homework":[
+  "Clear a small space to work.",
+  "Get the materials you need.",
+  "Choose the first question or first small part.",
+  "Set a timer if that helps.",
+  "Start the first small part."
+],
+  "homework":[
+  "Choose one homework task to work on first.",
+  "Get the book, device, pencil, or other materials you need.",
+  "Read the first instruction or question.",
+  "Work on one small section at a time and mark anything you need help with.",
+  "Check your work, pack it away, and update the planner."
+],
+  "homework break":[
+  "Stop at a clear point in your homework.",
+  "Save your work or put your pencil down.",
+  "Choose one short break activity and set a timer.",
+  "Take the break until the timer finishes.",
+  "Return to your homework and find the next question or step."
+],
+  "pack school bag":[
+  "Check tomorrow's timetable or school list.",
+  "Put finished homework and needed books into the bag.",
+  "Pack your pencil case, device, or other school items.",
+  "Add your drink bottle or lunch items if appropriate.",
+  "Put the school bag in the usual ready-to-go place."
+],
+  "reading":[
+  "Choose the book or reading task.",
+  "Sit somewhere comfortable with enough light.",
+  "Open to the correct page.",
+  "Read for the agreed number of pages or minutes.",
+  "Mark your page and put the book away when finished."
+],
+  "writing":[
+  "Read the writing instruction or decide what you are writing about.",
+  "Get your paper or device and writing tools.",
+  "Write the first sentence or small section.",
+  "Continue one sentence or idea at a time.",
+  "Read over what you wrote and fix anything you notice."
+],
+  "spelling":[
+  "Get your spelling word list.",
+  "Choose the first word.",
+  "Say the word, look at it, and notice the tricky part.",
+  "Write or practise the word using the agreed method.",
+  "Check it, then move to the next word."
+],
+  "maths":[
+  "Open to the correct maths task or page.",
+  "Get a pencil, calculator, or other materials if allowed.",
+  "Read the first question slowly.",
+  "Solve one question at a time and mark any question you need help with.",
+  "Check your answers and pack the materials away."
+],
+  "online learning":[
+  "Open the device and connect to the correct learning site or app.",
+  "Log in and open the assigned lesson or task.",
+  "Read or watch the first instruction.",
+  "Complete one section at a time.",
+  "Submit or save the work, then close the learning page."
+],
+  "school project":[
+  "Read the project instructions and due date.",
+  "Choose one small part to work on today.",
+  "Get the materials or files needed for that part.",
+  "Work on that one section until the planned stopping point.",
+  "Save your work and write down the next step for another day."
+],
+  "study / revision":[
+  "Choose one subject or topic to revise.",
+  "Get your notes, flashcards, or study materials.",
+  "Set a short study timer.",
+  "Review one small section and test yourself on it.",
+  "Mark what needs more practice and pack the materials away."
+],
+  "toilet":[
+  "Go into the bathroom and use the toilet.",
+  "Wipe as needed.",
+  "Flush the toilet.",
+  "Wash your hands with soap.",
+  "Dry your hands and return to the planner."
+],
+  "change clothes":[
+  "Choose the clothes you want to wear.",
+  "Take off the clothes you are changing out of.",
+  "Put dirty clothes in the laundry basket or other clothes in their usual place.",
+  "Put on the new clothes.",
+  "Check that you are comfortable and put away anything left out."
+],
+  "shower":[
+  "Get your towel and clean clothes ready.",
+  "Turn on the shower and check the water feels comfortable.",
+  "Wash your body and hair if it is a hair-wash day.",
+  "Rinse off the soap or shampoo and turn off the water.",
+  "Dry yourself and put on clean clothes."
+],
+  "brush teeth":[
+  "Get your toothbrush and toothpaste.",
+  "Put a small amount of toothpaste on the brush.",
+  "Brush the front, back, and chewing surfaces of your teeth.",
+  "Spit out the toothpaste and rinse the brush.",
+  "Put the toothbrush and toothpaste back."
+],
+  "get clothes ready":[
+  "Check the weather and what you are doing tomorrow.",
+  "Choose a top and bottoms or other main clothes.",
+  "Choose underwear and socks.",
+  "Add shoes, jumper, hat, or other items if needed.",
+  "Put the full outfit together in the usual ready-to-wear place."
+],
   "wash hands":[
-    "Turn on the water and wet your hands.",
-    "Add soap.",
-    "Rub all parts of your hands for about 20 seconds.",
-    "Rinse the soap off.",
-    "Dry your hands."
-  ]
+  "Turn on the water and wet your hands.",
+  "Add soap.",
+  "Rub all parts of your hands for about 20 seconds.",
+  "Rinse the soap off.",
+  "Dry your hands."
+],
+  "wash face":[
+  "Go to the sink and get a clean face washer if you use one.",
+  "Wet your face or the washer with comfortable water.",
+  "Gently clean your face, using cleanser only if that is part of your routine.",
+  "Rinse or wipe away the cleanser.",
+  "Dry your face and put items away."
+],
+  "brush hair":[
+  "Get your brush or comb.",
+  "Stand or sit where you can comfortably reach your hair.",
+  "Start at the ends and gently work through tangles.",
+  "Brush or comb the rest of your hair.",
+  "Put the brush or comb back in its usual place."
+],
+  "put on shoes":[
+  "Find the shoes you need.",
+  "Check which shoe goes on each foot.",
+  "Put one foot into the first shoe, then the other foot into the second shoe.",
+  "Fasten laces, Velcro, buckles, or straps.",
+  "Stand up and check both shoes feel secure."
+],
+  "put on sunscreen":[
+  "Get the sunscreen.",
+  "Put sunscreen on the exposed skin you need to protect.",
+  "Rub it in so the skin is covered.",
+  "Wash or wipe your hands if needed.",
+  "Put the sunscreen back and continue getting ready to go out."
+],
+  "take medication":[
+  "Go to the usual medication area or responsible adult.",
+  "Check that it is the correct scheduled medication time.",
+  "Take only the medication prepared or approved by the responsible adult or health professional.",
+  "Take it with water or as directed.",
+  "Confirm that the medication task is finished."
+],
+  "bedtime":[
+  "Put on your sleep clothes.",
+  "Brush your teeth and finish bathroom tasks.",
+  "Prepare your bed and bedroom.",
+  "Choose a short quiet activity if this is part of your routine.",
+  "Finish the activity and get into bed."
+],
+  "make bed":[
+  "Move pillows or toys out of the way.",
+  "Pull the sheet or blanket up toward the top of the bed.",
+  "Smooth the blanket or doona.",
+  "Put the pillows back in place.",
+  "Put any toys or extra items where they belong."
+],
+  "chores":[
+  "Check which chore you are doing.",
+  "Get the things you need for that chore.",
+  "Do the first small part.",
+  "Continue one small part at a time until the chore is finished.",
+  "Put the cleaning items away and check the planner."
+],
+  "laundry":[
+  "Collect the dirty clothes and take them to the laundry area.",
+  "Sort the clothes if your household does this.",
+  "Put the clothes into the washing machine with adult guidance as needed.",
+  "Add the correct laundry product and start the agreed cycle.",
+  "When finished, move the clothes to drying or tell the adult they are ready."
+],
+  "hang clothes":[
+  "Take the clean wet clothes to the drying area.",
+  "Pick up one item at a time.",
+  "Shake it out and place it on the line or hanger.",
+  "Use pegs if needed and leave space between items.",
+  "Put the basket and pegs away when finished."
+],
+  "fold clothes":[
+  "Put the clean dry clothes on a clear surface.",
+  "Sort similar items together.",
+  "Pick up one item and fold it.",
+  "Place the folded item in the correct pile or drawer.",
+  "Continue until the basket or pile is finished."
+],
+  "clean table":[
+  "Clear cups, plates, papers, or other items from the table.",
+  "Put rubbish in the bin and dishes in the sink or dishwasher.",
+  "Get the usual cloth or cleaning item.",
+  "Wipe the whole table surface.",
+  "Put the cloth or cleaning item away."
+],
+  "tidy room":[
+  "Choose one small area of the room to start with.",
+  "Put rubbish in the bin.",
+  "Put clothes in the wardrobe, drawer, or laundry basket.",
+  "Put toys, books, and other items back in their places.",
+  "Do a quick final check of the floor and main surfaces."
+],
+  "pack toys":[
+  "Choose one group of toys to pack first.",
+  "Find the box, shelf, or place where they belong.",
+  "Put those toys away.",
+  "Choose the next group and repeat.",
+  "Check the floor and put away any last toys."
+],
+  "take out rubbish":[
+  "Check which bin or rubbish bag needs to go out.",
+  "Tie or close the bag if needed.",
+  "Carry it carefully to the correct outside bin.",
+  "Put the bag into the correct bin and close the lid.",
+  "Wash your hands when you come back inside."
+],
+  "feed pet":[
+  "Check what food your pet needs and the usual amount.",
+  "Get the pet bowl and food.",
+  "Put the correct amount of food into the bowl.",
+  "Place the bowl in the usual feeding area and refill water if part of the routine.",
+  "Put the pet food away and wash your hands."
+],
+  "put dishes away":[
+  "Check that the dishes are clean and dry.",
+  "Pick up one safe item at a time.",
+  "Put it in its usual cupboard, drawer, or shelf.",
+  "Continue until the rack or dishwasher section is empty.",
+  "Close cupboards and drawers when finished."
+],
+  "free time":[
+  "Choose what you want to do for free time.",
+  "Set the agreed timer if free time has a limit.",
+  "Start the activity.",
+  "Stop or save your activity when the timer finishes.",
+  "Put things away and check what comes next."
+],
+  "gaming":[
+  "Choose the game you are allowed to play.",
+  "Set the agreed gaming timer.",
+  "Start the game and play until the timer finishes.",
+  "Save your progress and exit the game.",
+  "Put the device or controller away and check the planner."
+],
+  "drawing":[
+  "Choose what you want to draw.",
+  "Get paper and the drawing materials you need.",
+  "Start with one simple shape, line, or part of the picture.",
+  "Add more details one part at a time.",
+  "Put the materials away when you reach your stopping point."
+],
+  "colouring":[
+  "Choose the picture you want to colour.",
+  "Get your pencils, crayons, or markers.",
+  "Choose one area and one colour to start.",
+  "Colour one section at a time.",
+  "Put the colouring materials away when finished."
+],
+  "lego / building":[
+  "Choose what you want to build or open the instructions.",
+  "Get the Lego or building pieces you need.",
+  "Start with the base or the first instruction.",
+  "Add one piece or small section at a time.",
+  "Put unused pieces away or keep the build safely for next time."
+],
+  "puzzle":[
+  "Choose the puzzle and clear a space.",
+  "Turn all pieces picture-side up.",
+  "Find the edge or corner pieces first if that helps.",
+  "Match one piece at a time using colour, shape, or picture clues.",
+  "Put the finished puzzle away or save it safely if unfinished."
+],
+  "board game":[
+  "Choose the game and the people who are playing.",
+  "Set up the board, cards, pieces, or dice.",
+  "Check the basic rules and decide who goes first.",
+  "Take turns until the game finishes or the agreed timer ends.",
+  "Pack all the game pieces back into the box."
+],
+  "music":[
+  "Choose the song, playlist, or music activity.",
+  "Get headphones or a speaker if needed.",
+  "Set a timer if music time has a limit.",
+  "Listen, sing, or move to the music.",
+  "Stop when finished and put equipment away."
+],
+  "piano":[
+  "Sit at the piano or keyboard and get your music if needed.",
+  "Choose one song, scale, or section to practise.",
+  "Play it slowly once.",
+  "Practise the tricky part a few times, then play the section again.",
+  "Put the music away and finish at the agreed time."
+],
+  "tv / screen time":[
+  "Choose the approved show, video, or screen activity.",
+  "Set the agreed screen-time timer.",
+  "Start watching or using the screen.",
+  "Stop when the timer finishes or the agreed episode ends.",
+  "Turn off or put away the device and check the planner."
+],
+  "craft":[
+  "Choose the craft you want to make.",
+  "Get the paper, scissors, glue, or other materials you need.",
+  "Do the first craft step.",
+  "Continue one step at a time.",
+  "Clean the table and put craft materials away."
+],
+  "read for fun":[
+  "Choose a book, comic, or story you want to read.",
+  "Find a comfortable place.",
+  "Open to your page and start reading.",
+  "Read until the agreed time, page, or chapter.",
+  "Mark your page and put the book somewhere safe."
+],
+  "calm break":[
+  "Move to a quieter or more comfortable space.",
+  "Choose one calming activity that usually helps you.",
+  "Set a short timer if you want a clear ending.",
+  "Do the calming activity without needing to solve the whole problem yet.",
+  "When you feel ready, check the planner for the next step."
+],
+  "breathing break":[
+  "Sit or stand somewhere comfortable.",
+  "Relax your shoulders if you can.",
+  "Breathe in slowly through your nose.",
+  "Breathe out slowly and repeat several times.",
+  "Notice how your body feels, then decide if you are ready for the next task."
+],
+  "headphones":[
+  "Get your headphones.",
+  "Put them on comfortably.",
+  "Choose quiet audio or noise reduction if that is what you use.",
+  "Use them for the agreed activity or break.",
+  "Take them off and put them back in their usual place when finished."
+],
+  "stretch / yoga":[
+  "Choose a clear space where you can move safely.",
+  "Pick one simple stretch or yoga pose.",
+  "Move into the position slowly and breathe.",
+  "Do a few more comfortable stretches or poses.",
+  "Finish with one slow breath and return to the planner."
+],
+  "quiet corner":[
+  "Go to the agreed quiet corner or calm space.",
+  "Choose one calming item or activity.",
+  "Set a timer if you want to know when the break ends.",
+  "Stay in the quiet space until you feel more settled or the timer finishes.",
+  "Return to the planner when you are ready."
+],
+  "sensory break":[
+  "Notice what your body needs: movement, pressure, quiet, or another familiar strategy.",
+  "Choose one agreed sensory activity.",
+  "Set a short timer if helpful.",
+  "Do the activity and notice whether your body feels more ready.",
+  "Finish the sensory activity and return to the next task."
+],
+  "heavy work":[
+  "Choose an agreed heavy-work activity.",
+  "Clear enough space to do it safely.",
+  "Push, pull, carry, or do the chosen activity for the agreed amount.",
+  "Stop and notice how your body feels.",
+  "Put equipment away and return to the planner."
+],
+  "one step at a time":[
+  "Choose the task that feels too big.",
+  "Say or write only the very first small action.",
+  "Do that one action only.",
+  "Check what the next small action is.",
+  "Repeat one step at a time until you reach a good stopping point."
+],
+  "walk":[
+  "Check where you are walking and how long you plan to go.",
+  "Put on suitable shoes and get water if needed.",
+  "Leave the house or starting point with the adult if required.",
+  "Walk the planned route at a comfortable pace.",
+  "Return, put your things away, and check the planner."
+],
+  "run":[
+  "Choose the safe place or route for your run.",
+  "Put on suitable shoes and comfortable clothes.",
+  "Warm up with a short walk or gentle movement.",
+  "Run for the agreed time or distance at a comfortable pace.",
+  "Slow down, have water, and cool down when finished."
+],
+  "bike":[
+  "Get your bike and put on your helmet.",
+  "Check that the bike is ready to use with adult help if needed.",
+  "Choose the safe route or riding area.",
+  "Ride for the agreed time while following safety rules.",
+  "Return the bike and helmet to their usual places."
+],
+  "soccer":[
+  "Put on your soccer clothes and shoes.",
+  "Get your ball, water bottle, and any other equipment.",
+  "Go to the agreed playing area or training location.",
+  "Warm up and join the game or practice.",
+  "Pack your equipment and drink water when finished."
+],
+  "basketball":[
+  "Put on suitable clothes and shoes.",
+  "Get the basketball and water bottle.",
+  "Go to the hoop, court, or agreed practice area.",
+  "Warm up and practise or join the game.",
+  "Pack up the ball and have water when finished."
+],
+  "swimming":[
+  "Pack or put on your swimmers.",
+  "Get your towel, goggles, and other pool items.",
+  "Travel to the pool and change if needed.",
+  "Follow the adult, coach, or pool rules while swimming.",
+  "Dry off, change clothes, and pack your wet items when finished."
+],
+  "dance":[
+  "Put on comfortable dance clothes and shoes if needed.",
+  "Clear a safe space or get ready to go to class.",
+  "Choose the song, routine, or teacher instruction.",
+  "Practise one movement or section at a time.",
+  "Cool down and put away any equipment when finished."
+],
+  "exercise":[
+  "Choose the exercise or short routine you are doing.",
+  "Clear a safe space and get any equipment.",
+  "Warm up with gentle movement.",
+  "Complete the exercises one at a time.",
+  "Slow down, have water, and put equipment away."
+],
+  "playground":[
+  "Put on suitable shoes and clothes.",
+  "Travel to the playground with the adult if required.",
+  "Choose one piece of equipment or activity to start.",
+  "Play while following the agreed safety rules.",
+  "Finish when it is time to leave and check that you have your belongings."
+],
+  "sport / class":[
+  "Check the class time and when you need to leave.",
+  "Change into the clothes or uniform you need.",
+  "Pack your water bottle and any equipment you need.",
+  "Put on your shoes, take your bag, and get ready to leave.",
+  "Travel to the class and check in or join the group."
+],
+  "play with friend":[
+  "Choose or agree on an activity you can do together.",
+  "Get the toys, game, or materials you need.",
+  "Take turns sharing ideas and using the materials.",
+  "If you disagree, pause and suggest another option or ask for help.",
+  "Pack up together when play time finishes."
+],
+  "play with sibling":[
+  "Choose one activity you both agree to try.",
+  "Get the toys or materials you need.",
+  "Take turns and give each person some space.",
+  "Use words or ask an adult for help if there is a problem.",
+  "Pack up together when the activity is finished."
+],
+  "chat with family":[
+  "Choose a family member or join the family conversation.",
+  "Start with a greeting or one thing you want to share.",
+  "Listen while the other person speaks.",
+  "Ask or answer one question to keep the conversation going.",
+  "Finish the conversation politely when you are ready."
+],
+  "call family":[
+  "Choose the family member you are calling.",
+  "Get the phone and make sure you are in a suitable place.",
+  "Call or ask an adult to help start the call if needed.",
+  "Say hello and take turns talking.",
+  "Say goodbye and end the call when finished."
+],
+  "visit family":[
+  "Check where you are going and what time you are leaving.",
+  "Get dressed and pack anything you want or need to take.",
+  "Travel to the family member's home or meeting place.",
+  "Say hello and join the visit in a way that feels comfortable.",
+  "Collect your belongings and say goodbye when it is time to leave."
+],
+  "ask for help":[
+  "Stop and identify the part you are stuck on.",
+  "Find the person who can help.",
+  "Say or show: 'I need help with this part.'",
+  "Listen to the suggestion or ask one clear question.",
+  "Try the next step with the help you received."
+],
+  "party / celebration":[
+  "Check where the celebration is and when you are going.",
+  "Get dressed and pack anything you need to bring.",
+  "Travel to the celebration.",
+  "Choose how you want to join the activities, food, or conversation.",
+  "Collect your belongings and say goodbye when it is time to leave."
+],
+  "appointment":[
+  "Check the appointment time and where you are going.",
+  "Get dressed and collect anything you need to bring.",
+  "Pack a drink or documents if needed.",
+  "Leave with enough travel time.",
+  "Arrive and check in or wait for your turn."
+],
+  "therapy":[
+  "Check the therapy time and where the session is.",
+  "Get dressed and pack any therapy items or communication supports you use.",
+  "Leave with enough travel time.",
+  "Arrive, check in, and get ready for the session.",
+  "After the session, collect your belongings and check what comes next."
+],
+  "library":[
+  "Collect any books or items you need to return.",
+  "Get your library card or bag if needed.",
+  "Travel to the library.",
+  "Return books and choose what you want to borrow or do.",
+  "Check out your items and pack them safely."
+],
+  "shopping":[
+  "Check what you need to buy.",
+  "Get your bag, list, or payment method if needed.",
+  "Travel to the shop.",
+  "Find the items on the list one section at a time.",
+  "Pay, pack the items, and return home."
+],
+  "car ride":[
+  "Check where you are going.",
+  "Collect the things you need to take.",
+  "Go to the car and get into your seat.",
+  "Fasten your seat belt and settle for the trip.",
+  "When you arrive, unbuckle and take your belongings with you."
+],
+  "bus / public transport":[
+  "Check the route, stop, and time you need.",
+  "Get your travel card, phone, or ticket and the things you need to take.",
+  "Go to the correct stop or station.",
+  "Board the correct service, tap on or use your ticket, and follow your planned route.",
+  "Get off at the correct stop and take your belongings with you."
+],
+  "go out":[
+  "Check where you are going and what time you need to leave.",
+  "Get dressed for the weather and activity.",
+  "Collect the things you need to take.",
+  "Put on your shoes and take your bag.",
+  "Leave and travel to the destination."
+],
+  "doctor":[
+  "Check the appointment time and clinic location.",
+  "Get dressed and bring any items or information your caregiver says are needed.",
+  "Leave with enough travel time.",
+  "Arrive, check in, and wait for your name to be called.",
+  "After the appointment, collect your belongings and check the next activity."
+],
+  "dentist":[
+  "Check the appointment time and dentist location.",
+  "Brush your teeth as usual before leaving if appropriate for your routine.",
+  "Get dressed and leave with enough travel time.",
+  "Arrive, check in, and wait for your turn.",
+  "After the appointment, collect your belongings and check what comes next."
+],
+  "outdoor play":[
+  "Choose the outdoor activity you want to do.",
+  "Put on suitable shoes and clothes for the weather.",
+  "Get any ball, bike, toy, or water you need.",
+  "Play in the agreed outdoor area until the timer or adult says it is time to finish.",
+  "Bring your things back inside and check the planner."
+]
 };
 
 function genericTaskBreakdown(taskLabel){
@@ -2498,20 +3452,24 @@ function smartOfflineBreakdown(taskLabel){
 function getBreakdownForTask(task){
   if(!task) return [];
   const progress=taskBreakdownProgress();
-  if(progress[task.id] && Array.isArray(progress[task.id].steps) && progress[task.id].steps.length){
-    return progress[task.id].steps;
-  }
-  const key=(task.label||"").trim().toLowerCase();
-  return taskBreakdownLibrary[key] || smartOfflineBreakdown(task.label||"this task");
+  const entry=progress[task.id]||{};
+  if(Array.isArray(entry.customSteps) && entry.customSteps.length) return entry.customSteps;
+
+  const key=(task.baseLabel||task.label||"").trim().toLowerCase();
+  if(taskBreakdownLibrary[key]) return taskBreakdownLibrary[key];
+
+  if(Array.isArray(entry.steps) && entry.steps.length) return entry.steps;
+
+  return smartOfflineBreakdown(task.label||"this task");
 }
 
 async function requestSmartBreakdown(task){
   if(!task) return;
   const status=document.getElementById("aiBreakdownStatus");
-  const key=(task.label||"").trim().toLowerCase();
+  const key=(task.baseLabel||task.label||"").trim().toLowerCase();
 
   if(taskBreakdownLibrary[key]){
-    taskBreakdownProgress()[task.id]={completed:[],steps:taskBreakdownLibrary[key],source:"Built-in"};
+    taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:[],steps:taskBreakdownLibrary[key],source:"Built-in"};
     if(status) status.innerHTML="<strong>Built-in breakdown:</strong> this activity already has a prepared step-by-step routine.";
     renderTaskBreakdown(task.id);
     scheduleAutoSave();
@@ -2530,11 +3488,11 @@ async function requestSmartBreakdown(task){
     const data=await response.json();
     if(!Array.isArray(data.steps) || data.steps.length<3) throw new Error("Invalid AI response");
     const steps=data.steps.slice(0,5).map(x=>String(x).trim()).filter(Boolean);
-    taskBreakdownProgress()[task.id]={completed:[],steps,source:"AI"};
+    taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:[],steps,source:"AI"};
     if(status) status.innerHTML="<strong>✨ AI breakdown:</strong> generated for this custom activity. Review the steps with the child and change anything that does not fit.";
   }catch(err){
     const steps=smartOfflineBreakdown(task.label);
-    taskBreakdownProgress()[task.id]={completed:[],steps,source:"Offline"};
+    taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:[],steps,source:"Offline"};
     if(status) status.innerHTML="<strong>Offline breakdown:</strong> AI is not connected on this site, so the planner created a local 4–5 step version instead.";
   }
   renderTaskBreakdown(task.id);
@@ -2542,7 +3500,9 @@ async function requestSmartBreakdown(task){
 }
 
 function taskBreakdownProgress(){
-  return currentTemplate().taskBreakdownProgress || {};
+  const t=currentTemplate();
+  if(!t.taskBreakdownProgress || typeof t.taskBreakdownProgress!=="object") t.taskBreakdownProgress={};
+  return t.taskBreakdownProgress;
 }
 
 function selectedStuckTask(){
@@ -2578,6 +3538,91 @@ function populateStuckTaskSelect(preferredId=null){
   else if(current) select.value=current.id;
 }
 
+
+function canEditBreakdownSteps(){
+  return !isKidSyncMode();
+}
+function beginEditBreakdown(){
+  const task=selectedStuckTask();
+  if(!task || !canEditBreakdownSteps()) return;
+  editingBreakdownTaskId=task.id;
+  breakdownEditDraft=[...getBreakdownForTask(task)];
+  renderTaskBreakdown(task.id);
+}
+function cancelEditBreakdown(){
+  editingBreakdownTaskId=null;
+  breakdownEditDraft=null;
+  renderTaskBreakdown(selectedStuckTask()?.id||null);
+}
+function saveEditedBreakdown(){
+  const task=selectedStuckTask();
+  if(!task || editingBreakdownTaskId!==task.id || !Array.isArray(breakdownEditDraft)) return;
+  const steps=breakdownEditDraft.map(x=>String(x||"").trim()).filter(Boolean).slice(0,12);
+  if(!steps.length){alert("Keep at least one step.");return;}
+  const entry=taskBreakdownProgress()[task.id]||{};
+  taskBreakdownProgress()[task.id]={...entry,customSteps:steps,completed:[]};
+  editingBreakdownTaskId=null;
+  breakdownEditDraft=null;
+  renderTaskBreakdown(task.id);
+  scheduleAutoSave();
+}
+function resetBreakdownToDefault(){
+  const task=selectedStuckTask();
+  if(!task || !canEditBreakdownSteps()) return;
+  const entry=taskBreakdownProgress()[task.id]||{};
+  delete entry.customSteps;
+  if(!taskBreakdownLibrary[(task.baseLabel||task.label||"").trim().toLowerCase()]){
+    delete entry.steps;
+    delete entry.source;
+  }
+  entry.completed=[];
+  taskBreakdownProgress()[task.id]=entry;
+  editingBreakdownTaskId=null;
+  breakdownEditDraft=null;
+  renderTaskBreakdown(task.id);
+  scheduleAutoSave();
+}
+function renderBreakdownEditor(task){
+  const box=document.getElementById("breakdownEditor");
+  if(!box) return;
+  const editing=task && editingBreakdownTaskId===task.id && Array.isArray(breakdownEditDraft) && canEditBreakdownSteps();
+  box.style.display=editing?"block":"none";
+  box.innerHTML="";
+  if(!editing) return;
+
+  const title=document.createElement("div");
+  title.innerHTML="<strong>✏️ Customise these steps</strong><div class='small-note'>Make the instructions match this child’s real routine. You can add, delete, or reorder steps.</div>";
+  box.appendChild(title);
+
+  const renderRows=()=>{
+    [...box.querySelectorAll(".breakdown-editor-row")].forEach(x=>x.remove());
+    breakdownEditDraft.forEach((step,idx)=>{
+      const row=document.createElement("div");
+      row.className="breakdown-editor-row";
+      const n=document.createElement("div"); n.className="step-number"; n.textContent=idx+1;
+      const input=document.createElement("input"); input.type="text"; input.value=step; input.maxLength=180;
+      input.oninput=()=>{breakdownEditDraft[idx]=input.value};
+      const actions=document.createElement("div"); actions.className="breakdown-editor-actions";
+      const up=document.createElement("button");up.textContent="↑";up.onclick=()=>{if(idx>0){[breakdownEditDraft[idx-1],breakdownEditDraft[idx]]=[breakdownEditDraft[idx],breakdownEditDraft[idx-1]];renderRows();}};
+      const down=document.createElement("button");down.textContent="↓";down.onclick=()=>{if(idx<breakdownEditDraft.length-1){[breakdownEditDraft[idx+1],breakdownEditDraft[idx]]=[breakdownEditDraft[idx],breakdownEditDraft[idx+1]];renderRows();}};
+      const del=document.createElement("button");del.textContent="✕";del.className="danger";del.onclick=()=>{if(breakdownEditDraft.length<=1){alert("Keep at least one step.");return;}breakdownEditDraft.splice(idx,1);renderRows();};
+      actions.append(up,down,del);
+      row.append(n,input,actions);
+      const footer=box.querySelector(".breakdown-editor-footer");
+      box.insertBefore(row,footer);
+    });
+  };
+
+  const footer=document.createElement("div");
+  footer.className="breakdown-editor-footer";
+  const add=document.createElement("button");add.textContent="＋ Add step";add.onclick=()=>{if(breakdownEditDraft.length>=12){alert("Maximum 12 steps.");return;}breakdownEditDraft.push("New small step");renderRows();};
+  const save=document.createElement("button");save.textContent="✓ Save custom steps";save.className="primary";save.onclick=saveEditedBreakdown;
+  const cancel=document.createElement("button");cancel.textContent="Cancel";cancel.onclick=cancelEditBreakdown;
+  footer.append(add,save,cancel);
+  box.appendChild(footer);
+  renderRows();
+}
+
 function renderTaskBreakdown(taskId=null){
   populateStuckTaskSelect(taskId);
   const task=taskId ? plan().find(t=>t.id===taskId) : selectedStuckTask();
@@ -2590,6 +3635,12 @@ function renderTaskBreakdown(taskId=null){
   list.innerHTML="";
   if(!task){
     action.innerHTML='<small>DO THIS NOW</small><strong>Add a routine task first.</strong>';
+    const editor=document.getElementById("breakdownEditor");
+    if(editor){editor.style.display="none";editor.innerHTML="";}
+    const editBtn=document.getElementById("editBreakdownBtn");
+    const resetDefaultBtn=document.getElementById("resetDefaultStepsBtn");
+    if(editBtn) editBtn.style.display="none";
+    if(resetDefaultBtn) resetDefaultBtn.style.display="none";
     return;
   }
 
@@ -2602,13 +3653,13 @@ function renderTaskBreakdown(taskId=null){
     const row=document.createElement("label");
     const isDone=completed.includes(idx);
     row.className="breakdown-step"+(isDone?" done":"");
-    row.innerHTML=`<input type="checkbox" ${isDone?"checked":""}> <span><strong>${idx+1}.</strong> ${step}</span>`;
+    row.innerHTML=`<input type="checkbox" ${isDone?"checked":""}> <span><strong>${idx+1}.</strong> ${escapeHtml(step)}</span>`;
     const cb=row.querySelector("input");
     cb.onchange=()=>{
       let done=(taskBreakdownProgress()[task.id]?.completed||[]).slice();
       if(cb.checked && !done.includes(idx)) done.push(idx);
       if(!cb.checked) done=done.filter(x=>x!==idx);
-      taskBreakdownProgress()[task.id]={completed:done};
+      taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:done};
       renderTaskBreakdown(task.id);
       scheduleAutoSave();
     };
@@ -2619,14 +3670,24 @@ function renderTaskBreakdown(taskId=null){
   if(firstIncomplete===-1){
     action.innerHTML='<small>DONE</small><strong>✅ All small steps are complete.</strong>';
   }else{
-    action.innerHTML=`<small>DO THIS NOW</small><strong>${steps[firstIncomplete]}</strong>`;
+    action.innerHTML=`<small>DO THIS NOW</small><strong>${escapeHtml(steps[firstIncomplete])}</strong>`;
   }
+
+  const canEdit=canEditBreakdownSteps();
+  const editBtn=document.getElementById("editBreakdownBtn");
+  const resetDefaultBtn=document.getElementById("resetDefaultStepsBtn");
+  if(editBtn) editBtn.style.display=canEdit?"inline-block":"none";
+  if(resetDefaultBtn){
+    const custom=Array.isArray(taskBreakdownProgress()[task.id]?.customSteps);
+    resetDefaultBtn.style.display=canEdit&&custom?"inline-block":"none";
+  }
+  renderBreakdownEditor(task);
 }
 
 function resetTaskBreakdown(){
   const task=selectedStuckTask();
   if(!task) return;
-  taskBreakdownProgress()[task.id]={completed:[]};
+  taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:[]};
   renderTaskBreakdown(task.id);
   scheduleAutoSave();
 }
@@ -2638,7 +3699,7 @@ function completeNextSmallStep(){
   let done=(taskBreakdownProgress()[task.id]?.completed||[]).slice();
   const nextIndex=steps.findIndex((_,idx)=>!done.includes(idx));
   if(nextIndex>=0) done.push(nextIndex);
-  taskBreakdownProgress()[task.id]={completed:done};
+  taskBreakdownProgress()[task.id]={...(taskBreakdownProgress()[task.id]||{}),completed:done};
   renderTaskBreakdown(task.id);
   scheduleAutoSave();
 }
@@ -2664,31 +3725,24 @@ async function copyTaskBreakdown(){
 }
 
 function getStuckSuggestions(){
-  const p=plan();
-  const current=p.find(t=>t.status==="doing") || p.find(t=>t.status!=="done") || null;
+  const task=currentSupportTask();
   const chosen=selectedTools();
   const tips=[];
-
-  if(current) tips.push(`✅ My next step is: <strong>${current.label}</strong>.`);
-  if(chosen.includes("One step at a time")) tips.push("1️⃣ Do only the first small step, not the whole task.");
-  if(chosen.includes("5-minute start")) tips.push("🚀 Try it for just 5 minutes.");
-  if(chosen.includes("Visual timer")) tips.push("⏱️ Set a timer so the task has a clear ending.");
-  if(chosen.includes("Body doubling")) tips.push("👥 Ask someone to sit nearby while you start.");
-  if(chosen.includes("Ask-for-help cue")) tips.push("🙋 Say: “I’m stuck—what is my next step?”");
-  if(chosen.includes("First–Then")) tips.push(`🔁 First this task, then ${selectedMotivation()?selectedMotivation().name:"a preferred activity"}.`);
-  if(!tips.length){
-    tips.push("✅ Look at the next task.");
-    tips.push("1️⃣ Do one small step only.");
-    tips.push("🚀 Try it for 5 minutes.");
-    tips.push("🙋 Ask for help if still stuck.");
-  }
+  if(task) tips.push(`✅ My task is: <strong>${escapeHtml(task.label)}</strong>.`);
+  if(chosen.includes("One step at a time")) tips.push("1️⃣ Look at only the next small step.");
+  if(chosen.includes("Just start for 5 minutes")) tips.push("🚀 Try the task for only 5 minutes.");
+  if(chosen.includes("Make my space easier")) tips.push("🎧 Reduce distractions and keep only what you need nearby.");
+  if(chosen.includes("Take a planned break")) tips.push("⏸️ Take a short timed break, then check the next step.");
+  if(chosen.includes("Ask for help")) tips.push("🙋 Ask someone to show or explain the part you are stuck on.");
+  if(chosen.includes("Work with someone nearby")) tips.push("👥 Ask someone to sit nearby while you start.");
+  if(!tips.length){tips.push("1️⃣ Try the first small step.");tips.push("🧰 If that is still hard, choose one support above.");}
   return tips;
 }
-
 function updateStuckBox(){
   const box=document.getElementById("stuckBox");
+  if(!box) return;
   const lines=getStuckSuggestions();
-  box.innerHTML='<strong>Helpful supports:</strong>'+lines.map(x=>`<div style="margin:4px 0">${x}</div>`).join("");
+  box.innerHTML='<strong>Your saved supports:</strong>'+lines.map(x=>`<div style="margin:4px 0">${x}</div>`).join("");
 }
 
 function getAudioCtx(){
@@ -2919,17 +3973,56 @@ document.getElementById("renameTemplateBtn").onclick=()=>{
   renderTemplateBar();
   scheduleAutoSave();
 };
+document.getElementById("duplicateTemplateBtn").onclick=()=>{
+  if(isKidSyncMode()) return;
+  const source=currentTemplate();
+  const clone=deepClone(source);
+  const idMap={};
+  clone.id=uid();
+  clone.name=`${source.name} copy`;
+  clone.plan=(clone.plan||[]).map(task=>{
+    const oldId=task.id;
+    const newId=uid();
+    idMap[oldId]=newId;
+    return {...task,id:newId,status:"not",startedAt:null,timerEndAt:null,timerPausedRemaining:Number(task.duration||15)*60,timerFinished:false};
+  });
+  clone.unlockTaskIds=(clone.unlockTaskIds||[]).map(id=>idMap[id]).filter(Boolean);
+
+  const oldProgress=clone.taskBreakdownProgress||{};
+  const nextProgress={};
+  Object.entries(oldProgress).forEach(([key,val])=>{
+    if(key.startsWith("__")) return;
+    if(idMap[key]){
+      const entry=deepClone(val||{});
+      entry.completed=[];
+      nextProgress[idMap[key]]=entry;
+    }
+  });
+  clone.taskBreakdownProgress=nextProgress;
+  state.templates.push(clone);
+  state.currentTemplateId=clone.id;
+  refreshAll();
+  scheduleAutoSave();
+};
 document.getElementById("deleteTemplateBtn").onclick=()=>{
   if(isKidSyncMode()) return;
   if(state.templates.length===1){
     alert("At least one template needs to stay in the planner.");
     return;
   }
-  if(!confirm("Delete this routine template?")) return;
-  state.templates=state.templates.filter(t=>t.id!==state.currentTemplateId);
-  state.currentTemplateId=state.templates[0].id;
+  const idx=state.templates.findIndex(t=>t.id===state.currentTemplateId);
+  const removed=deepClone(currentTemplate());
+  if(!confirm(`Delete the template “${removed.name}”? You can undo for a few seconds afterwards.`)) return;
+  state.templates.splice(idx,1);
+  state.currentTemplateId=state.templates[Math.min(idx,state.templates.length-1)].id;
   refreshAll();
   scheduleAutoSave();
+  showUndo(`Deleted template “${removed.name}”.`,()=>{
+    state.templates.splice(Math.min(idx,state.templates.length),0,removed);
+    state.currentTemplateId=removed.id;
+    refreshAll();
+    scheduleAutoSave();
+  });
 };
 
 const sequence=document.getElementById("sequence");
@@ -2957,7 +4050,7 @@ document.getElementById("addCustom").onclick=()=>{
   if(!val) return;
   if(!Array.isArray(state.customActivities)) state.customActivities=[];
   const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())
-    || activities.some(x=>String(x[1]).trim().toLowerCase()===val.toLowerCase());
+    || activities.some(x=>String(x.label||"").trim().toLowerCase()===val.toLowerCase());
   const icon=document.getElementById("customIcon")?.value || "⭐";
   if(!exists) state.customActivities.push({id:uid(),icon,label:val});
   input.value="";
@@ -3001,6 +4094,8 @@ document.getElementById("breakTaskBtn").onclick=async()=>{
 document.getElementById("nextSmallStepBtn").onclick=()=>completeNextSmallStep();
 document.getElementById("copyBreakdownBtn").onclick=()=>copyTaskBreakdown();
 document.getElementById("resetBreakdownBtn").onclick=()=>resetTaskBreakdown();
+document.getElementById("editBreakdownBtn").onclick=()=>beginEditBreakdown();
+document.getElementById("resetDefaultStepsBtn").onclick=()=>resetBreakdownToDefault();
 
 document.getElementById("enableAlarmBtn").onclick=async()=>{
   state.alarmsEnabled=true;
@@ -3036,7 +4131,7 @@ document.getElementById("sampleBtn").onclick=()=>{
   ["15:45","15:50","15:55","16:10","16:25","16:30","17:00","17:10","18:30","19:15"].forEach((x,i)=>p[i].start=x);
   [5,5,15,15,5,25,10,30,30,10].forEach((x,i)=>p[i].duration=x);
   currentTemplate().plan=p;
-  currentTemplate().selectedToolNames=["Checklist","Visual timer","5-minute warning"];
+  setSelectedTools(["One step at a time","Just start for 5 minutes"]);
   currentTemplate().reward="";
   const mot={id:uid(),name:"Minecraft",duration:20,icon:"🎮"};
   currentTemplate().motivationItems=[mot];
@@ -3048,19 +4143,29 @@ document.getElementById("sampleBtn").onclick=()=>{
 };
 
 document.getElementById("clearBtn").onclick=()=>{
-  if(!confirm("Clear the current routine and selected tools in this template?")) return;
-  currentTemplate().plan=[];
-  currentTemplate().selectedToolNames=[];
-  currentTemplate().reward="";
-  currentTemplate().motivationItems=[];
-  currentTemplate().selectedMotivationId=null;
-  currentTemplate().unlockTaskIds=[];
-  currentTemplate().taskBreakdownProgress={};
+  if(isKidSyncMode()) return;
+  const t=currentTemplate();
+  const backup=deepClone(t);
+  if(!confirm(`Clear all activities and progress from “${t.name}”? You can undo for a few seconds afterwards.`)) return;
+  t.plan=[];
+  t.selectedToolNames=[];
+  t.reward="";
+  t.motivationItems=[];
+  t.selectedMotivationId=null;
+  t.unlockTaskIds=[];
+  t.taskBreakdownProgress={};
   stopMotivationTimer(false);
   motivationRemainingSeconds=0;
   fired={};
   refreshAll();
   scheduleAutoSave();
+  showUndo(`Cleared “${backup.name}”.`,()=>{
+    const idx=state.templates.findIndex(x=>x.id===backup.id);
+    if(idx>=0) state.templates[idx]=backup;
+    state.currentTemplateId=backup.id;
+    refreshAll();
+    scheduleAutoSave();
+  });
 };
 
 document.getElementById("saveBtn").onclick=()=>saveState(false);
@@ -3070,7 +4175,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v25_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v29_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -3102,6 +4207,13 @@ document.getElementById("importFile").onchange=e=>{
 updateProfileUI();
 
 document.getElementById("changeProfileNameBtn").onclick=changeProfileName;
+document.getElementById("undoBtn").onclick=runUndo;
+document.getElementById("settingsBtn").onclick=()=>{
+  const shell=document.getElementById("settingsShell");
+  if(!shell) return;
+  shell.open=true;
+  shell.scrollIntoView({behavior:"smooth",block:"start"});
+};
 
 const bankSearchInput=document.getElementById("bankSearchInput");
 bankSearchInput.addEventListener("input",e=>{

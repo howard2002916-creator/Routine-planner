@@ -1,4 +1,4 @@
-# Routine Planner — GitHub Pages v23
+# Routine Planner — GitHub Pages v25
 
 v21 adds **Shared Family Calendar** sync.
 
@@ -72,3 +72,28 @@ When a device is connected in **Parent mode**, each activity now has a Parent Co
 - Standalone mode does not show Parent Comments.
 - Existing users and existing routines are preserved; old tasks simply receive an empty `parentComment` field automatically.
 - No Cloudflare backend redeploy is required because the existing shared calendar already syncs the task state.
+
+
+## v24 update — Change planner name
+
+A new **Change name** button appears beside the planner title.
+
+- Changes only the display/profile name on that device.
+- Keeps the same profile ID.
+- Existing routines, templates, progress, custom activities, notifications and local planner data are preserved.
+- Shared Family Calendar data is not deleted or recreated.
+- No Cloudflare backend redeploy is required.
+
+
+## v25 update — Expanded Activity Bank
+
+The Activity Bank now includes:
+- many more built-in activities and emojis
+- category filter chips
+- activity search
+- a much larger grouped emoji picker for custom activities
+- a separate **My activities** category for custom activities
+
+Existing routines, templates, progress, custom activities, notifications and Shared Family Calendar data are preserved.
+
+This is a frontend-only update. No Cloudflare Worker redeploy is required.

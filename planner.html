@@ -333,12 +333,70 @@ body.sync-kid-mode #bank .activity{
   font-style:italic;
 }
 
+
+.planner-title-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.planner-title-row h1{margin-bottom:0}
+#changeProfileNameBtn{white-space:nowrap}
+
+.bank-controls{margin:10px 0 12px}
+.bank-search{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 12px;
+  border:1px solid #d9d4e8;
+  border-radius:12px;
+  font:inherit;
+  background:#fff;
+}
+.bank-category-filters{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:9px;
+}
+.bank-category-chip{
+  border:1px solid #ded9eb;
+  background:#fff;
+  color:#3d3566;
+  border-radius:999px;
+  padding:7px 10px;
+  font-weight:750;
+  cursor:pointer;
+}
+.bank-category-chip.active{
+  background:#3d3278;
+  color:#fff;
+  border-color:#3d3278;
+}
+.bank-empty-message{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#faf8ff;
+  color:#726b85;
+  font-size:13px;
+}
+.custom-icon-select{min-width:180px;max-width:220px}
+@media(max-width:680px){
+  .bank-category-filters{gap:6px}
+  .bank-category-chip{padding:7px 9px;font-size:12px}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <h1>🌟 <span id="plannerNameTitle"></span>’s After-School Mission</h1>
+  <div class="planner-title-row">
+    <h1>🌟 <span id="plannerNameTitle"></span>’s After-School Mission</h1>
+    <button id="changeProfileNameBtn" class="softbtn" type="button">✏️ Change name</button>
+  </div>
   <p class="sub">A flexible planner to build routines, choose supports, set times, use alarms, save progress, and problem-solve when the child gets stuck.</p>
 
   <div class="templatebar">
@@ -363,27 +421,117 @@ body.sync-kid-mode #bank .activity{
   <section class="panel">
     <h2>Activity Bank</h2>
     <div class="hint">Drag a card into the plan. On touch devices, tap a card to add it.</div>
+
+    <div class="bank-controls">
+      <input id="bankSearchInput" class="bank-search" type="search" placeholder="🔎 Search activities..." aria-label="Search activities">
+      <div id="bankCategoryFilters" class="bank-category-filters" aria-label="Activity categories"></div>
+    </div>
+
     <div id="bank" class="bank"></div>
+    <div id="bankEmptyMessage" class="bank-empty-message" style="display:none">No matching activities. Try another search or category.</div>
 
     <div class="section">
       <h2 style="font-size:20px">Add my own activity to the Activity Bank</h2>
       <div class="top-tools">
         <input id="customText" type="text" placeholder="e.g. Feed the pet">
         <select id="customIcon" class="custom-icon-select" title="Choose icon">
-          <option value="⭐">⭐ Other</option>
-          <option value="📚">📚 Study</option>
-          <option value="🚿">🚿 Shower</option>
-          <option value="🍽️">🍽️ Meal</option>
-          <option value="🎮">🎮 Gaming</option>
-          <option value="🎨">🎨 Drawing</option>
-          <option value="⚽">⚽ Sport</option>
-          <option value="🎵">🎵 Music</option>
-          <option value="🚌">🚌 Travel</option>
-          <option value="🧺">🧺 Chores</option>
-          <option value="🐾">🐾 Pet</option>
-          <option value="💬">💬 Social</option>
-          <option value="🧠">🧠 Thinking</option>
-          <option value="🛏️">🛏️ Rest</option>
+          <optgroup label="General">
+            <option value="⭐">⭐ Other</option>
+            <option value="❤️">❤️ Favourite</option>
+            <option value="✅">✅ Task</option>
+            <option value="⏰">⏰ Reminder</option>
+            <option value="📅">📅 Schedule</option>
+          </optgroup>
+          <optgroup label="Daily life / self-care">
+            <option value="🏠">🏠 Home</option>
+            <option value="🚿">🚿 Shower</option>
+            <option value="🪥">🪥 Brush teeth</option>
+            <option value="🧼">🧼 Wash hands</option>
+            <option value="👕">👕 Clothes</option>
+            <option value="👟">👟 Shoes</option>
+            <option value="🧢">🧢 Hat</option>
+            <option value="🚽">🚽 Toilet</option>
+            <option value="🛏️">🛏️ Bed / rest</option>
+            <option value="💊">💊 Medication</option>
+          </optgroup>
+          <optgroup label="Meals">
+            <option value="🥣">🥣 Breakfast</option>
+            <option value="🥪">🥪 Lunch</option>
+            <option value="🍽️">🍽️ Dinner</option>
+            <option value="🍎">🍎 Snack</option>
+            <option value="🍌">🍌 Fruit</option>
+            <option value="💧">💧 Water</option>
+            <option value="🥛">🥛 Milk</option>
+            <option value="🍳">🍳 Cooking</option>
+          </optgroup>
+          <optgroup label="School / learning">
+            <option value="🎒">🎒 School bag</option>
+            <option value="📚">📚 Study</option>
+            <option value="📖">📖 Reading</option>
+            <option value="✏️">✏️ Writing</option>
+            <option value="🔢">🔢 Maths</option>
+            <option value="💻">💻 Online learning</option>
+            <option value="📝">📝 Worksheet</option>
+            <option value="🧠">🧠 Thinking</option>
+          </optgroup>
+          <optgroup label="Chores">
+            <option value="🧺">🧺 Laundry</option>
+            <option value="🧹">🧹 Cleaning</option>
+            <option value="🧽">🧽 Wipe / clean</option>
+            <option value="🗑️">🗑️ Rubbish</option>
+            <option value="🧸">🧸 Pack toys</option>
+            <option value="🐾">🐾 Pet care</option>
+          </optgroup>
+          <optgroup label="Fun / interests">
+            <option value="🎮">🎮 Gaming</option>
+            <option value="🎨">🎨 Drawing</option>
+            <option value="🖍️">🖍️ Colouring</option>
+            <option value="🧩">🧩 Puzzle</option>
+            <option value="🧱">🧱 Lego / building</option>
+            <option value="🎲">🎲 Board game</option>
+            <option value="🎵">🎵 Music</option>
+            <option value="🎹">🎹 Piano</option>
+            <option value="📺">📺 TV</option>
+            <option value="🎬">🎬 Movie</option>
+            <option value="✂️">✂️ Craft</option>
+          </optgroup>
+          <optgroup label="Regulation">
+            <option value="😌">😌 Calm</option>
+            <option value="🎧">🎧 Headphones</option>
+            <option value="🫧">🫧 Breathing</option>
+            <option value="🧘">🧘 Stretch / yoga</option>
+            <option value="⏸️">⏸️ Break</option>
+            <option value="🌿">🌿 Quiet time</option>
+            <option value="🤗">🤗 Comfort</option>
+          </optgroup>
+          <optgroup label="Exercise / outdoors">
+            <option value="🚶">🚶 Walk</option>
+            <option value="🏃">🏃 Run</option>
+            <option value="🚲">🚲 Bike</option>
+            <option value="⚽">⚽ Soccer</option>
+            <option value="🏀">🏀 Basketball</option>
+            <option value="🏊">🏊 Swimming</option>
+            <option value="🩰">🩰 Dance</option>
+            <option value="🤸">🤸 Exercise</option>
+            <option value="🛝">🛝 Playground</option>
+          </optgroup>
+          <optgroup label="Social / community">
+            <option value="👨‍👩‍👧">👨‍👩‍👧 Family</option>
+            <option value="🧑‍🤝‍🧑">🧑‍🤝‍🧑 Friend</option>
+            <option value="💬">💬 Talk</option>
+            <option value="📞">📞 Call</option>
+            <option value="🙋">🙋 Ask for help</option>
+            <option value="🎉">🎉 Party</option>
+          </optgroup>
+          <optgroup label="Going out / travel">
+            <option value="🚗">🚗 Car</option>
+            <option value="🚌">🚌 Bus</option>
+            <option value="🚶‍➡️">🚶‍➡️ Go out</option>
+            <option value="🏫">🏫 School</option>
+            <option value="🏥">🏥 Therapy / health</option>
+            <option value="🛒">🛒 Shopping</option>
+            <option value="📚">📚 Library</option>
+          </optgroup>
         </select>
         <button id="addCustom">➕ Add to Activity Bank</button>
       </div>
@@ -608,45 +756,113 @@ body.sync-kid-mode #bank .activity{
 const activityCategories=["Everyday","School","Self-care","Chores","Fun","Going out","More"];
 
 const activities=[
-{icon:"🏠",label:"Arrive home",category:"Everyday"},
-{icon:"🥣",label:"Breakfast",category:"Everyday"},
-{icon:"🍎",label:"Snack",category:"Everyday"},
-{icon:"🥪",label:"Lunch",category:"Everyday"},
-{icon:"🍽️",label:"Dinner",category:"Everyday"},
-{icon:"💧",label:"Drink water",category:"Everyday"},
-{icon:"🛋️",label:"Short break",category:"Everyday"},
-{icon:"🤫",label:"Quiet time",category:"Everyday"},
-{icon:"👨‍👩‍👧",label:"Family time",category:"Everyday"},
+{icon:"🏠",label:"Arrive home",category:"Daily life"},
+{icon:"🌅",label:"Morning routine",category:"Daily life"},
+{icon:"✅",label:"Check schedule",category:"Daily life"},
+{icon:"📦",label:"Pack up",category:"Daily life"},
+{icon:"🛋️",label:"Short break",category:"Daily life"},
+{icon:"🤫",label:"Quiet time",category:"Daily life"},
+{icon:"👨‍👩‍👧",label:"Family time",category:"Daily life"},
+
+{icon:"🥣",label:"Breakfast",category:"Meals"},
+{icon:"🍎",label:"Snack",category:"Meals"},
+{icon:"🥪",label:"Lunch",category:"Meals"},
+{icon:"🍽️",label:"Dinner",category:"Meals"},
+{icon:"💧",label:"Drink water",category:"Meals"},
+{icon:"🥛",label:"Drink milk",category:"Meals"},
+{icon:"🍌",label:"Fruit break",category:"Meals"},
+{icon:"🍳",label:"Help with cooking",category:"Meals"},
 
 {icon:"🎒",label:"Put school bag away",category:"School"},
 {icon:"📒",label:"Check homework",category:"School"},
 {icon:"✏️",label:"Start homework",category:"School"},
+{icon:"📚",label:"Homework",category:"School"},
 {icon:"⏸️",label:"Homework break",category:"School"},
 {icon:"🎒",label:"Pack school bag",category:"School"},
 {icon:"📖",label:"Reading",category:"School"},
+{icon:"✍️",label:"Writing",category:"School"},
+{icon:"🔤",label:"Spelling",category:"School"},
+{icon:"🔢",label:"Maths",category:"School"},
+{icon:"💻",label:"Online learning",category:"School"},
+{icon:"📝",label:"School project",category:"School"},
+{icon:"🧠",label:"Study / revision",category:"School"},
 
-{icon:"🚻",label:"Toilet",category:"Self-care"},
+{icon:"🚽",label:"Toilet",category:"Self-care"},
 {icon:"👕",label:"Change clothes",category:"Self-care"},
 {icon:"🚿",label:"Shower",category:"Self-care"},
 {icon:"🪥",label:"Brush teeth",category:"Self-care"},
 {icon:"👚",label:"Get clothes ready",category:"Self-care"},
 {icon:"🧼",label:"Wash hands",category:"Self-care"},
+{icon:"🫧",label:"Wash face",category:"Self-care"},
+{icon:"💇",label:"Brush hair",category:"Self-care"},
+{icon:"👟",label:"Put on shoes",category:"Self-care"},
+{icon:"🧴",label:"Put on sunscreen",category:"Self-care"},
 {icon:"💊",label:"Take medication",category:"Self-care"},
 {icon:"🛏️",label:"Bedtime",category:"Self-care"},
+{icon:"🛌",label:"Make bed",category:"Self-care"},
 
 {icon:"🧹",label:"Chores",category:"Chores"},
-{icon:"🧺",label:"Hang clothes",category:"Chores"},
+{icon:"🧺",label:"Laundry",category:"Chores"},
+{icon:"👚",label:"Hang clothes",category:"Chores"},
 {icon:"👕",label:"Fold clothes",category:"Chores"},
+{icon:"🧽",label:"Clean table",category:"Chores"},
+{icon:"🧸",label:"Tidy room",category:"Chores"},
+{icon:"🧸",label:"Pack toys",category:"Chores"},
+{icon:"🗑️",label:"Take out rubbish",category:"Chores"},
+{icon:"🐾",label:"Feed pet",category:"Chores"},
+{icon:"🍽️",label:"Put dishes away",category:"Chores"},
 
 {icon:"🎮",label:"Free time",category:"Fun"},
+{icon:"🎮",label:"Gaming",category:"Fun"},
 {icon:"🎨",label:"Drawing",category:"Fun"},
-{icon:"🤸",label:"Movement break",category:"Fun"},
-{icon:"🌳",label:"Outdoor play",category:"Fun"},
+{icon:"🖍️",label:"Colouring",category:"Fun"},
+{icon:"🧱",label:"Lego / building",category:"Fun"},
+{icon:"🧩",label:"Puzzle",category:"Fun"},
+{icon:"🎲",label:"Board game",category:"Fun"},
+{icon:"🎵",label:"Music",category:"Fun"},
+{icon:"🎹",label:"Piano",category:"Fun"},
+{icon:"📺",label:"TV / screen time",category:"Fun"},
+{icon:"✂️",label:"Craft",category:"Fun"},
+{icon:"📖",label:"Read for fun",category:"Fun"},
 
-{icon:"🥋",label:"Sport / class",category:"Going out"},
+{icon:"😌",label:"Calm break",category:"Regulation"},
+{icon:"🫧",label:"Breathing break",category:"Regulation"},
+{icon:"🎧",label:"Headphones",category:"Regulation"},
+{icon:"🧘",label:"Stretch / yoga",category:"Regulation"},
+{icon:"🌿",label:"Quiet corner",category:"Regulation"},
+{icon:"🤗",label:"Sensory break",category:"Regulation"},
+{icon:"💪",label:"Heavy work",category:"Regulation"},
+{icon:"1️⃣",label:"One step at a time",category:"Regulation"},
+
+{icon:"🚶",label:"Walk",category:"Exercise"},
+{icon:"🏃",label:"Run",category:"Exercise"},
+{icon:"🚲",label:"Bike",category:"Exercise"},
+{icon:"⚽",label:"Soccer",category:"Exercise"},
+{icon:"🏀",label:"Basketball",category:"Exercise"},
+{icon:"🏊",label:"Swimming",category:"Exercise"},
+{icon:"🩰",label:"Dance",category:"Exercise"},
+{icon:"🤸",label:"Exercise",category:"Exercise"},
+{icon:"🛝",label:"Playground",category:"Exercise"},
+{icon:"🥋",label:"Sport / class",category:"Exercise"},
+
+{icon:"🧑‍🤝‍🧑",label:"Play with friend",category:"Social"},
+{icon:"👫",label:"Play with sibling",category:"Social"},
+{icon:"💬",label:"Chat with family",category:"Social"},
+{icon:"📞",label:"Call family",category:"Social"},
+{icon:"👵",label:"Visit family",category:"Social"},
+{icon:"🙋",label:"Ask for help",category:"Social"},
+{icon:"🎉",label:"Party / celebration",category:"Social"},
+
 {icon:"🩺",label:"Appointment",category:"Going out"},
+{icon:"🏥",label:"Therapy",category:"Going out"},
 {icon:"📚",label:"Library",category:"Going out"},
-{icon:"🛒",label:"Shopping",category:"Going out"}
+{icon:"🛒",label:"Shopping",category:"Going out"},
+{icon:"🚗",label:"Car ride",category:"Going out"},
+{icon:"🚌",label:"Bus / public transport",category:"Going out"},
+{icon:"🚶‍➡️",label:"Go out",category:"Going out"},
+{icon:"🧑‍⚕️",label:"Doctor",category:"Going out"},
+{icon:"🦷",label:"Dentist",category:"Going out"},
+{icon:"🌳",label:"Outdoor play",category:"Going out"}
 ];
 
 
@@ -1244,6 +1460,23 @@ function initialiseFamilySync(){
 }
 
 function uid(){return "id-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
+const BANK_CATEGORIES=[
+  {name:"All",icon:"✨"},
+  {name:"Daily life",icon:"🏠"},
+  {name:"Meals",icon:"🍽️"},
+  {name:"School",icon:"🎒"},
+  {name:"Self-care",icon:"🚿"},
+  {name:"Chores",icon:"🧹"},
+  {name:"Fun",icon:"🎮"},
+  {name:"Regulation",icon:"🌿"},
+  {name:"Exercise",icon:"🏃"},
+  {name:"Social",icon:"🧑‍🤝‍🧑"},
+  {name:"Going out",icon:"🚗"},
+  {name:"My activities",icon:"⭐"}
+];
+let activeBankCategory="All";
+let bankSearchText="";
+
 function toneClass(i){return "tone"+((i%5)+1)}
 function currentTemplate(){return state.templates.find(t=>t.id===state.currentTemplateId) || state.templates[0]}
 function ensureTaskShape(t){
@@ -1302,6 +1535,25 @@ function renderTemplateBar(){
   });
 }
 
+function renderBankCategoryFilters(){
+  const holder=document.getElementById("bankCategoryFilters");
+  if(!holder) return;
+  holder.innerHTML="";
+
+  BANK_CATEGORIES.forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="bank-category-chip"+(activeBankCategory===cat.name?" active":"");
+    btn.textContent=`${cat.icon} ${cat.name}`;
+    btn.onclick=()=>{
+      activeBankCategory=cat.name;
+      renderBankCategoryFilters();
+      renderBank();
+    };
+    holder.appendChild(btn);
+  });
+}
+
 function renderBank(){
   const bank=document.getElementById("bank");
   bank.innerHTML="";
@@ -1310,21 +1562,31 @@ function renderBank(){
     ...activities.map((a,i)=>({
       icon:a.icon,
       label:a.label,
+      category:a.category||"Daily life",
       custom:false,
       bankId:"builtin-"+i
     })),
     ...(state.customActivities||[]).map(a=>({
       icon:a.icon||"⭐",
       label:a.label,
+      category:"My activities",
       custom:true,
       bankId:a.id
     }))
   ];
 
-  combined.forEach((a,i)=>{
+  const q=String(bankSearchText||"").trim().toLowerCase();
+  const visible=combined.filter(a=>{
+    const categoryMatch=activeBankCategory==="All" || a.category===activeBankCategory;
+    const searchMatch=!q || `${a.label} ${a.category}`.toLowerCase().includes(q);
+    return categoryMatch && searchMatch;
+  });
+
+  visible.forEach((a,i)=>{
     const el=document.createElement("div");
     el.className="activity "+toneClass(i)+(a.custom?" custom-activity":"");
     el.draggable=!isKidSyncMode();
+    el.title=a.category;
     el.innerHTML=`<span class="icon">${a.icon}</span><span class="label">${a.label}</span>${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
 
     el.addEventListener("dragstart",e=>{
@@ -1350,6 +1612,9 @@ function renderBank(){
 
     bank.appendChild(el);
   });
+
+  const empty=document.getElementById("bankEmptyMessage");
+  if(empty) empty.style.display=visible.length?"none":"block";
 }
 
 function renderTools(){
@@ -2533,6 +2798,35 @@ function updateProfileUI(){
   document.title=`${name} – After-School Mission`;
 }
 
+function changeProfileName(){
+  const current=cleanProfileName(ACTIVE_PROFILE?.name);
+  const entered=window.prompt("Enter the name you want to show on this planner:", current);
+  if(entered===null) return;
+
+  const next=cleanProfileName(entered);
+  if(!next){
+    alert("Please enter a name.");
+    return;
+  }
+  if(next===current) return;
+
+  // Keep the same profile ID so all existing routines, templates, progress,
+  // notifications and local data remain connected to the same planner.
+  ACTIVE_PROFILE={...ACTIVE_PROFILE,name:next};
+  localStorage.setItem(PROFILE_KEY,JSON.stringify(ACTIVE_PROFILE));
+
+  const list=readProfileList();
+  const updated=list.map(p=>p?.id===ACTIVE_PROFILE.id ? {...p,name:next} : p);
+  writeProfileList(updated);
+
+  updateProfileUI();
+
+  const status=document.getElementById("saveStatus");
+  if(status){
+    status.textContent=`Name changed to ${next}. Existing planner data was kept.`;
+  }
+}
+
 function loadState(){
   try{
     const saved=JSON.parse(localStorage.getItem(APP_KEY)||"null");
@@ -2776,7 +3070,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v23_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v25_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -2806,6 +3100,15 @@ document.getElementById("importFile").onchange=e=>{
 };
 
 updateProfileUI();
+
+document.getElementById("changeProfileNameBtn").onclick=changeProfileName;
+
+const bankSearchInput=document.getElementById("bankSearchInput");
+bankSearchInput.addEventListener("input",e=>{
+  bankSearchText=e.target.value||"";
+  renderBank();
+});
+renderBankCategoryFilters();
 
 document.getElementById("savePushServerBtn").onclick=savePushServer;
 document.getElementById("enableClosedPushBtn").onclick=enableClosedPush;

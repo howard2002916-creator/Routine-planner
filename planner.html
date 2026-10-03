@@ -567,11 +567,36 @@ body.sync-kid-mode .editTask{display:none}
 
 /* ===== v33 Daily Use, Focus & Review ===== */
 .history-panel,.app-version-panel,.custom-translation-panel{margin-top:12px;border:1px solid #e3def1;border-radius:16px;padding:12px;background:#fff}
-.history-panel{background:#fbfffc}.history-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.history-head>div{flex:1 1 300px}
-.history-panel textarea{margin-top:9px}.history-list{display:grid;gap:8px;margin-top:10px}.history-card{border:1px solid #e0e8e2;border-radius:13px;padding:10px;background:#fff}
-.history-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.history-stat-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
-.history-stat{padding:5px 8px;border-radius:999px;background:#f5f7f6;font-size:11px;font-weight:800}.history-task-list{font-size:12px;line-height:1.45;margin-top:7px;color:#5e5870}
-.history-note{margin-top:7px;padding:8px;border-radius:10px;background:#faf8ff;font-size:12px;white-space:pre-wrap}.history-delete{padding:6px 8px;box-shadow:none}
+.history-panel{background:#fbfffc;padding:0;overflow:hidden}
+.history-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;cursor:pointer;list-style:none}
+.history-summary::-webkit-details-marker{display:none}
+.history-summary-main{min-width:0}
+.history-toggle-label{flex:0 0 auto;font-size:12px;font-weight:900;color:#5f5294;background:#f1ecff;border:1px solid #ddd2f5;border-radius:999px;padding:6px 9px}
+.history-panel[open] .history-summary{border-bottom:1px solid #e7e2ef}
+.history-content{padding:12px}
+.history-save-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;margin-top:9px}
+.history-save-row textarea{margin:0;min-height:64px}
+.history-list{display:grid;gap:8px;margin-top:10px}
+.history-card{border:1px solid #e0e8e2;border-radius:13px;background:#fff;overflow:hidden}
+.history-card>summary{list-style:none;cursor:pointer;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.history-card>summary::-webkit-details-marker{display:none}
+.history-card[open]>summary{border-bottom:1px solid #e8eee9;background:#fbfdfb}
+.history-card-summary-main{min-width:0}
+.history-card-summary-line{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.history-card-summary-pill{font-size:10.5px;font-weight:850;padding:4px 7px;border-radius:999px;background:#f5f7f6}
+.history-card-toggle{font-size:11px;font-weight:850;color:#6a6282;white-space:nowrap}
+.history-card-details{padding:10px}
+.history-card-head{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.history-stat-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.history-stat{padding:5px 8px;border-radius:999px;background:#f5f7f6;font-size:11px;font-weight:800}
+.history-task-list{font-size:12px;line-height:1.45;margin-top:7px;color:#5e5870}
+.history-note{margin-top:7px;padding:8px;border-radius:10px;background:#faf8ff;font-size:12px;white-space:pre-wrap}
+.history-delete{padding:6px 8px;box-shadow:none}
+@media(max-width:650px){
+  .history-summary{align-items:flex-start}
+  .history-save-row{grid-template-columns:1fr}
+  .history-card>summary{align-items:flex-start}
+}
 .focus-mode-banner{display:none;margin-bottom:10px;padding:10px 12px;border-radius:14px;background:#eef6ff;border:1px solid #cfe0f4}
 body.focus-mode .focus-mode-banner{display:block}body.focus-mode .layout{grid-template-columns:minmax(0,860px);justify-content:center}body.focus-mode .layout>.panel:first-child{display:none}
 body.focus-mode header .sub,body.focus-mode .templatebar,body.focus-mode #sampleBtn,body.focus-mode #clearBtn,body.focus-mode #saveBtn,body.focus-mode #printBtn,body.focus-mode #enableAlarmBtn,body.focus-mode #settingsBtn,body.focus-mode #startNewDayBtn,body.focus-mode .settings-shell,body.focus-mode .history-panel{display:none!important}
@@ -587,6 +612,46 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
 .task-photo-edit{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}.task-photo-preview{width:58px;height:58px;border-radius:12px;border:1px solid #ded8e8;background:#fff;display:grid;place-items:center;overflow:hidden;font-size:28px}
 .task-photo-preview img{width:100%;height:100%;object-fit:cover}
 @media(max-width:650px){.translation-grid{grid-template-columns:1fr}.translation-field:first-child{grid-column:auto}.translation-card-grid{grid-template-columns:1fr}}
+
+
+/* ===== v33.2 photo UX ===== */
+.custom-photo-creator{
+  border:1px solid #dcd7eb;border-radius:14px;padding:10px;background:#fff;
+  grid-column:1/-1
+}
+.custom-photo-creator-title{font-size:12px;font-weight:900;margin-bottom:8px}
+.custom-photo-creator-body{display:flex;gap:10px;align-items:center}
+.custom-photo-preview{
+  width:92px;height:92px;flex:0 0 92px;border:1px solid #ddd7e8;border-radius:14px;
+  overflow:hidden;background:#f8f6fc;display:grid;place-items:center;font-size:34px
+}
+.custom-photo-preview img{width:100%;height:100%;object-fit:cover}
+.custom-photo-creator-controls{min-width:0;flex:1}
+.custom-photo-buttons{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}
+.custom-photo-buttons button{box-shadow:none}
+.custom-activity.custom-photo-open{grid-column:1/-1;flex-wrap:wrap;cursor:default}
+.custom-photo-manager{
+  width:100%;display:none;border-top:1px solid rgba(80,70,110,.13);
+  margin-top:8px;padding-top:9px
+}
+.custom-photo-open .custom-photo-manager{display:flex;gap:11px;align-items:center}
+.custom-photo-manager-preview{
+  width:110px;height:90px;flex:0 0 110px;border:1px solid #ded8e8;border-radius:13px;
+  overflow:hidden;background:#fff;display:grid;place-items:center;font-size:30px
+}
+.custom-photo-manager-preview img{width:100%;height:100%;object-fit:cover}
+.custom-photo-manager-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.custom-photo-manager-actions button{box-shadow:none}
+.custom-photo-manager-info{min-width:0;flex:1}
+.custom-activity .custom-photo-btn{
+  width:auto!important;min-width:31px!important;padding:0 7px!important;
+  font-size:12px;font-weight:900
+}
+@media(max-width:560px){
+  .custom-photo-creator-body,.custom-photo-open .custom-photo-manager{align-items:flex-start;flex-direction:column}
+  .custom-photo-preview{width:100%;height:150px;flex-basis:150px}
+  .custom-photo-manager-preview{width:100%;height:150px;flex-basis:150px}
+}
 
 </style>
 </head>
@@ -747,10 +812,24 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
             <option value="📚">📚 Library</option>
           </optgroup>
         </select>
-        <label class="custom-photo-picker">
-          <span>🖼️ Optional photo</span>
-          <input id="customPhoto" type="file" accept="image/*">
-        </label>
+        <div class="custom-photo-creator">
+          <div class="custom-photo-creator-title">🖼️ Optional photo</div>
+          <div class="custom-photo-creator-body">
+            <div id="customPhotoPreview" class="custom-photo-preview" aria-label="Photo preview">
+              <span id="customPhotoPreviewEmpty">🖼️</span>
+              <img id="customPhotoPreviewImage" alt="" style="display:none">
+            </div>
+            <div class="custom-photo-creator-controls">
+              <div id="customPhotoStatus" class="small-note">No photo selected</div>
+              <div class="custom-photo-buttons">
+                <button id="chooseCustomPhotoBtn" type="button">Choose photo</button>
+                <button id="removeCustomPhotoBtn" type="button" class="danger" style="display:none">Remove photo</button>
+              </div>
+              <div class="small-note">Choose a photo or keep the emoji only.</div>
+            </div>
+          </div>
+          <input id="customPhoto" type="file" accept="image/*" style="display:none">
+        </div>
         <button id="addCustom">➕ Add to Activity Bank</button>
       </div>
     </div>
@@ -852,17 +931,24 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
       <div id="stuckBox" class="stuck-box">Try the task-specific steps first. If you are still stuck, choose one support above.</div>
     </div>
 
-    <div class="history-panel">
-      <div class="history-head">
-        <div>
+    <details id="historyPanel" class="history-panel">
+      <summary class="history-summary">
+        <div class="history-summary-main">
           <strong>📊 Daily History / OT Review</strong>
-          <div class="small-note">A simple functional record of routine completion and supports used. This is not a clinical score.</div>
+          <div class="small-note" id="historyRecordCount">No records saved yet</div>
         </div>
-        <button id="saveDaySnapshotBtn">💾 Save today to history</button>
+        <span id="historyToggleLabel" class="history-toggle-label">View history</span>
+      </summary>
+
+      <div class="history-content">
+        <div class="small-note">A simple functional record of routine completion and supports used. This is not a clinical score.</div>
+        <div class="history-save-row">
+          <textarea id="historyNoteInput" maxlength="500" placeholder="Optional note: What worked today?"></textarea>
+          <button id="saveDaySnapshotBtn">💾 Save today to history</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
       </div>
-      <textarea id="historyNoteInput" maxlength="500" placeholder="Optional note: What worked today?"></textarea>
-      <div id="historyList" class="history-list"></div>
-    </div>
+    </details>
 
     <details id="settingsShell" class="settings-shell">
       <summary>⚙️ Settings & connections</summary>
@@ -980,7 +1066,7 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
 
     <div class="app-version-panel">
       <strong>📱 App version</strong>
-      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V33</strong></div>
+      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V33.2</strong></div>
       <div class="save-actions">
         <button id="reloadLatestBtn">🔄 Reload latest version</button>
         <button id="translationAuditBtn">🌐 Translation check</button>
@@ -1163,7 +1249,7 @@ if(!ACTIVE_PROFILE || !ACTIVE_PROFILE.id || !ACTIVE_PROFILE.name){
 const PROFILE_ID=ACTIVE_PROFILE?.id || "default";
 const APP_KEY=`otRoutinePlannerV9App_${PROFILE_ID}`;
 
-const APP_VERSION="V33";
+const APP_VERSION="V33.2";
 const FOCUS_MODE_KEY=`routineFocusMode_${PROFILE_ID}`;
 const ACTIVITY_PHOTO_KEY=`routineActivityPhotos_${PROFILE_ID}`;
 const TASK_PHOTO_KEY=`routineTaskPhotos_${PROFILE_ID}`;
@@ -1172,6 +1258,39 @@ let focusModeEnabled=localStorage.getItem(FOCUS_MODE_KEY)==="1";
 function readLocalPhotoMap(key){try{const x=JSON.parse(localStorage.getItem(key)||"{}");return x&&typeof x==="object"?x:{};}catch{return {}}}
 function writeLocalPhotoMap(key,data){try{localStorage.setItem(key,JSON.stringify(data||{}));}catch{alert(uiText("This browser could not save the photo. Try a smaller image."));}}
 function activityPhotoFor(id){return readLocalPhotoMap(ACTIVITY_PHOTO_KEY)[id]||""}
+function updateCustomPhotoCreator(){
+  const img=document.getElementById("customPhotoPreviewImage");
+  const empty=document.getElementById("customPhotoPreviewEmpty");
+  const status=document.getElementById("customPhotoStatus");
+  const choose=document.getElementById("chooseCustomPhotoBtn");
+  const remove=document.getElementById("removeCustomPhotoBtn");
+  if(!img||!empty||!status||!choose||!remove) return;
+  if(pendingCustomPhotoData){
+    img.src=pendingCustomPhotoData;
+    img.style.display="block";
+    empty.style.display="none";
+    status.textContent=uiText("Photo ready to add.");
+    choose.textContent=uiText("Change photo");
+    remove.style.display="inline-block";
+  }else{
+    img.removeAttribute("src");
+    img.style.display="none";
+    empty.style.display="grid";
+    status.textContent=uiText("No photo selected");
+    choose.textContent=uiText("Choose photo");
+    remove.style.display="none";
+  }
+}
+function chooseCreatorPhoto(){
+  document.getElementById("customPhoto")?.click();
+}
+function clearCreatorPhoto(){
+  pendingCustomPhotoData="";
+  const input=document.getElementById("customPhoto");
+  if(input) input.value="";
+  updateCustomPhotoCreator();
+}
+
 function setActivityPhoto(id,data){const map=readLocalPhotoMap(ACTIVITY_PHOTO_KEY);if(data)map[id]=data;else delete map[id];writeLocalPhotoMap(ACTIVITY_PHOTO_KEY,map)}
 function taskPhotoFor(task){const map=readLocalPhotoMap(TASK_PHOTO_KEY);return map[task?.id]||(task?.sourceActivityId?activityPhotoFor(task.sourceActivityId):"")||""}
 function setTaskPhoto(id,data){const map=readLocalPhotoMap(TASK_PHOTO_KEY);if(data)map[id]=data;else delete map[id];writeLocalPhotoMap(TASK_PHOTO_KEY,map)}
@@ -1275,6 +1394,20 @@ for(const lang of ["zh-Hant","zh-Hans"]){
     if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
   });
 }
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"View history":"查看紀錄","Hide history":"收起紀錄","records saved":"筆紀錄已儲存","record saved":"筆紀錄已儲存","Show details":"查看詳情","Hide details":"收起詳情","No records saved yet":"暫時未有已儲存紀錄"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"View history":"查看记录","Hide history":"收起记录","records saved":"条记录已保存","record saved":"条记录已保存","Show details":"查看详情","Hide details":"收起详情","No records saved yet":"暂时没有已保存记录"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"Choose photo":"選擇相片","Change photo":"更換相片","Remove photo":"移除相片","No photo selected":"未選擇相片","Photo preview":"相片預覽","Photo":"相片","Close photo options":"收起相片選項","Photo removed.":"相片已移除。","Photo ready to add.":"相片已準備好，可以加入活動庫。","Choose a photo or keep the emoji only.":"可以選擇相片，或者只保留 Emoji。","This photo is saved on this device only.":"這張相片只會儲存在這部裝置。"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"Choose photo":"选择照片","Change photo":"更换照片","Remove photo":"移除照片","No photo selected":"未选择照片","Photo preview":"照片预览","Photo":"照片","Close photo options":"收起照片选项","Photo removed.":"照片已移除。","Photo ready to add.":"照片已准备好，可以加入活动库。","Choose a photo or keep the emoji only.":"可以选择照片，或者只保留 Emoji。","This photo is saved on this device only.":"这张照片只会保存在这台设备。"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
 function shouldSkipAutoTranslation(node){
   const el=node?.parentElement;
   if(!el) return false;
@@ -1340,6 +1473,7 @@ function setLanguage(lang){
   renderBank();
   refreshAll();
   updateProfileUI();
+  updateCustomPhotoCreator();
   applyLanguageToDom();
 }
 
@@ -1387,6 +1521,7 @@ let undoAction=null;
 let undoTimer=null;
 let editingBreakdownTaskId=null;
 let breakdownEditDraft=null;
+let pendingCustomPhotoData="";
 
 
 const DEFAULT_SERVER_URL="https://routine-planner-notifications.routineplanner-ot.workers.dev";
@@ -2112,9 +2247,23 @@ function renderBank(){
     const shownLabel=a.custom?displayUserText(a.label):displayActivityLabel(a.label);
     const customPhoto=a.custom?activityPhotoFor(a.bankId):"";
     el.innerHTML=`<span class="icon">${customPhoto?`<img class="activity-photo" src="${customPhoto}" alt="">`:escapeHtml(a.icon)}</span><span class="label">${escapeHtml(shownLabel)}</span>
-      ${a.custom?'<button class="custom-photo-btn" title="🖼️ Add / change photo">🖼️</button>':""}
+      ${a.custom?`<button class="custom-photo-btn" title="${uiText("Photo")}">🖼️</button>`:""}
       <button class="activity-favourite ${favourite?"on":""}" title="${uiText(favourite?"Remove from favourites":"Add to favourites")}">${favourite?"⭐":"☆"}</button>
-      ${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
+      ${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}
+      ${a.custom?`<div class="custom-photo-manager">
+        <div class="custom-photo-manager-preview">
+          ${customPhoto?`<img src="${customPhoto}" alt="">`:`<span>${escapeHtml(a.icon||"⭐")}</span>`}
+        </div>
+        <div class="custom-photo-manager-info">
+          <strong>${uiText("Photo")}</strong>
+          <div class="small-note">${customPhoto?uiText("This photo is saved on this device only."):uiText("No photo selected")}</div>
+          <div class="custom-photo-manager-actions">
+            <button class="custom-photo-change">${customPhoto?uiText("Change photo"):uiText("Choose photo")}</button>
+            <button class="custom-photo-remove danger" ${customPhoto?"":"style=\"display:none\""}>${uiText("Remove photo")}</button>
+            <button class="custom-photo-close">${uiText("Close photo options")}</button>
+          </div>
+        </div>
+      </div>`:""}`;
 
     el.addEventListener("dragstart",e=>{
       e.dataTransfer.setData("text/plain",JSON.stringify({icon:a.icon,label:a.label,sourceActivityId:a.custom?a.bankId:null}));
@@ -2123,7 +2272,7 @@ function renderBank(){
 
     el.addEventListener("click",e=>{
       if(isKidSyncMode()) return;
-      if(e.target.closest(".custom-remove")||e.target.closest(".activity-favourite")) return;
+      if(e.target.closest(".custom-remove")||e.target.closest(".activity-favourite")||e.target.closest(".custom-photo-btn")||e.target.closest(".custom-photo-manager")) return;
       plan().push(newTask(a.icon,a.label,a.custom?a.bankId:null));
       renderPlan();
     });
@@ -2135,10 +2284,43 @@ function renderBank(){
     };
 
     if(a.custom){
-      el.querySelector(".custom-photo-btn").onclick=e=>{
-        e.stopPropagation();if(isKidSyncMode())return;const input=document.createElement("input");input.type="file";input.accept="image/*";
-        input.onchange=ev=>{const file=ev.target.files?.[0];if(!file)return;compressSpacePhoto(file,data=>{if(!data)return;setActivityPhoto(a.bankId,data);renderBank()})};input.click();
+      const openPhotoManager=()=>{
+        if(isKidSyncMode()) return;
+        el.classList.toggle("custom-photo-open");
+        const btn=el.querySelector(".custom-photo-btn");
+        if(btn) btn.textContent=el.classList.contains("custom-photo-open")?"🖼️ ▴":"🖼️";
       };
+      el.querySelector(".custom-photo-btn").onclick=e=>{e.stopPropagation();openPhotoManager()};
+
+      const chooseOrChangePhoto=()=>{
+        const input=document.createElement("input");
+        input.type="file";input.accept="image/*";
+        input.onchange=ev=>{
+          const file=ev.target.files?.[0];
+          if(!file) return;
+          compressSpacePhoto(file,data=>{
+            if(!data) return;
+            setActivityPhoto(a.bankId,data);
+            renderBank();
+          });
+        };
+        input.click();
+      };
+      el.querySelector(".custom-photo-change").onclick=e=>{e.stopPropagation();chooseOrChangePhoto()};
+      el.querySelector(".custom-photo-remove").onclick=e=>{
+        e.stopPropagation();
+        if(!activityPhotoFor(a.bankId)) return;
+        if(!confirm(uiText("Remove photo")+"?")) return;
+        setActivityPhoto(a.bankId,"");
+        renderBank();
+      };
+      el.querySelector(".custom-photo-close").onclick=e=>{
+        e.stopPropagation();
+        el.classList.remove("custom-photo-open");
+        const btn=el.querySelector(".custom-photo-btn");
+        if(btn) btn.textContent="🖼️";
+      };
+
       el.querySelector(".custom-remove").onclick=(e)=>{
         e.stopPropagation();
         if(isKidSyncMode()) return;
@@ -3016,18 +3198,109 @@ function resetDailyProgress(){
  const m=selectedMotivation();motivationRemainingSeconds=m?Number(m.duration||0)*60:0;motivationRunning=false;motivationPaused=false;fired={}
 }
 function startNewDay(){if(isKidSyncMode())return;if(!plan().length){alert(uiText("No routine tasks to reset."));return}if(!confirm(uiText("Start a new day? Today's progress will be saved to Daily History, then task status and timers will reset.")))return;if(hasMeaningfulDayProgress())saveTodayToHistory(false);resetDailyProgress();refreshAll();scheduleAutoSave();alert(uiText("New day started. Today's routine is ready."))}
-function renderDailyHistory(){
- const box=document.getElementById("historyList");if(!box)return;const history=dailyHistoryStore();box.innerHTML="";
- if(!history.length){box.innerHTML=`<div class="small-note">${uiText("No history yet. Use “Start a new day” or save today manually.")}</div>`;return}
- history.slice(0,20).forEach(entry=>{const card=document.createElement("div");card.className="history-card";const pct=entry.total?Math.round(Number(entry.done||0)/Number(entry.total)*100):0;
- const supportEntries=Object.entries(entry.supportUses||{}).filter(([,n])=>Number(n)>0);
- const taskText=(entry.tasks||[]).map(t=>{const label=t.label===t.baseLabel?displayActivityLabel(t.baseLabel):displayUserText(t.label);return `${t.status==="done"?"✅":t.status==="doing"?"▶️":"○"} ${t.icon||""} ${label}`}).join(" · ");
- const dateLabel=new Date(entry.savedAt||Date.now()).toLocaleDateString([], {year:"numeric",month:"short",day:"numeric"});
- card.innerHTML=`<div class="history-card-head"><div><strong>${escapeHtml(dateLabel)}</strong><div class="small-note">${escapeHtml(entry.templateName||"")}</div></div><button class="history-delete danger">✕</button></div>
- <div class="history-stat-row"><span class="history-stat">${uiText("Tasks completed")}: ${Number(entry.done||0)} / ${Number(entry.total||0)} (${pct}%)</span><span class="history-stat">${uiText("Stuck helper used")}: ${Number(entry.stuckCount||0)} ${uiText("times")}</span></div>
- <div class="history-task-list">${escapeHtml(taskText)}</div><div class="small-note" style="margin-top:7px"><strong>${uiText("Supports tried")}:</strong> ${supportEntries.length?supportEntries.map(([name,n])=>`${escapeHtml(uiText(name))} ×${Number(n)}`).join(" · "):uiText("No support use recorded")}</div>${entry.note?`<div class="history-note">${escapeHtml(entry.note)}</div>`:""}`;
- card.querySelector(".history-delete").onclick=()=>{if(!confirm(uiText("Delete this history entry?")))return;const arr=dailyHistoryStore(),i=arr.findIndex(x=>x.id===entry.id);if(i>=0)arr.splice(i,1);renderDailyHistory();scheduleAutoSave()};box.appendChild(card)})
+function updateHistoryPanelSummary(){
+  const history=dailyHistoryStore();
+  const count=document.getElementById("historyRecordCount");
+  const toggle=document.getElementById("historyToggleLabel");
+  const panel=document.getElementById("historyPanel");
+  if(count){
+    count.textContent=history.length
+      ? `${history.length} ${uiText(history.length===1?"record saved":"records saved")}`
+      : uiText("No records saved yet");
+  }
+  if(toggle) toggle.textContent=panel?.open?uiText("Hide history"):uiText("View history");
 }
+
+function renderDailyHistory(){
+  const box=document.getElementById("historyList");
+  if(!box) return;
+
+  const history=dailyHistoryStore();
+  box.innerHTML="";
+  updateHistoryPanelSummary();
+
+  if(!history.length){
+    box.innerHTML=`<div class="small-note">${uiText("No history yet. Use “Start a new day” or save today manually.")}</div>`;
+    return;
+  }
+
+  history.slice(0,20).forEach(entry=>{
+    const card=document.createElement("details");
+    card.className="history-card";
+
+    const pct=entry.total?Math.round(Number(entry.done||0)/Number(entry.total)*100):0;
+    const supportEntries=Object.entries(entry.supportUses||{}).filter(([,n])=>Number(n)>0);
+    const taskText=(entry.tasks||[]).map(t=>{
+      const label=t.label===t.baseLabel?displayActivityLabel(t.baseLabel):displayUserText(t.label);
+      return `${t.status==="done"?"✅":t.status==="doing"?"▶️":"○"} ${t.icon||""} ${label}`;
+    }).join(" · ");
+
+    const dateLabel=new Date(entry.savedAt||Date.now()).toLocaleDateString([],{
+      year:"numeric",month:"short",day:"numeric"
+    });
+
+    const supportIcons=supportEntries.slice(0,3).map(([name])=>{
+      const match=tools.find(t=>t.name===name);
+      return match?.icon||"🧰";
+    }).join(" ");
+
+    card.innerHTML=`
+      <summary>
+        <div class="history-card-summary-main">
+          <strong>${escapeHtml(dateLabel)}</strong>
+          <div class="small-note">${escapeHtml(entry.templateName||"")}</div>
+          <div class="history-card-summary-line">
+            <span class="history-card-summary-pill">✅ ${Number(entry.done||0)}/${Number(entry.total||0)} · ${pct}%</span>
+            <span class="history-card-summary-pill">🆘 ×${Number(entry.stuckCount||0)}</span>
+            ${supportEntries.length?`<span class="history-card-summary-pill">${escapeHtml(supportIcons)} ${supportEntries.reduce((sum,[,n])=>sum+Number(n||0),0)}</span>`:""}
+          </div>
+        </div>
+        <span class="history-card-toggle">${uiText("Show details")}</span>
+      </summary>
+
+      <div class="history-card-details">
+        <div class="history-card-head">
+          <div class="small-note">${uiText("Tasks completed")}: ${Number(entry.done||0)} / ${Number(entry.total||0)} (${pct}%)</div>
+          <button class="history-delete danger">✕</button>
+        </div>
+
+        <div class="history-stat-row">
+          <span class="history-stat">${uiText("Stuck helper used")}: ${Number(entry.stuckCount||0)} ${uiText("times")}</span>
+        </div>
+
+        <div class="history-task-list">${escapeHtml(taskText)}</div>
+
+        <div class="small-note" style="margin-top:7px">
+          <strong>${uiText("Supports tried")}:</strong>
+          ${supportEntries.length
+            ? supportEntries.map(([name,n])=>`${escapeHtml(uiText(name))} ×${Number(n)}`).join(" · ")
+            : uiText("No support use recorded")}
+        </div>
+
+        ${entry.note?`<div class="history-note">${escapeHtml(entry.note)}</div>`:""}
+      </div>
+    `;
+
+    const toggle=card.querySelector(".history-card-toggle");
+    card.addEventListener("toggle",()=>{
+      if(toggle) toggle.textContent=card.open?uiText("Hide details"):uiText("Show details");
+    });
+
+    card.querySelector(".history-delete").onclick=e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(!confirm(uiText("Delete this history entry?"))) return;
+      const arr=dailyHistoryStore();
+      const i=arr.findIndex(x=>x.id===entry.id);
+      if(i>=0) arr.splice(i,1);
+      renderDailyHistory();
+      scheduleAutoSave();
+    };
+
+    box.appendChild(card);
+  });
+}
+
 function applyFocusModeUI(render=true){document.body.classList.toggle("focus-mode",focusModeEnabled);const btn=document.getElementById("focusModeBtn");if(btn)btn.textContent=focusModeEnabled?uiText("↩ Full planner"):uiText("🧒 Focus mode");localStorage.setItem(FOCUS_MODE_KEY,focusModeEnabled?"1":"0");if(render)renderPlan()}
 function toggleFocusMode(){focusModeEnabled=!focusModeEnabled;applyFocusModeUI(true)}
 function updateFocusSummary(){const el=document.getElementById("focusModeSummary");if(!el)return;const unfinished=plan().filter(t=>t.status!=="done"),current=plan().find(t=>t.status==="doing")||unfinished[0]||null;let next=null;if(current){const idx=plan().indexOf(current);next=plan().slice(idx+1).find(t=>t.status!=="done")||null}el.textContent=current?`${uiText("Current task")}: ${displayTaskLabel(current)}${next?` · ${uiText("Next task")}: ${displayTaskLabel(next)}`:""}`:uiText("No unfinished tasks")}
@@ -4867,13 +5140,37 @@ sequence.addEventListener("drop",e=>{
   renderPlan();
 });
 
+document.getElementById("chooseCustomPhotoBtn").onclick=chooseCreatorPhoto;
+document.getElementById("removeCustomPhotoBtn").onclick=clearCreatorPhoto;
+document.getElementById("customPhoto").onchange=e=>{
+  const file=e.target.files?.[0];
+  if(!file) return;
+  compressSpacePhoto(file,data=>{
+    if(!data) return;
+    pendingCustomPhotoData=data;
+    updateCustomPhotoCreator();
+  });
+};
+updateCustomPhotoCreator();
+
 document.getElementById("addCustom").onclick=()=>{
   if(isKidSyncMode()) return;
-  const input=document.getElementById("customText"),val=input.value.trim();if(!val)return;if(!Array.isArray(state.customActivities))state.customActivities=[];
-  const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())||activities.some(x=>String(x.label||"").trim().toLowerCase()===val.toLowerCase());
-  const icon=document.getElementById("customIcon")?.value||"⭐";if(exists)return;const id=uid();state.customActivities.push({id,icon,label:val});
-  const photoFile=document.getElementById("customPhoto")?.files?.[0];if(photoFile)compressSpacePhoto(photoFile,data=>{if(data){setActivityPhoto(id,data);renderBank()}});
-  input.value="";const photoInput=document.getElementById("customPhoto");if(photoInput)photoInput.value="";renderBank();scheduleAutoSave();
+  const input=document.getElementById("customText"),val=input.value.trim();
+  if(!val) return;
+  if(!Array.isArray(state.customActivities)) state.customActivities=[];
+  const exists=state.customActivities.some(x=>(x.label||"").trim().toLowerCase()===val.toLowerCase())
+    || activities.some(x=>String(x.label||"").trim().toLowerCase()===val.toLowerCase());
+  const icon=document.getElementById("customIcon")?.value||"⭐";
+  if(exists) return;
+
+  const id=uid();
+  state.customActivities.push({id,icon,label:val});
+  if(pendingCustomPhotoData) setActivityPhoto(id,pendingCustomPhotoData);
+
+  input.value="";
+  clearCreatorPhoto();
+  renderBank();
+  scheduleAutoSave();
 };
 document.getElementById("customText").addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("addCustom").click(); });
 
@@ -5001,7 +5298,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v33_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v33_2_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -5036,6 +5333,11 @@ document.getElementById("changeProfileNameBtn").onclick=changeProfileName;
 document.getElementById("focusModeBtn").onclick=toggleFocusMode;
 document.getElementById("startNewDayBtn").onclick=startNewDay;
 document.getElementById("saveDaySnapshotBtn").onclick=()=>saveTodayToHistory(true);
+const historyPanel=document.getElementById("historyPanel");
+if(historyPanel){
+  historyPanel.addEventListener("toggle",updateHistoryPanelSummary);
+}
+
 document.getElementById("reloadLatestBtn").onclick=reloadLatestVersion;
 document.getElementById("translationAuditBtn").onclick=runTranslationAudit;
 document.getElementById("saveCustomTranslationBtn").onclick=saveCustomTranslation;

@@ -278,3 +278,48 @@ V33 is cumulative and includes the planned V32 and V33 improvements.
 - Richer personalised photos for custom Activity Bank items and individual routine tasks. Photos are local to the device and are not sent through Family Sync.
 
 V33 keeps the existing `otRoutinePlannerV9App_...` storage key and current Family Calendar backend structure. No Cloudflare Worker redeploy is required.
+
+
+## v33.1 — Collapsible Daily History
+
+Daily History is now designed to reduce visual overload.
+
+- The whole **Daily History / OT Review** section is collapsed by default.
+- The collapsed header only shows the number of saved records and a **View history** control.
+- Opening Daily History shows a compact list of saved days.
+- Each saved day is also collapsed by default.
+- A daily row shows only a brief summary:
+  - date
+  - completed tasks / percentage
+  - “I’m stuck” use count
+  - a compact support-use indicator
+- **Show details** expands that one day to reveal task status, support details, notes and delete.
+- Reopening the app starts with history collapsed again.
+- Focus Mode continues to hide Daily History completely.
+
+All existing V33 history data remains compatible. This is a frontend-only update and does not require a Cloudflare Worker redeploy.
+
+
+## v33.2 — Photo UX Fix
+
+The custom-activity photo experience has been redesigned.
+
+### Before adding an activity
+- Choosing a photo now shows an immediate preview.
+- The raw browser filename is no longer the main interface.
+- **Choose photo** changes to **Change photo** once a picture is selected.
+- **Remove photo** clears the pending photo before the activity is created.
+- Keeping no photo is always allowed; the selected emoji remains the fallback visual.
+
+### After the activity is added
+- Custom Activity Bank cards keep a visible thumbnail when a photo exists.
+- Tapping the 🖼️ button opens a larger photo-management panel.
+- The panel shows the photo clearly and offers:
+  - Choose / Change photo
+  - Remove photo
+  - Close photo options
+- Removing a photo keeps the custom activity and falls back to its emoji.
+
+Photos continue to be compressed and stored only on the current device. They are not placed in Shared Family Calendar JSON.
+
+V33.2 keeps all V33.1 data and features. No Cloudflare Worker redeploy is required.

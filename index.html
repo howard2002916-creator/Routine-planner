@@ -35,6 +35,12 @@ button{
   margin-top:17px;padding:11px 12px;border-radius:13px;background:#fff9df;border:1px solid #eadc9e;
   color:#675b31;font-size:13px;line-height:1.45
 }
+.index-language-row{display:flex;justify-content:flex-end;margin-bottom:4px}
+.index-language-switcher{
+  display:flex;align-items:center;gap:6px;padding:5px 7px;
+  border:1px solid var(--line);border-radius:12px;background:#fff
+}
+.index-language-switcher select{border:0;background:transparent;font:inherit;font-weight:800;padding:4px;min-width:125px}
 @media(max-width:560px){
   .card{padding:18px;border-radius:20px}
   h1{font-size:29px}
@@ -46,6 +52,16 @@ button{
 <body>
 <div class="wrap">
   <div class="card">
+    <div class="index-language-row">
+      <label class="index-language-switcher">
+        <span>🌐</span>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh-Hans">简体中文</option>
+          <option value="zh-Hant">繁體中文</option>
+        </select>
+      </label>
+    </div>
     <div class="star">🌟</div>
     <h1>My After-School Mission</h1>
     <p>Enter your name once. This device will remember it and open your planner automatically next time.</p>
@@ -65,6 +81,36 @@ button{
 <script>
 const PROFILE_KEY="otRoutinePlannerActiveProfileV9";
 const PROFILE_LIST_KEY="otRoutinePlannerProfilesV9";
+
+const GLOBAL_LANGUAGE_KEY="routinePlannerLanguage";
+let CURRENT_LANG=localStorage.getItem(GLOBAL_LANGUAGE_KEY)||"en";
+if(!["en","zh-Hans","zh-Hant"].includes(CURRENT_LANG)) CURRENT_LANG="en";
+const INDEX_TEXT={
+  en:{
+    title:"My After-School Mission",
+    intro:"Enter your name once. This device will remember it and open your planner automatically next time.",
+    label:"What should I call you?",
+    start:"Start my planner",
+    note:"Your name and planner entries are saved in this browser on this device. If browser/site data is cleared, the saved information can be lost.",
+    placeholder:"e.g. Alex"
+  },
+  "zh-Hans":{"title":"我的放学后任务","intro":"第一次输入名字后，这部设备会记住，下次会自动打开你的日程。","label":"我应该怎么称呼你？","start":"开始我的日程","note":"你的名字和日程内容会保存在这部设备的浏览器中。如果清除浏览器或网站数据，已保存的内容可能会丢失。","placeholder":"例如 Alex"},
+  "zh-Hant":{"title":"我的放學後任務","intro":"第一次輸入名字後，這部裝置會記住，下次會自動打開你的日程。","label":"我應該怎樣稱呼你？","start":"開始我的日程","note":"你的名字和日程內容會儲存在這部裝置的瀏覽器中。如果清除瀏覽器或網站資料，已儲存的內容可能會遺失。","placeholder":"例如 Alex"}
+};
+function applyIndexLanguage(){
+  const t=INDEX_TEXT[CURRENT_LANG]||INDEX_TEXT.en;
+  document.documentElement.lang=CURRENT_LANG;
+  document.title=t.title;
+  document.querySelector("h1").textContent=t.title;
+  document.querySelector(".card > p").textContent=t.intro;
+  document.querySelector('label[for="nameInput"]').textContent=t.label;
+  document.getElementById("startBtn").textContent=t.start;
+  document.querySelector(".note").textContent=t.note;
+  document.getElementById("nameInput").placeholder=t.placeholder;
+  const select=document.getElementById("languageSelect");
+  if(select) select.value=CURRENT_LANG;
+}
+
 
 function cleanName(name){
   return String(name||"").trim().replace(/\s+/g," ").slice(0,40);
@@ -88,6 +134,7 @@ function start(){
 
   const profile=existing || {id:uid(),name,createdAt:Date.now()};
   localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+  localStorage.setItem(GLOBAL_LANGUAGE_KEY,CURRENT_LANG);
 
   // Keep a tiny profile record only for backward compatibility/data migration.
   try{
@@ -99,6 +146,17 @@ function start(){
 
   window.location.href="./planner.html";
 }
+
+const languageSelect=document.getElementById("languageSelect");
+if(languageSelect){
+  languageSelect.value=CURRENT_LANG;
+  languageSelect.onchange=e=>{
+    CURRENT_LANG=e.target.value;
+    localStorage.setItem(GLOBAL_LANGUAGE_KEY,CURRENT_LANG);
+    applyIndexLanguage();
+  };
+}
+applyIndexLanguage();
 
 document.getElementById("startBtn").onclick=start;
 document.getElementById("nameInput").addEventListener("keydown",e=>{

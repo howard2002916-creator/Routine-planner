@@ -1,4 +1,4 @@
-# Routine Planner — GitHub Pages v30
+# Routine Planner — GitHub Pages v31
 
 v21 adds **Shared Family Calendar** sync.
 
@@ -203,5 +203,45 @@ Photos do **not** sync between devices in v30. This avoids putting large image d
 
 ### Compatibility
 V30 keeps the same profile/local-storage keys as V29 and preserves existing routines, templates, parent comments, task-specific steps, support feedback, favourites, Family Calendar, notifications and child name.
+
+Frontend only — no Cloudflare Worker redeploy is required.
+
+
+## v31 — Multilingual Edition
+
+V31 adds one in-app language selector with:
+- English
+- 简体中文
+- 繁體中文
+
+### How it works
+- The language choice is saved locally on each device.
+- Parent and child devices can use different languages while sharing the same Family Calendar.
+- Built-in Activity Bank labels are language-neutral internally and displayed in the device language.
+- All 98 built-in “I’m stuck” guides have English, Simplified Chinese and Traditional Chinese versions.
+- User-created content is not automatically rewritten:
+  - custom activity names
+  - parent comments
+  - custom task names
+  - custom “I’m stuck” steps
+  - personalised environment-support wording
+- Shared Family Calendar data remains compatible with earlier versions.
+
+### Traditional Chinese
+Traditional Chinese uses child-friendly wording with some Hong Kong-friendly terminology where appropriate.
+
+### Simplified Chinese
+Simplified Chinese uses Simplified characters and common everyday wording.
+
+### Compatibility
+V31 preserves the existing V9 profile/data keys and all V30 features, including:
+- personalised environment setup
+- optional local photos
+- favourites
+- support feedback
+- custom “I’m stuck” steps
+- parent–child negotiation
+- Shared Family Calendar
+- notifications and timers
 
 Frontend only — no Cloudflare Worker redeploy is required.

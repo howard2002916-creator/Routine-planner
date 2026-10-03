@@ -547,6 +547,23 @@ body.sync-kid-mode .editTask{display:none}
   .space-custom-grid{grid-template-columns:1fr}
 }
 
+
+/* ===== v31 multilingual ===== */
+.planner-header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.language-switcher{
+  display:flex;align-items:center;gap:6px;padding:5px 7px;
+  border:1px solid #ded8ec;border-radius:12px;background:#fff
+}
+.language-switcher select{
+  border:0;padding:5px 6px;background:transparent;font-weight:800;min-width:125px
+}
+.language-switcher select:focus{outline:2px solid #b9afe2;outline-offset:2px}
+@media(max-width:560px){
+  .planner-header-actions{width:100%}
+  .language-switcher{flex:1}
+  .language-switcher select{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -554,7 +571,17 @@ body.sync-kid-mode .editTask{display:none}
 <header>
   <div class="planner-title-row">
     <h1>🌟 <span id="plannerNameTitle"></span>’s After-School Mission</h1>
-    <button id="changeProfileNameBtn" class="softbtn" type="button">✏️ Change name</button>
+    <div class="planner-header-actions">
+      <label class="language-switcher" title="Language">
+        <span>🌐</span>
+        <select id="languageSelect" aria-label="Language">
+          <option value="en">English</option>
+          <option value="zh-Hans">简体中文</option>
+          <option value="zh-Hant">繁體中文</option>
+        </select>
+      </label>
+      <button id="changeProfileNameBtn" class="softbtn" type="button">✏️ Change name</button>
+    </div>
   </div>
   <p class="sub">A flexible planner to build routines, choose supports, set times, use alarms, save progress, and problem-solve when the child gets stuck.</p>
 
@@ -1060,6 +1087,146 @@ if(!ACTIVE_PROFILE || !ACTIVE_PROFILE.id || !ACTIVE_PROFILE.name){
 const PROFILE_ID=ACTIVE_PROFILE?.id || "default";
 const APP_KEY=`otRoutinePlannerV9App_${PROFILE_ID}`;
 
+const GLOBAL_LANGUAGE_KEY="routinePlannerLanguage";
+const PROFILE_LANGUAGE_KEY=`routinePlannerLanguage_${PROFILE_ID}`;
+const SUPPORTED_LANGUAGES=["en","zh-Hans","zh-Hant"];
+
+let CURRENT_LANG=localStorage.getItem(PROFILE_LANGUAGE_KEY)
+  || localStorage.getItem(GLOBAL_LANGUAGE_KEY)
+  || "en";
+if(!SUPPORTED_LANGUAGES.includes(CURRENT_LANG)) CURRENT_LANG="en";
+
+const UI_TRANSLATIONS={
+  "zh-Hant":{"My After-School Mission":"我的放學後任務","’s After-School Mission":"的放學後任務","✏️ Change name":"✏️ 更改名字","A flexible planner to build routines, choose supports, set times, use alarms, save progress, and problem-solve when the child gets stuck.":"一個彈性的日程規劃工具，幫助建立流程、選擇支援、設定時間和提醒、儲存進度，並在孩子卡住時一步步解決問題。","Routine template:":"日程範本：","＋ New template":"＋ 新增範本","Rename":"重新命名","⧉ Duplicate":"⧉ 複製範本","Delete":"刪除","Use different templates for weekdays, therapy days, weekends, etc.":"可以為平日、治療日、週末等建立不同範本。","Load example":"載入示例","Clear current routine":"清除目前日程","Save now":"立即儲存","Print / Save PDF":"列印／儲存 PDF","🔔 Enable alarms":"🔔 開啟提醒","⚙️ Settings":"⚙️ 設定","Activity Bank":"活動庫","Drag a card into the plan. On touch devices, tap a card to add it.":"把活動卡拖到日程中；在觸控裝置上可直接點按加入。","No matching activities. Try another search or category.":"找不到相符活動，請試其他搜尋字詞或分類。","Add my own activity to the Activity Bank":"新增自己的活動到活動庫","⭐ Other":"⭐ 其他","❤️ Favourite":"❤️ 最愛","✅ Task":"✅ 任務","⏰ Reminder":"⏰ 提醒","📅 Schedule":"📅 日程","🏠 Home":"🏠 家中","🚿 Shower":"🚿 沖涼","🪥 Brush teeth":"🪥 刷牙","🧼 Wash hands":"🧼 洗手","👕 Clothes":"👕 衣服","👟 Shoes":"👟 鞋","🧢 Hat":"🧢 帽","🚽 Toilet":"🚽 廁所","🛏️ Bed / rest":"🛏️ 睡床／休息","💊 Medication":"💊 藥物","🥣 Breakfast":"🥣 早餐","🥪 Lunch":"🥪 午餐","🍽️ Dinner":"🍽️ 晚餐","🍎 Snack":"🍎 小食","🍌 Fruit":"🍌 水果","💧 Water":"💧 水","🥛 Milk":"🥛 牛奶","🍳 Cooking":"🍳 煮食","🎒 School bag":"🎒 書包","📚 Study":"📚 學習","📖 Reading":"📖 閱讀","✏️ Writing":"✏️ 寫作","🔢 Maths":"🔢 數學","💻 Online learning":"💻 網上學習","📝 Worksheet":"📝 工作紙","🧠 Thinking":"🧠 思考","🧺 Laundry":"🧺 洗衣","🧹 Cleaning":"🧹 清潔","🧽 Wipe / clean":"🧽 抹／清潔","🗑️ Rubbish":"🗑️ 垃圾","🧸 Pack toys":"🧸 收拾玩具","🐾 Pet care":"🐾 寵物照顧","🎮 Gaming":"🎮 遊戲","🎨 Drawing":"🎨 畫畫","🖍️ Colouring":"🖍️ 填色","🧩 Puzzle":"🧩 拼圖","🧱 Lego / building":"🧱 LEGO／砌建","🎲 Board game":"🎲 桌上遊戲","🎵 Music":"🎵 音樂","🎹 Piano":"🎹 鋼琴","📺 TV":"📺 電視","🎬 Movie":"🎬 電影","✂️ Craft":"✂️ 手工","😌 Calm":"😌 冷靜","🎧 Headphones":"🎧 耳機","🫧 Breathing":"🫧 呼吸","🧘 Stretch / yoga":"🧘 伸展／瑜伽","⏸️ Break":"⏸️ 休息","🌿 Quiet time":"🌿 安靜時間","🤗 Comfort":"🤗 舒適／安撫","🚶 Walk":"🚶 散步","🏃 Run":"🏃 跑步","🚲 Bike":"🚲 踩單車","⚽ Soccer":"⚽ 足球","🏀 Basketball":"🏀 籃球","🏊 Swimming":"🏊 游泳","🩰 Dance":"🩰 跳舞","🤸 Exercise":"🤸 運動","🛝 Playground":"🛝 遊樂場","👨‍👩‍👧 Family":"👨‍👩‍👧 家人","🧑‍🤝‍🧑 Friend":"🧑‍🤝‍🧑 朋友","💬 Talk":"💬 聊天","📞 Call":"📞 打電話","🙋 Ask for help":"🙋 尋求幫助","🎉 Party":"🎉 派對","🚗 Car":"🚗 汽車","🚌 Bus":"🚌 巴士","🚶‍➡️ Go out":"🚶‍➡️ 外出","🏫 School":"🏫 學校","🏥 Therapy / health":"🏥 治療／健康","🛒 Shopping":"🛒 購物","📚 Library":"📚 圖書館","➕ Add to Activity Bank":"➕ 加入活動庫","My Sequence":"我的日程","Drag tasks up or down. Each task can have a start time, duration, priority, warning, and status.":"可把任務上下拖動。每個任務都可設定開始時間、時長、優先度、提醒和狀態。","DOING NOW":"現在進行","NEXT":"下一個","LATER":"稍後","Progress:":"進度：","🎯 My Motivation":"🎯 我的動力","The child can create her own motivation items, choose one for today, set how long it lasts, and link it to tasks that need to be completed first.":"孩子可以建立自己的動力活動、選擇今天想要的項目、設定時間，並連結到需要先完成的任務。","➕ Add motivation":"➕ 新增動力","🔓 Unlock conditions":"🔓 解鎖條件","Choose which routine tasks need to be finished first.":"選擇哪些日程任務需要先完成。","First":"先",", then":"，然後","▶ Start motivation":"▶ 開始動力時間","⏸ Pause":"⏸ 暫停","⏯ Resume":"⏯ 繼續","■ Stop":"■ 停止","Choose a motivation item first.":"請先選擇一個動力項目。","🧰 My Support Toolkit":"🧰 我的支援工具箱","🆘 “I’m stuck” helper":"🆘「我卡住了」小幫手","If a task feels too big, choose it to see a task-specific step-by-step guide. Complete one small action at a time.":"如果任務感覺太大，可以選擇它查看專屬的分步指引。每次只完成一個小步驟。","Use current task":"使用目前任務","✨ Break it down":"✨ 拆細任務","DO THIS NOW":"現在先做這一步","Choose a task and press “Break it down”.":"選擇一個任務，然後按「拆細任務」。","➡ Next small step":"➡ 下一個小步驟","📋 Copy steps":"📋 複製步驟","↺ Reset progress":"↺ 重設進度","✏️ Edit steps":"✏️ 編輯步驟","↺ Reset default steps":"↺ 還原預設步驟","Every built-in Activity Bank task has its own prepared step-by-step guide. Custom activities use the offline helper when a prepared guide is not available.":"每個內建活動都有已準備好的分步指引。自訂活動沒有預設指引時會使用離線小幫手。","🧰 What might help me right now?":"🧰 現在有甚麼可以幫到我？","Choose one support if starting, focusing, or changing activities feels hard.":"如果開始、專注或轉換活動有困難，可以選一個支援方法。","Try the task-specific steps first. If you are still stuck, choose one support above.":"先試任務專屬步驟；如果仍然卡住，再選上面的支援方法。","⚙️ Settings & connections":"⚙️ 設定與連接","🔔 Alarm / reminder function":"🔔 提醒功能","Alarms are off. Click “Enable alarms” above.":"提醒目前已關閉。請按上方「開啟提醒」。","While the planner is open, the timer alarm works normally. Browser notifications may also appear while the page is still running in the background.":"日程工具開啟時，計時提醒會正常運作；頁面在背景運作時，瀏覽器也可能顯示通知。","The normal alarm works while the planner is open. Use the free notification setup below for lock-screen / switched-app / closed-app timer alerts.":"日程工具開啟時可使用一般提醒。若要在鎖屏、切換應用程式或關閉日程工具後收到計時通知，可使用下方的免費通知設定。","📲 Background timer notifications":"📲 背景計時通知","This connects the GitHub Pages planner to a free Cloudflare Worker. When a timer finishes, the notification can appear even if you switch apps, lock the iPad, or close the planner.":"這會把 GitHub Pages 日程工具連接到免費的 Cloudflare Worker。即使切換應用程式、鎖定 iPad 或關閉日程工具，計時結束時仍可收到通知。","Save server":"儲存伺服器","🔔 Enable notifications":"🔔 開啟通知","🧪 Test notification":"🧪 測試通知","Paste your Cloudflare Worker URL above, save it, then enable notifications.":"在上方貼上 Cloudflare Worker 網址並儲存，然後開啟通知。","iPhone/iPad: first open this GitHub Pages site in Safari → Share → Add to Home Screen. Then open the Home Screen app and enable notifications from there.":"iPhone／iPad：先在 Safari 開啟這個 GitHub Pages 網站 → 分享 → 加入主畫面。之後從主畫面開啟日程工具並啟用通知。","🔊 Alarm sound":"🔊 提醒聲音","Sound":"聲音","Gentle chime":"柔和提示音","Bell":"鈴聲","Double beep":"雙提示聲","Urgent alarm":"強提醒","Volume:":"音量：","▶ Test sound":"▶ 測試聲音","■ Stop sound":"■ 停止聲音","Phone browsers may limit maximum loudness. The urgent alarm uses a repeated pattern so it is easier to notice even if the absolute volume is capped.":"手機瀏覽器可能限制最高音量。強提醒會重複播放，讓你較容易注意到。","👨‍👩‍👧 Shared Family Calendar":"👨‍👩‍👧 共享家庭日程","Link the child’s device and a parent device to the same routine. Parent mode can edit the routine; Kid mode can run timers, mark tasks done and use the routine.":"把孩子和家長的裝置連到同一個日程。家長模式可以編輯日程；孩子模式可以使用日程、計時和標記完成。","Create a shared calendar (Parent)":"建立共享日程（家長）","Uses the routine currently shown on this device as the starting calendar.":"以這部裝置目前顯示的日程作為起始版本。","＋ Create shared calendar":"＋ 建立共享日程","Join an existing calendar":"加入現有日程","🧒 Join as Kid":"🧒 以孩子身分加入","👤 Join as Parent":"👤 以家長身分加入","Parent":"家長","Connected calendar":"已連接的日程","Share the Calendar Code with the child’s device. Keep the Parent PIN private.":"把日程代碼分享給孩子的裝置，家長 PIN 請保密。","Copy code":"複製代碼","↻ Sync now":"↻ 立即同步","Disconnect this device":"中斷這部裝置","Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.":"尚未連接。可在家長裝置建立日程，或使用現有日程代碼加入。","💾 Save progress on phone / tablet":"💾 在手機／平板儲存進度","Auto-save is on. Changes are saved in this browser on this device.":"自動儲存已開啟。更改會儲存在這部裝置的瀏覽器中。","⬇ Export backup":"⬇ 匯出備份","⬆ Import backup":"⬆ 匯入備份","For the most reliable phone use, keep a backup file. Some mobile browsers may clear local file data, especially when the HTML is opened from the Files app rather than a regular website.":"為了更可靠地使用，建議保留備份檔案。部分手機瀏覽器可能清除本機資料，尤其是從「檔案」應用程式開啟 HTML，而不是從一般網站開啟時。","Item removed.":"項目已移除。","↩ Undo":"↩ 復原","Best used collaboratively: first let the child choose the order and supports, then review what seems realistic, what is hardest, and what needs adjusting.":"建議以合作方式使用：先讓孩子選擇順序和支援方法，再一起檢視哪些安排可行、哪裡最困難，以及需要怎樣調整。","ACTIVITY TIMER":"活動計時器","Start time":"開始時間","Duration (min)":"時長（分鐘）","Priority":"優先度","Must do":"必須做","Optional":"可選","Warning":"提前提醒","None":"沒有","Status":"狀態","▶ Resume":"▶ 繼續","▶ Start":"▶ 開始","↺ Timer":"↺ 重設計時器","Set a start time to see end time":"設定開始時間後會顯示結束時間","Edit activity":"編輯活動","Activity name":"活動名稱","Activity icon":"活動圖示","Save activity":"儲存活動","Cancel":"取消","Parent comment":"家長留言","e.g. We agreed to try homework before gaming today.":"例如：今天我們約定先做功課，再玩遊戲。","No favourite supports yet. When a strategy works well, tap “This helps me”.":"尚未儲存常用支援方法。當某個方法有幫助時，可按「這個方法幫到我」。","Tap to use this support":"點按使用這個支援方法","Just start for 5 minutes":"先開始5分鐘","Try the task for only five minutes. Decide what to do when the timer finishes.":"只試做這個任務5分鐘。計時結束後再決定下一步。","One step at a time":"一次一步","Look at only the next small step instead of the whole task.":"只看下一個小步驟，不用一次想完整個任務。","Make my space easier":"讓我的環境更容易開始","Reduce distractions and get the space ready for the task.":"減少干擾，讓環境更適合做這個任務。","Take a planned break":"有計劃地休息","Take a short timed break, then decide whether you are ready to return.":"先做一個有計時的短休息，再決定是否準備好回到任務。","Ask for help":"尋求幫助","Choose a simple sentence to tell someone what kind of help you need.":"選一句簡單說話，告訴別人你需要甚麼幫助。","Work with someone nearby":"和一個人在附近一起做","Ask someone to sit nearby while you get started. They do not need to do the task for you.":"請一個人在你開始時坐在附近，他不需要替你完成任務。","♡ This helps me":"♡ 這個方法幫到我","❤️ In My Support Toolkit":"❤️ 已加入我的支援工具箱","Did this help?":"這有幫助嗎？","👍 Yes":"👍 有","😐 A little":"😐 有一點","👎 Not really":"👎 不太有","TRY THIS WITH":"用在這個任務","Get the things you need.":"準備需要的物品。","Set a 5-minute timer.":"設定5分鐘計時器。","Focus only on this task until the timer finishes.":"在計時結束前只專注這個任務。","Then choose: continue, or take a planned break.":"之後再選擇：繼續，或有計劃地休息。","Restart 5 minutes":"重新開始5分鐘","▶ Start 5-minute timer":"▶ 開始5分鐘計時","FOCUS ON JUST ONE STEP":"只專注一個小步驟","Add a routine task first.":"請先加入一個日程任務。","All small steps are complete.":"所有小步驟都完成了。","Show all task steps":"顯示所有任務步驟","GET READY FOR":"準備進行","✅ When the space feels ready, start only the first small step.":"✅ 當環境準備好，只先做第一個小步驟。","PAUSE FROM":"暫停這個任務","Choose a short break with a clear ending.":"選一個有清楚結束時間的短休息。","3 min":"3 分鐘","5 min":"5 分鐘","10 min":"10 分鐘","■ Stop break timer":"■ 停止休息計時","🔔 When the break finishes, look at your next small step before deciding what to do.":"🔔 休息結束後，先看看下一個小步驟，再決定要做甚麼。","I NEED HELP WITH":"我在這裡需要幫助","Tap a sentence to copy it, or say it out loud.":"點按一句話即可複製，或直接說出來。","Can you show me the first step?":"你可以示範第一步給我看嗎？","I don’t understand this part.":"我不明白這一部分。","Can you do the first one with me?":"你可以和我一起做第一個嗎？","I need a short break.":"我需要短暫休息。","Can you remind me what to do next?":"你可以提醒我下一步要做甚麼嗎？","✓ Sentence copied.":"✓ 句子已複製。","STARTING":"開始這個任務","Having someone nearby can make it easier to start and keep going.":"有人在附近陪著，可能會較容易開始和繼續。","YOU CAN SAY":"你可以說","“Can you sit near me while I start?”":"「我開始時，你可以坐在我旁邊嗎？」","They do not need to do the task for you. They can simply stay nearby while you begin.":"對方不需要替你做，只要在你開始時待在附近便可以。","PERSONALISED SETUP":"個人化環境設定","Choose what would make this space easier.":"選擇哪些方法可以令這個環境更容易使用。","⭐ My usual setup":"⭐ 我平常的設定","Tick the items you usually use, then save them as your usual setup.":"勾選你平常會用的項目，再儲存成常用設定。","No usual setup saved yet.":"尚未儲存常用設定。","⭐ Save checked as my usual setup":"⭐ 把已勾選項目儲存為常用設定","✓ Tick my usual setup":"✓ 勾選我的常用設定","➕ Add my own support":"➕ 新增自己的支援方法","Add a personalised environmental support with an emoji and your own wording.":"用 emoji 和自己的文字新增個人化環境支援。","＋ Add support":"＋ 新增支援","↺ Reset defaults":"↺ 還原預設項目","📷 You can add a photo when editing any item. Photos are saved on this device only and are not synced to other devices. Emoji and text are synced through the shared calendar.":"📷 編輯項目時可以加入照片。照片只會儲存在這部裝置，不會同步到其他裝置；emoji 和文字則會透過共享日程同步。","✏️ Edit support":"✏️ 編輯支援","Remove photo":"移除照片","Save":"儲存","Photo stays on this device only. The emoji and text can sync across family devices.":"照片只保留在這部裝置；emoji 和文字可以在家庭裝置之間同步。","Please enter a support name.":"請輸入支援名稱。","Other":"其他","Headphones":"耳機","Fidget / comfort item":"小玩具／安撫物品","Light":"燈光","Window / curtains":"窗／窗簾","Hat / cap":"帽","Chair":"椅子","Drink":"飲品","Device":"裝置","Pet":"寵物","Calm space":"平靜空間","Quiet":"安靜","Clear space":"清理空間","Put away things I do not need.":"把暫時不需要的物品收起。","Reduce noise or use headphones if helpful.":"減少噪音；如有幫助可以戴耳機。","Get a drink of water.":"準備一杯水。","Keep only the things I need in front of me.":"面前只留下需要的物品。","Sit or stand in a comfortable working position.":"用一個舒服的坐姿或站姿。","💬 Request sent":"💬 已送出請求","Waiting for Parent mode.":"等待家長模式回覆。","Pending":"等待中","✓ Agreed":"✓ 已同意","Not changed":"未更改","💬 Can we change this?":"💬 我們可以改一下嗎？","Do it later":"遲一點做","I need more time":"我需要多一點時間","I need help":"我需要幫助","I want a break first":"我想先休息","Send request":"送出請求","✓ Agree":"✓ 同意","Dismiss":"不接受","Agree moves this task to the end of the routine.":"同意後會把這個任務移到日程最後。","Agree adds 10 minutes.":"同意後會增加10分鐘。","Agree adds a 5-minute Short break before this task.":"同意後會在這個任務前加入5分鐘小休。","Agree acknowledges that help is needed.":"同意後表示知道孩子需要幫助。","✏️ Customise these steps":"✏️ 自訂這些步驟","Make the instructions match this child’s real routine. You can add, delete, or reorder steps.":"讓指示配合這個孩子的實際流程。你可以新增、刪除或重新排序步驟。","＋ Add step":"＋ 新增步驟","✓ Save custom steps":"✓ 儲存自訂步驟","New small step":"新的小步驟","Keep at least one step.":"請至少保留一個步驟。","Maximum 12 steps.":"最多12個步驟。","All":"全部","Favourites":"最愛","Daily life":"日常生活","Meals":"飲食","School":"學校","Self-care":"自我照顧","Chores":"家務","Fun":"休閒","Regulation":"調節","Exercise":"運動","Social":"社交","Going out":"外出","My activities":"我的活動","Done":"完成","Choose":"選擇","Remove":"移除","Selected":"已選擇","Locked":"未解鎖","Unlocked":"已解鎖","Parent mode":"家長模式","Kid mode":"孩子模式","Enter your name once. This device will remember it and open your planner automatically next time.":"第一次輸入名字後，這部裝置會記住，下次會自動打開你的日程。","What should I call you?":"我應該怎樣稱呼你？","Start my planner":"開始我的日程","Your name and planner entries are saved in this browser on this device. If browser/site data is cleared, the saved information can be lost.":"你的名字和日程內容會儲存在這部裝置的瀏覽器中。如果清除瀏覽器或網站資料，已儲存的內容可能會遺失。","e.g. Alex":"例如 Alex","🔎 Search activities...":"🔎 搜尋活動...","Search activities":"搜尋活動","Activity categories":"活動分類","e.g. Feed the pet":"例如：餵寵物","Choose icon":"選擇圖示","e.g. Minecraft / Drawing / YouTube":"例如：Minecraft／畫畫／YouTube","Minutes":"分鐘","Calendar name, e.g. Alex's Routine":"日程名稱，例如 Alex 的日程","Parent PIN (4–8 digits)":"家長 PIN（4–8 位數字）","Calendar code, e.g. ABCD-2345":"日程代碼，例如 ABCD-2345","Parent PIN (only for Parent mode)":"家長 PIN（只供家長模式使用）","e.g. Use the small lamp":"例如：使用小燈","Built-in breakdown:":"內建分步指引：","this activity already has a prepared step-by-step routine.":"這個活動已經有準備好的分步流程。","✨ AI breakdown:":"✨ AI 分步指引：","generated for this custom activity. Review the steps with the child and change anything that does not fit.":"已為這個自訂活動建立分步指引。請和孩子一起查看，並修改不合適的地方。","Offline breakdown:":"離線分步指引：","AI is not connected on this site, so the planner created a local 4–5 step version instead.":"此網站未連接 AI，因此日程工具改為在本機建立4–5個步驟。","✨ Creating a simple step-by-step breakdown…":"✨ 正在建立簡單的分步指引…","No routine tasks yet":"目前還沒有日程任務","Choose a task first.":"請先選擇一個任務。","✓ Steps copied.":"✓ 步驟已複製。","Copy was blocked by this browser.":"瀏覽器阻止了複製功能。","Ends at":"結束時間","choose a motivation":"選擇一個動力項目","Remove from favourites":"從最愛移除","Add to favourites":"加入最愛","Remove from Activity Bank":"從活動庫移除","Child request:":"孩子的請求：","In-page alarms are ON.":"頁面內提醒已開啟。","Notification setup needs to be enabled again on this device.":"這部裝置需要重新啟用通知設定。","✓ Background notifications are enabled on this device.":"✓ 這部裝置已開啟背景通知。","Please paste the HTTPS workers.dev URL from Cloudflare.":"請貼上 Cloudflare 的 HTTPS workers.dev 網址。","Server saved. Now tap Enable notifications.":"伺服器已儲存。現在請按「開啟通知」。","Enable notifications first.":"請先開啟通知。","Test sent. You should receive a system notification shortly.":"測試通知已送出，稍後應會收到系統通知。","Test failed:":"測試失敗：","Background notifications are not available here:":"這裡無法使用背景通知：","Auto-saved on this device at":"已自動儲存於這部裝置，時間：","Name changed to":"名字已更改為","Existing planner data was kept.":"現有日程資料已保留。","Please enter a name.":"請輸入名字。","Please enter an activity name.":"請輸入活動名稱。","5 minutes finished.":"5分鐘完成。","Do you want to continue, or take a planned break?":"你想繼續，還是先有計劃地休息？","Break finished.":"休息結束。","Check your task and decide whether you are ready to go back.":"看看你的任務，再決定是否準備好回去繼續。","Current":"目前","Activity":"活動","min":"分鐘"},
+  "zh-Hans":{"My After-School Mission":"我的放学后任务","’s After-School Mission":"的放学后任务","✏️ Change name":"✏️ 更改名字","A flexible planner to build routines, choose supports, set times, use alarms, save progress, and problem-solve when the child gets stuck.":"一个弹性的日程规划工具，帮助建立流程、选择支援、设定时间和提醒、储存进度，并在孩子卡住时一步步解决问题。","Routine template:":"日程范本：","＋ New template":"＋ 新增范本","Rename":"重新命名","⧉ Duplicate":"⧉ 复制范本","Delete":"删除","Use different templates for weekdays, therapy days, weekends, etc.":"可以为平日、治疗日、周末等建立不同范本。","Load example":"载入示例","Clear current routine":"清除目前日程","Save now":"立即储存","Print / Save PDF":"列印／储存 PDF","🔔 Enable alarms":"🔔 开启提醒","⚙️ Settings":"⚙️ 设定","Activity Bank":"活动库","Drag a card into the plan. On touch devices, tap a card to add it.":"把活动卡拖到日程中；在触控装置上可直接点按加入。","No matching activities. Try another search or category.":"找不到相符活动，请试其他搜寻字词或分类。","Add my own activity to the Activity Bank":"新增自己的活动到活动库","⭐ Other":"⭐ 其他","❤️ Favourite":"❤️ 最爱","✅ Task":"✅ 任务","⏰ Reminder":"⏰ 提醒","📅 Schedule":"📅 日程","🏠 Home":"🏠 家中","🚿 Shower":"🚿 洗澡","🪥 Brush teeth":"🪥 刷牙","🧼 Wash hands":"🧼 洗手","👕 Clothes":"👕 衣服","👟 Shoes":"👟 鞋","🧢 Hat":"🧢 帽","🚽 Toilet":"🚽 厕所","🛏️ Bed / rest":"🛏️ 睡床／休息","💊 Medication":"💊 药物","🥣 Breakfast":"🥣 早餐","🥪 Lunch":"🥪 午餐","🍽️ Dinner":"🍽️ 晚餐","🍎 Snack":"🍎 点心","🍌 Fruit":"🍌 水果","💧 Water":"💧 水","🥛 Milk":"🥛 牛奶","🍳 Cooking":"🍳 煮食","🎒 School bag":"🎒 书包","📚 Study":"📚 学习","📖 Reading":"📖 阅读","✏️ Writing":"✏️ 写作","🔢 Maths":"🔢 数学","💻 Online learning":"💻 网上学习","📝 Worksheet":"📝 工作纸","🧠 Thinking":"🧠 思考","🧺 Laundry":"🧺 洗衣","🧹 Cleaning":"🧹 清洁","🧽 Wipe / clean":"🧽 抹／清洁","🗑️ Rubbish":"🗑️ 垃圾","🧸 Pack toys":"🧸 收拾玩具","🐾 Pet care":"🐾 宠物照顾","🎮 Gaming":"🎮 玩游戏","🎨 Drawing":"🎨 画画","🖍️ Colouring":"🖍️ 填色","🧩 Puzzle":"🧩 拼图","🧱 Lego / building":"🧱 LEGO／砌建","🎲 Board game":"🎲 桌上游戏","🎵 Music":"🎵 音乐","🎹 Piano":"🎹 钢琴","📺 TV":"📺 电视","🎬 Movie":"🎬 电影","✂️ Craft":"✂️ 手工","😌 Calm":"😌 冷静","🎧 Headphones":"🎧 耳机","🫧 Breathing":"🫧 呼吸","🧘 Stretch / yoga":"🧘 伸展／瑜伽","⏸️ Break":"⏸️ 休息","🌿 Quiet time":"🌿 安静时间","🤗 Comfort":"🤗 舒适／安抚","🚶 Walk":"🚶 散步","🏃 Run":"🏃 跑步","🚲 Bike":"🚲 骑自行车","⚽ Soccer":"⚽ 足球","🏀 Basketball":"🏀 篮球","🏊 Swimming":"🏊 游泳","🩰 Dance":"🩰 跳舞","🤸 Exercise":"🤸 运动","🛝 Playground":"🛝 游乐场","👨‍👩‍👧 Family":"👨‍👩‍👧 家人","🧑‍🤝‍🧑 Friend":"🧑‍🤝‍🧑 朋友","💬 Talk":"💬 聊天","📞 Call":"📞 打电话","🙋 Ask for help":"🙋 寻求帮助","🎉 Party":"🎉 派对","🚗 Car":"🚗 汽车","🚌 Bus":"🚌 巴士","🚶‍➡️ Go out":"🚶‍➡️ 外出","🏫 School":"🏫 学校","🏥 Therapy / health":"🏥 治疗／健康","🛒 Shopping":"🛒 购物","📚 Library":"📚 图书馆","➕ Add to Activity Bank":"➕ 加入活动库","My Sequence":"我的日程","Drag tasks up or down. Each task can have a start time, duration, priority, warning, and status.":"可把任务上下拖动。每个任务都可设定开始时间、时长、优先度、提醒和状态。","DOING NOW":"现在进行","NEXT":"下一个","LATER":"稍后","Progress:":"进度：","🎯 My Motivation":"🎯 我的动力","The child can create her own motivation items, choose one for today, set how long it lasts, and link it to tasks that need to be completed first.":"孩子可以建立自己的动力活动、选择今天想要的项目、设定时间，并连结到需要先完成的任务。","➕ Add motivation":"➕ 新增动力","🔓 Unlock conditions":"🔓 解锁条件","Choose which routine tasks need to be finished first.":"选择哪些日程任务需要先完成。","First":"先",", then":"，然后","▶ Start motivation":"▶ 开始动力时间","⏸ Pause":"⏸ 暂停","⏯ Resume":"⏯ 继续","■ Stop":"■ 停止","Choose a motivation item first.":"请先选择一个动力项目。","🧰 My Support Toolkit":"🧰 我的支援工具箱","🆘 “I’m stuck” helper":"🆘“我卡住了”小帮手","If a task feels too big, choose it to see a task-specific step-by-step guide. Complete one small action at a time.":"如果任务感觉太大，可以选择它查看专属的分步指引。每次只完成一个小步骤。","Use current task":"使用目前任务","✨ Break it down":"✨ 拆细任务","DO THIS NOW":"现在先做这一步","Choose a task and press “Break it down”.":"选择一个任务，然后按「拆细任务」。","➡ Next small step":"➡ 下一个小步骤","📋 Copy steps":"📋 复制步骤","↺ Reset progress":"↺ 重设进度","✏️ Edit steps":"✏️ 编辑步骤","↺ Reset default steps":"↺ 还原预设步骤","Every built-in Activity Bank task has its own prepared step-by-step guide. Custom activities use the offline helper when a prepared guide is not available.":"每个内建活动都有已准备好的分步指引。自订活动没有预设指引时会使用离线小帮手。","🧰 What might help me right now?":"🧰 现在什么可以帮助我？","Choose one support if starting, focusing, or changing activities feels hard.":"如果开始、专注或转换活动有困难，可以选一个支援方法。","Try the task-specific steps first. If you are still stuck, choose one support above.":"先试任务专属步骤；如果仍然卡住，再选上面的支援方法。","⚙️ Settings & connections":"⚙️ 设定与连接","🔔 Alarm / reminder function":"🔔 提醒功能","Alarms are off. Click “Enable alarms” above.":"提醒目前已关闭。请按上方「开启提醒」。","While the planner is open, the timer alarm works normally. Browser notifications may also appear while the page is still running in the background.":"日程工具开启时，计时提醒会正常运作；页面在背景运作时，浏览器也可能显示通知。","The normal alarm works while the planner is open. Use the free notification setup below for lock-screen / switched-app / closed-app timer alerts.":"日程工具开启时可使用一般提醒。若要在锁屏、切换应用程式或关闭日程工具后收到计时通知，可使用下方的免费通知设定。","📲 Background timer notifications":"📲 背景计时通知","This connects the GitHub Pages planner to a free Cloudflare Worker. When a timer finishes, the notification can appear even if you switch apps, lock the iPad, or close the planner.":"这会把 GitHub Pages 日程工具连接到免费的 Cloudflare Worker。即使切换应用程式、锁定 iPad 或关闭日程工具，计时结束时仍可收到通知。","Save server":"储存伺服器","🔔 Enable notifications":"🔔 开启通知","🧪 Test notification":"🧪 测试通知","Paste your Cloudflare Worker URL above, save it, then enable notifications.":"在上方贴上 Cloudflare Worker 网址并储存，然后开启通知。","iPhone/iPad: first open this GitHub Pages site in Safari → Share → Add to Home Screen. Then open the Home Screen app and enable notifications from there.":"iPhone／iPad：先在 Safari 开启这个 GitHub Pages 网站 → 分享 → 加入主画面。之后从主画面开启日程工具并启用通知。","🔊 Alarm sound":"🔊 提醒声音","Sound":"声音","Gentle chime":"柔和提示音","Bell":"铃声","Double beep":"双提示声","Urgent alarm":"强提醒","Volume:":"音量：","▶ Test sound":"▶ 测试声音","■ Stop sound":"■ 停止声音","Phone browsers may limit maximum loudness. The urgent alarm uses a repeated pattern so it is easier to notice even if the absolute volume is capped.":"手机浏览器可能限制最高音量。强提醒会重复播放，让你较容易注意到。","👨‍👩‍👧 Shared Family Calendar":"👨‍👩‍👧 共享家庭日程","Link the child’s device and a parent device to the same routine. Parent mode can edit the routine; Kid mode can run timers, mark tasks done and use the routine.":"把孩子和家长的装置连到同一个日程。家长模式可以编辑日程；孩子模式可以使用日程、计时和标记完成。","Create a shared calendar (Parent)":"建立共享日程（家长）","Uses the routine currently shown on this device as the starting calendar.":"以这部装置目前显示的日程作为起始版本。","＋ Create shared calendar":"＋ 建立共享日程","Join an existing calendar":"加入现有日程","🧒 Join as Kid":"🧒 以孩子身分加入","👤 Join as Parent":"👤 以家长身分加入","Parent":"家长","Connected calendar":"已连接的日程","Share the Calendar Code with the child’s device. Keep the Parent PIN private.":"把日程代码分享给孩子的装置，家长 PIN 请保密。","Copy code":"复制代码","↻ Sync now":"↻ 立即同步","Disconnect this device":"中断这部装置","Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.":"尚未连接。可在家长装置建立日程，或使用现有日程代码加入。","💾 Save progress on phone / tablet":"💾 在手机／平板储存进度","Auto-save is on. Changes are saved in this browser on this device.":"自动储存已开启。更改会储存在这部装置的浏览器中。","⬇ Export backup":"⬇ 汇出备份","⬆ Import backup":"⬆ 汇入备份","For the most reliable phone use, keep a backup file. Some mobile browsers may clear local file data, especially when the HTML is opened from the Files app rather than a regular website.":"为了更可靠地使用，建议保留备份档案。部分手机浏览器可能清除本机资料，尤其是从「档案」应用程式开启 HTML，而不是从一般网站开启时。","Item removed.":"项目已移除。","↩ Undo":"↩ 复原","Best used collaboratively: first let the child choose the order and supports, then review what seems realistic, what is hardest, and what needs adjusting.":"建议以合作方式使用：先让孩子选择顺序和支援方法，再一起检视哪些安排可行、哪里最困难，以及需要怎样调整。","ACTIVITY TIMER":"活动计时器","Start time":"开始时间","Duration (min)":"时长（分钟）","Priority":"优先度","Must do":"必须做","Optional":"可选","Warning":"提前提醒","None":"没有","Status":"状态","▶ Resume":"▶ 继续","▶ Start":"▶ 开始","↺ Timer":"↺ 重设计时器","Set a start time to see end time":"设定开始时间后会显示结束时间","Edit activity":"编辑活动","Activity name":"活动名称","Activity icon":"活动图示","Save activity":"储存活动","Cancel":"取消","Parent comment":"家长留言","e.g. We agreed to try homework before gaming today.":"例如：今天我们约定先做功课，再玩游戏。","No favourite supports yet. When a strategy works well, tap “This helps me”.":"尚未储存常用支援方法。当某个方法有帮助时，可按「这个方法帮到我」。","Tap to use this support":"点按使用这个支援方法","Just start for 5 minutes":"先开始5分钟","Try the task for only five minutes. Decide what to do when the timer finishes.":"只试做这个任务5分钟。计时结束后再决定下一步。","One step at a time":"一次一步","Look at only the next small step instead of the whole task.":"只看下一个小步骤，不用一次想完整个任务。","Make my space easier":"让我的环境更容易开始","Reduce distractions and get the space ready for the task.":"减少干扰，让环境更适合做这个任务。","Take a planned break":"按计划休息","Take a short timed break, then decide whether you are ready to return.":"先做一个有计时的短休息，再决定是否准备好回到任务。","Ask for help":"寻求帮助","Choose a simple sentence to tell someone what kind of help you need.":"选一句简单说话，告诉别人你需要什么帮助。","Work with someone nearby":"让一个人陪在附近","Ask someone to sit nearby while you get started. They do not need to do the task for you.":"请一个人在你开始时坐在附近，他不需要替你完成任务。","♡ This helps me":"♡ 这个方法帮到我","❤️ In My Support Toolkit":"❤️ 已加入我的支援工具箱","Did this help?":"这有帮助吗？","👍 Yes":"👍 有","😐 A little":"😐 有一点","👎 Not really":"👎 不太有","TRY THIS WITH":"用在这个任务","Get the things you need.":"准备需要的物品。","Set a 5-minute timer.":"设定5分钟计时器。","Focus only on this task until the timer finishes.":"在计时结束前只专注这个任务。","Then choose: continue, or take a planned break.":"之后再选择：继续，或有计划地休息。","Restart 5 minutes":"重新开始5分钟","▶ Start 5-minute timer":"▶ 开始5分钟计时","FOCUS ON JUST ONE STEP":"只专注一个小步骤","Add a routine task first.":"请先加入一个日程任务。","All small steps are complete.":"所有小步骤都完成了。","Show all task steps":"显示所有任务步骤","GET READY FOR":"准备进行","✅ When the space feels ready, start only the first small step.":"✅ 当环境准备好，只先做第一个小步骤。","PAUSE FROM":"暂停这个任务","Choose a short break with a clear ending.":"选一个有清楚结束时间的短休息。","3 min":"3 分钟","5 min":"5 分钟","10 min":"10 分钟","■ Stop break timer":"■ 停止休息计时","🔔 When the break finishes, look at your next small step before deciding what to do.":"🔔 休息结束后，先看看下一个小步骤，再决定要做什么。","I NEED HELP WITH":"我在这里需要帮助","Tap a sentence to copy it, or say it out loud.":"点按一句话即可复制，或直接说出来。","Can you show me the first step?":"你可以示范第一步给我看吗？","I don’t understand this part.":"我不明白这一部分。","Can you do the first one with me?":"你可以和我一起做第一个吗？","I need a short break.":"我需要短暂休息。","Can you remind me what to do next?":"你可以提醒我下一步要做什么吗？","✓ Sentence copied.":"✓ 句子已复制。","STARTING":"开始这个任务","Having someone nearby can make it easier to start and keep going.":"有人在附近陪着，可能会较容易开始和继续。","YOU CAN SAY":"你可以说","“Can you sit near me while I start?”":"「我开始时，你可以坐在我旁边吗？」","They do not need to do the task for you. They can simply stay nearby while you begin.":"对方不需要替你做，只要在你开始时待在附近便可以。","PERSONALISED SETUP":"个人化环境设定","Choose what would make this space easier.":"选择哪些方法可以令这个环境更容易使用。","⭐ My usual setup":"⭐ 我平常的设定","Tick the items you usually use, then save them as your usual setup.":"勾选你平常会用的项目，再储存成常用设定。","No usual setup saved yet.":"尚未储存常用设定。","⭐ Save checked as my usual setup":"⭐ 把已勾选项目储存为常用设定","✓ Tick my usual setup":"✓ 勾选我的常用设定","➕ Add my own support":"➕ 新增自己的支援方法","Add a personalised environmental support with an emoji and your own wording.":"用 emoji 和自己的文字新增个人化环境支援。","＋ Add support":"＋ 新增支援","↺ Reset defaults":"↺ 还原预设项目","📷 You can add a photo when editing any item. Photos are saved on this device only and are not synced to other devices. Emoji and text are synced through the shared calendar.":"📷 编辑项目时可以加入照片。照片只会储存在这部装置，不会同步到其他装置；emoji 和文字则会透过共享日程同步。","✏️ Edit support":"✏️ 编辑支援","Remove photo":"移除照片","Save":"储存","Photo stays on this device only. The emoji and text can sync across family devices.":"照片只保留在这部装置；emoji 和文字可以在家庭装置之间同步。","Please enter a support name.":"请输入支援名称。","Other":"其他","Headphones":"耳机","Fidget / comfort item":"小玩具／安抚物品","Light":"灯光","Window / curtains":"窗／窗帘","Hat / cap":"帽","Chair":"椅子","Drink":"饮品","Device":"装置","Pet":"宠物","Calm space":"平静空间","Quiet":"安静","Clear space":"清理空间","Put away things I do not need.":"把暂时不需要的物品收起。","Reduce noise or use headphones if helpful.":"减少噪音；如有帮助可以戴耳机。","Get a drink of water.":"准备一杯水。","Keep only the things I need in front of me.":"面前只留下需要的物品。","Sit or stand in a comfortable working position.":"用一个舒服的坐姿或站姿。","💬 Request sent":"💬 已送出请求","Waiting for Parent mode.":"等待家长模式回覆。","Pending":"等待中","✓ Agreed":"✓ 已同意","Not changed":"未更改","💬 Can we change this?":"💬 我们可以改一下吗？","Do it later":"晚一点做","I need more time":"我需要多一点时间","I need help":"我需要帮助","I want a break first":"我想先休息","Send request":"送出请求","✓ Agree":"✓ 同意","Dismiss":"不接受","Agree moves this task to the end of the routine.":"同意后会把这个任务移到日程最后。","Agree adds 10 minutes.":"同意后会增加10分钟。","Agree adds a 5-minute Short break before this task.":"同意后会在这个任务前加入5分钟小休。","Agree acknowledges that help is needed.":"同意后表示知道孩子需要帮助。","✏️ Customise these steps":"✏️ 自订这些步骤","Make the instructions match this child’s real routine. You can add, delete, or reorder steps.":"让指示配合这个孩子的实际流程。你可以新增、删除或重新排序步骤。","＋ Add step":"＋ 新增步骤","✓ Save custom steps":"✓ 储存自订步骤","New small step":"新的小步骤","Keep at least one step.":"请至少保留一个步骤。","Maximum 12 steps.":"最多12个步骤。","All":"全部","Favourites":"最爱","Daily life":"日常生活","Meals":"饮食","School":"学校","Self-care":"自我照顾","Chores":"家务","Fun":"休闲","Regulation":"调节","Exercise":"运动","Social":"社交","Going out":"外出","My activities":"我的活动","Done":"完成","Choose":"选择","Remove":"移除","Selected":"已选择","Locked":"未解锁","Unlocked":"已解锁","Parent mode":"家长模式","Kid mode":"孩子模式","Enter your name once. This device will remember it and open your planner automatically next time.":"第一次输入名字后，这部装置会记住，下次会自动打开你的日程。","What should I call you?":"我应该怎么称呼你？","Start my planner":"开始我的日程","Your name and planner entries are saved in this browser on this device. If browser/site data is cleared, the saved information can be lost.":"你的名字和日程内容会储存在这部装置的浏览器中。如果清除浏览器或网站资料，已储存的内容可能会遗失。","e.g. Alex":"例如 Alex","🔎 Search activities...":"🔎 搜寻活动...","Search activities":"搜寻活动","Activity categories":"活动分类","e.g. Feed the pet":"例如：喂宠物","Choose icon":"选择图示","e.g. Minecraft / Drawing / YouTube":"例如：Minecraft／画画／YouTube","Minutes":"分钟","Calendar name, e.g. Alex's Routine":"日程名称，例如 Alex 的日程","Parent PIN (4–8 digits)":"家长 PIN（4–8 位数字）","Calendar code, e.g. ABCD-2345":"日程代码，例如 ABCD-2345","Parent PIN (only for Parent mode)":"家长 PIN（只供家长模式使用）","e.g. Use the small lamp":"例如：使用小灯","Built-in breakdown:":"内建分步指引：","this activity already has a prepared step-by-step routine.":"这个活动已经有准备好的分步流程。","✨ AI breakdown:":"✨ AI 分步指引：","generated for this custom activity. Review the steps with the child and change anything that does not fit.":"已为这个自订活动建立分步指引。请和孩子一起查看，并修改不合适的地方。","Offline breakdown:":"离线分步指引：","AI is not connected on this site, so the planner created a local 4–5 step version instead.":"此网站未连接 AI，因此日程工具改为在本机建立4–5个步骤。","✨ Creating a simple step-by-step breakdown…":"✨ 正在建立简单的分步指引…","No routine tasks yet":"目前还没有日程任务","Choose a task first.":"请先选择一个任务。","✓ Steps copied.":"✓ 步骤已复制。","Copy was blocked by this browser.":"浏览器阻止了复制功能。","Ends at":"结束时间","choose a motivation":"选择一个动力项目","Remove from favourites":"从最爱移除","Add to favourites":"加入最爱","Remove from Activity Bank":"从活动库移除","Child request:":"孩子的请求：","In-page alarms are ON.":"页面内提醒已开启。","Notification setup needs to be enabled again on this device.":"这部装置需要重新启用通知设定。","✓ Background notifications are enabled on this device.":"✓ 这部装置已开启背景通知。","Please paste the HTTPS workers.dev URL from Cloudflare.":"请贴上 Cloudflare 的 HTTPS workers.dev 网址。","Server saved. Now tap Enable notifications.":"伺服器已储存。现在请按「开启通知」。","Enable notifications first.":"请先开启通知。","Test sent. You should receive a system notification shortly.":"测试通知已送出，稍后应会收到系统通知。","Test failed:":"测试失败：","Background notifications are not available here:":"这里无法使用背景通知：","Auto-saved on this device at":"已自动储存于这部装置，时间：","Name changed to":"名字已更改为","Existing planner data was kept.":"现有日程资料已保留。","Please enter a name.":"请输入名字。","Please enter an activity name.":"请输入活动名称。","5 minutes finished.":"5分钟完成。","Do you want to continue, or take a planned break?":"你想继续，还是先有计划地休息？","Break finished.":"休息结束。","Check your task and decide whether you are ready to go back.":"看看你的任务，再决定是否准备好回去继续。","Current":"目前","Activity":"活动","min":"分钟"}
+};
+const ACTIVITY_LABEL_TRANSLATIONS={
+  "zh-Hant":{"Arrive home":"回到家","Morning routine":"早上流程","Check schedule":"查看日程","Pack up":"收拾物品","Short break":"短暫休息","Quiet time":"安靜時間","Family time":"家庭時間","Breakfast":"早餐","Snack":"小食","Lunch":"午餐","Dinner":"晚餐","Drink water":"飲水","Drink milk":"飲奶","Fruit break":"水果時間","Help with cooking":"幫忙煮食","Put school bag away":"放好書包","Check homework":"查看功課","Start homework":"開始做功課","Homework":"功課","Homework break":"功課小休","Pack school bag":"收拾書包","Reading":"閱讀","Writing":"寫作","Spelling":"拼字","Maths":"數學","Online learning":"網上學習","School project":"學校專題","Study / revision":"溫習","Toilet":"去廁所","Change clothes":"換衣服","Shower":"沖涼","Brush teeth":"刷牙","Get clothes ready":"準備衣服","Wash hands":"洗手","Wash face":"洗面","Brush hair":"梳頭","Put on shoes":"穿鞋","Put on sunscreen":"搽防曬","Take medication":"服藥","Bedtime":"睡覺時間","Make bed":"整理床鋪","Chores":"家務","Laundry":"洗衣服","Hang clothes":"晾衣服","Fold clothes":"摺衣服","Clean table":"清潔桌面","Tidy room":"整理房間","Pack toys":"收拾玩具","Take out rubbish":"倒垃圾","Feed pet":"餵寵物","Put dishes away":"放好餐具","Free time":"自由時間","Gaming":"玩遊戲","Drawing":"畫畫","Colouring":"填色","Lego / building":"LEGO／砌模型","Puzzle":"拼圖","Board game":"桌上遊戲","Music":"音樂","Piano":"鋼琴","TV / screen time":"電視／螢幕時間","Craft":"手工","Read for fun":"輕鬆閱讀","Calm break":"冷靜小休","Breathing break":"呼吸小休","Headphones":"耳機","Stretch / yoga":"伸展／瑜伽","Quiet corner":"安靜角落","Sensory break":"感覺調節小休","Heavy work":"重力活動","One step at a time":"一步一步來","Walk":"散步","Run":"跑步","Bike":"踩單車","Soccer":"足球","Basketball":"籃球","Swimming":"游泳","Dance":"跳舞","Exercise":"運動","Playground":"遊樂場","Sport / class":"運動／課堂","Play with friend":"和朋友玩","Play with sibling":"和兄弟姊妹玩","Chat with family":"和家人聊天","Call family":"打電話給家人","Visit family":"探望家人","Ask for help":"尋求幫助","Party / celebration":"派對／慶祝","Appointment":"預約／約見","Therapy":"治療","Library":"圖書館","Shopping":"購物","Car ride":"坐車","Bus / public transport":"巴士／公共交通","Go out":"外出","Doctor":"看醫生","Dentist":"看牙醫","Outdoor play":"戶外玩耍"},
+  "zh-Hans":{"Arrive home":"回到家","Morning routine":"早上流程","Check schedule":"查看日程","Pack up":"收拾物品","Short break":"短暂休息","Quiet time":"安静时间","Family time":"家庭时间","Breakfast":"早餐","Snack":"点心","Lunch":"午餐","Dinner":"晚餐","Drink water":"喝水","Drink milk":"喝牛奶","Fruit break":"水果时间","Help with cooking":"帮忙做饭","Put school bag away":"放好书包","Check homework":"查看作业","Start homework":"开始做作业","Homework":"作业","Homework break":"作业休息","Pack school bag":"收拾书包","Reading":"阅读","Writing":"写作","Spelling":"拼字","Maths":"数学","Online learning":"网上学习","School project":"学校专题","Study / revision":"复习","Toilet":"上厕所","Change clothes":"换衣服","Shower":"洗澡","Brush teeth":"刷牙","Get clothes ready":"准备衣服","Wash hands":"洗手","Wash face":"洗脸","Brush hair":"梳头","Put on shoes":"穿鞋","Put on sunscreen":"涂防晒","Take medication":"服药","Bedtime":"睡觉时间","Make bed":"整理床铺","Chores":"家务","Laundry":"洗衣服","Hang clothes":"晾衣服","Fold clothes":"叠衣服","Clean table":"擦桌子","Tidy room":"整理房间","Pack toys":"收拾玩具","Take out rubbish":"倒垃圾","Feed pet":"喂宠物","Put dishes away":"放好餐具","Free time":"自由时间","Gaming":"玩游戏","Drawing":"画画","Colouring":"填色","Lego / building":"乐高／搭建","Puzzle":"拼图","Board game":"桌游","Music":"音乐","Piano":"钢琴","TV / screen time":"电视／屏幕时间","Craft":"手工","Read for fun":"休闲阅读","Calm break":"冷静休息","Breathing break":"呼吸休息","Headphones":"耳机","Stretch / yoga":"伸展／瑜伽","Quiet corner":"安静角落","Sensory break":"感觉调节休息","Heavy work":"重力活动","One step at a time":"一步一步来","Walk":"散步","Run":"跑步","Bike":"骑自行车","Soccer":"足球","Basketball":"篮球","Swimming":"游泳","Dance":"跳舞","Exercise":"运动","Playground":"游乐场","Sport / class":"运动／课堂","Play with friend":"和朋友玩","Play with sibling":"和兄弟姐妹玩","Chat with family":"和家人聊天","Call family":"给家人打电话","Visit family":"探望家人","Ask for help":"寻求帮助","Party / celebration":"聚会／庆祝","Appointment":"预约／约见","Therapy":"治疗","Library":"图书馆","Shopping":"购物","Car ride":"坐车","Bus / public transport":"公交／公共交通","Go out":"出门","Doctor":"看医生","Dentist":"看牙医","Outdoor play":"户外玩耍"}
+};
+const TASK_BREAKDOWN_TRANSLATIONS={
+  "zh-Hant":{"arrive home":["走進家中，把鞋放回平常的位置。","把書包和其他隨身物品放到固定位置。","如有需要，拿出午餐盒、水樽或重要文件。","快速看一看日程表。","開始流程中的第一個活動。"],"morning routine":["起床，拉開窗簾或開燈。","去廁所並洗手。","穿上今天準備好的衣服。","吃早餐，並準備上學或外出需要的物品。","離開前或開始一天前查看日程表。"],"check schedule":["打開日程表，查看今天的流程。","找出第一個還未完成的活動。","查看它的開始時間和所需時間。","想一想是否需要先準備任何物品。","開始第一個小步驟。"],"pack up":["看看四周有哪些剛才用過的物品。","把每件物品放回原來的位置。","把垃圾丟掉，把髒物品放到適當地方。","確認主要空間已大致收拾好。","查看日程表中的下一個活動。"],"short break":["選一個短暫休息活動。","設定大家同意的休息計時器。","開始休息，先專心做這個活動。","計時器響起時停止。","回到日程表並開始下一個活動。"],"quiet time":["選一個安靜活動。","去一個舒適、較少干擾的地方。","如有幫助，可以設定計時器。","在安靜時間內做這個活動。","完成後回到日程表看看下一步。"],"family time":["先了解家人準備一起做甚麼。","如有需要，先把其他螢幕或活動收起。","到大家一起活動的地方。","參與共同活動或對話。","完成後查看日程表的下一步。"],"breakfast":["準備早餐需要的食物和餐具。","坐到用餐的位置。","慢慢吃早餐。","喝水或其他已準備的飲品。","吃完後把餐具放到指定位置。"],"snack":["選擇已同意的小食。","把小食和飲品拿到用餐位置。","坐下來慢慢吃。","吃完後把垃圾或餐具收好。","查看下一個活動。"],"lunch":["準備或取出午餐。","坐到用餐的位置。","慢慢吃午餐。","完成後把餐具或食物收好。","洗手或清潔桌面，然後查看下一步。"],"dinner":["到用餐位置坐好。","準備好需要的餐具和飲品。","慢慢吃晚餐。","吃完後把餐具放到指定位置。","離開餐桌前把自己的位置整理好。"],"drink water":["找到水樽或水杯。","倒水或打開水樽。","慢慢喝幾口水。","確認自己是否還需要再喝。","把水樽或杯子放回原位。"],"drink milk":["拿出牛奶和杯子，或準備好奶樽。","倒出適合的份量。","坐下來慢慢喝。","喝完後把杯子或奶樽放到指定位置。","把牛奶放回適當地方。"],"fruit break":["選擇已準備好的水果。","如有需要，請成人協助清洗或切開。","坐下來慢慢吃水果。","把果皮、果核或垃圾放好。","洗手並查看下一個活動。"],"help with cooking":["先問清楚今天要幫忙做哪一件事。","洗手並準備需要的工具或材料。","一次只做一個小步驟。","使用刀具、爐具或熱物品時依照成人指示。","完成後把工具和材料收好。"],"put school bag away":["把書包帶到固定的收納位置。","把水樽和午餐盒拿出來。","把需要清洗的物品放到指定地方。","把功課或重要文件放到功課區。","查看日程表的下一個活動。"],"check homework":["打開學校手冊、網上平台或功課清單。","查看哪些科目有功課。","看看每項功課的截止日期。","決定先做哪一項。","準備那項功課需要的物品。"],"start homework":["清出一小塊工作空間。","準備所需的書本、文具或裝置。","選擇第一題或第一個小部分。","如有幫助，可以設定計時器。","只先開始第一個小部分。"],"homework":["先選一項功課。","準備需要的書本、裝置和文具。","閱讀第一個指示或題目。","一次完成一小部分，需要幫助的地方先做記號。","檢查功課，收好物品並更新日程表。"],"homework break":["在一個清楚的位置暫停功課。","儲存工作或先放下鉛筆。","選一個短暫休息活動並設定計時器。","休息到計時器結束。","回到功課並找出下一題或下一步。"],"pack school bag":["查看明天的時間表或學校清單。","把已完成的功課和需要的書本放進書包。","放入文具盒、裝置或其他學校用品。","如有需要，準備水樽或午餐物品。","把書包放到明早容易拿到的位置。"],"reading":["選擇要讀的書或閱讀任務。","找一個舒適、光線足夠的地方。","打開正確的頁面。","按照約定的頁數或時間閱讀。","完成後做好書籤並把書放好。"],"writing":["閱讀寫作指示，或先決定要寫甚麼。","準備紙張、裝置和寫作工具。","先寫第一句或第一小段。","一次只完成一個句子或一個想法。","最後讀一遍，修改你發現的問題。"],"spelling":["拿出拼字清單。","先選第一個字。","讀出這個字，看看較難的部分。","用已約定的方法寫或練習。","檢查後再到下一個字。"],"maths":["打開正確的數學功課或頁面。","準備鉛筆、計算機或其他允許使用的物品。","慢慢閱讀第一題。","一次做一題，需要幫助的題目先做記號。","檢查答案並把物品收好。"],"online learning":["打開裝置並進入正確的學習網站或應用程式。","登入並打開指定課堂或任務。","閱讀或觀看第一個指示。","一次完成一個部分。","提交或儲存工作，然後關閉學習頁面。"],"school project":["閱讀專題要求和截止日期。","選擇今天要完成的一個小部分。","準備這一部分需要的材料或檔案。","做到今天預定的停止位置。","儲存工作並寫下下次要做的下一步。"],"study / revision":["選擇一個要溫習的科目或主題。","準備筆記、字卡或溫習材料。","設定一個短時間的溫習計時器。","溫習一小部分並測試自己。","標記需要多練習的地方，再把材料收好。"],"toilet":["進入洗手間並使用廁所。","如有需要，完成清潔。","沖廁。","用肥皂洗手。","抹乾雙手並回到日程表。"],"change clothes":["選擇要穿的衣服。","脫下需要更換的衣服。","把髒衣服放入洗衣籃，其他衣服放回原位。","穿上新的衣服。","確認穿得舒服，並把剩下的物品收好。"],"shower":["先準備毛巾和乾淨衣服。","開花灑並確認水溫舒服。","清洗身體；如今天要洗頭，也清洗頭髮。","沖走肥皂或洗頭水並關水。","抹乾身體並穿上乾淨衣服。"],"brush teeth":["準備牙刷和牙膏。","在牙刷上放少量牙膏。","刷牙齒的外面、裡面和咬合面。","吐出牙膏並沖洗牙刷。","把牙刷和牙膏放回原位。"],"get clothes ready":["查看明天的天氣和活動。","選擇上衣、褲子或其他主要衣物。","準備內衣和襪子。","如有需要，加上鞋、外套或帽子。","把整套衣服放到明天容易拿到的位置。"],"wash hands":["開水並弄濕雙手。","加肥皂。","搓洗手的各個位置約20秒。","把肥皂沖乾淨。","抹乾雙手。"],"wash face":["到洗手盆前，準備乾淨毛巾或洗面用品。","用舒服的水溫弄濕臉或毛巾。","輕輕清潔面部；如平常會用潔面產品就照流程使用。","沖走或抹走潔面產品。","抹乾面部並把用品收好。"],"brush hair":["拿出梳子或髮刷。","站或坐在可以舒服整理頭髮的位置。","先從髮尾開始，慢慢梳開打結位置。","再梳理其他頭髮。","把梳子或髮刷放回原位。"],"put on shoes":["找到需要穿的鞋。","確認左右腳的鞋。","先穿一隻，再穿另一隻。","綁好鞋帶或扣好魔術貼、扣子或帶子。","站起來確認兩隻鞋都穩固舒服。"],"put on sunscreen":["拿出防曬用品。","把防曬塗在需要保護的外露皮膚上。","輕輕推開，讓皮膚有足夠覆蓋。","如有需要，清潔雙手。","把防曬放回原位並繼續準備外出。"],"take medication":["到平常服藥的位置或找負責的成人。","確認現在是正確的服藥時間。","只服用由負責成人或醫護人員準備或批准的藥物。","按指示配水或用指定方式服用。","確認服藥這一步已完成。"],"bedtime":["換上睡衣。","刷牙並完成洗手間流程。","整理睡床和睡房。","如平常有睡前安靜活動，可以做一個短活動。","完成後上床準備睡覺。"],"make bed":["先把枕頭或玩具移開。","把床單或被子拉到床頭方向。","把被子整理平整。","把枕頭放回位置。","把玩具或其他物品放回應有的位置。"],"chores":["確認今天要做哪一項家務。","準備這項家務需要的物品。","先做第一個小部分。","一次做一個小部分直到完成。","把用品收好並查看日程表。"],"laundry":["收集髒衣服並帶到洗衣區。","如果家中會分類衣物，先完成分類。","把衣服放入洗衣機，需要時請成人協助。","加入正確的洗衣用品並啟動約定的程序。","完成後把衣服拿去晾乾，或告訴成人已洗好。"],"hang clothes":["把洗好的濕衣服帶到晾衣位置。","一次拿一件衣服。","把衣服抖開並掛在線上或衣架上。","如有需要用衣夾，衣物之間留一點空間。","完成後把洗衣籃和衣夾收好。"],"fold clothes":["把乾淨的乾衣服放在清楚的平面上。","先把相似的衣物放在一起。","拿起一件衣服並摺好。","把摺好的衣服放到正確的一堆或抽屜。","繼續直到整籃或整堆完成。"],"clean table":["把杯、碟、紙張或其他物品先移開。","垃圾放進垃圾桶，餐具放到洗手盆或洗碗機。","拿出平常使用的抹布或清潔用品。","把整個桌面抹乾淨。","把清潔用品放回原位。"],"tidy room":["先選房間的一小個區域開始。","把垃圾放進垃圾桶。","把衣服放進衣櫃、抽屜或洗衣籃。","把玩具、書本和其他物品放回原位。","最後快速檢查地面和主要桌面。"],"pack toys":["先選一類玩具來收拾。","找到它們應該放的盒子、架子或位置。","把這些玩具收好。","再選下一類玩具並重複。","最後看看地上還有沒有未收好的玩具。"],"take out rubbish":["確認哪個垃圾桶或垃圾袋需要拿出去。","如有需要，把垃圾袋綁好或封好。","小心拿到正確的戶外垃圾桶。","把垃圾袋放進正確的桶並蓋好。","回到屋內後洗手。"],"feed pet":["確認寵物需要哪種食物和大約份量。","拿出食物和食物碗。","把正確份量放進碗內。","把碗放到平常餵食的位置，需要時補充清水。","收好寵物食物並洗手。"],"put dishes away":["確認餐具已乾淨並乾燥。","一次拿一件安全的餐具。","放到平常的櫃、抽屜或架子。","繼續直到瀝水架或洗碗機區域清空。","完成後關好櫃門和抽屜。"],"free time":["選擇自由時間想做的活動。","如有時間限制，設定約定的計時器。","開始活動。","計時器結束時停止或儲存進度。","把物品收好並查看下一步。"],"gaming":["選擇今天可以玩的遊戲。","設定約定的遊戲計時器。","開始遊戲並玩到計時器結束。","儲存進度並離開遊戲。","把裝置或控制器放好並查看日程表。"],"drawing":["選擇想畫的內容。","準備紙張和需要的畫具。","先從一個簡單形狀、線條或部分開始。","一次加入一個細節。","到預定停止位置後把材料收好。"],"colouring":["選擇想填色的圖畫。","準備木顏色、蠟筆或顏色筆。","先選一個區域和一種顏色。","一次填一個部分。","完成後把填色用品收好。"],"lego / building":["決定想砌甚麼，或打開說明書。","準備需要的 LEGO 或砌建零件。","先從底座或第一個指示開始。","一次加一件零件或一小部分。","把未用的零件收好，或把作品安全保留到下次。"],"puzzle":["選擇拼圖並清出一塊空間。","把所有拼圖塊正面朝上。","如有幫助，可以先找邊位和角位。","按顏色、形狀或圖案一次配一塊。","完成後收好；未完成就安全放好留待下次。"],"board game":["選擇遊戲和一起玩的人。","準備棋盤、卡牌、棋子或骰子。","確認基本規則並決定誰先開始。","輪流玩到遊戲完成或約定時間結束。","把所有遊戲配件放回盒內。"],"music":["選擇歌曲、歌單或音樂活動。","如有需要，準備耳機或喇叭。","如有時間限制，可以設定計時器。","聽音樂、唱歌或跟音樂活動。","完成後停止並把設備收好。"],"piano":["坐到鋼琴或電子琴前，需要時準備樂譜。","選一首歌、一個音階或一小段練習。","先慢慢彈一次。","難的部分多練幾次，再重新彈一次。","到約定時間後把樂譜收好。"],"tv / screen time":["選擇已同意的節目、影片或螢幕活動。","設定約定的螢幕時間。","開始觀看或使用裝置。","計時器結束或約定的一集完結時停止。","關掉或收好裝置並查看日程表。"],"craft":["選擇想做的手工作品。","準備紙張、剪刀、膠水或其他材料。","先做第一個步驟。","一次完成一個步驟。","完成後清理桌面並把材料收好。"],"read for fun":["選擇想看的書、漫畫或故事。","找一個舒服的地方。","打開上次的位置並開始閱讀。","讀到約定的時間、頁數或章節。","做好書籤並把書放到安全位置。"],"calm break":["移到較安靜或舒服的地方。","選一個平常對你有幫助的平靜活動。","如想有清楚結束時間，可以設定短計時器。","先做平靜活動，不需要立即解決所有問題。","覺得準備好時，再看日程表的下一步。"],"breathing break":["坐或站在舒服的位置。","如果可以，放鬆肩膀。","慢慢用鼻吸氣。","慢慢呼氣，重複幾次。","留意身體感覺，再決定是否準備好做下一項。"],"headphones":["拿出耳機。","舒服地戴好耳機。","選擇安靜聲音或降噪功能，如這是你平常的做法。","在約定的活動或休息時間使用。","完成後除下並放回原位。"],"stretch / yoga":["選一個可以安全活動的空間。","先選一個簡單伸展或瑜伽動作。","慢慢進入姿勢並呼吸。","再做幾個舒服的伸展或姿勢。","最後做一次慢呼吸，再回到日程表。"],"quiet corner":["去約定的安靜角落或冷靜空間。","選一件平靜物品或活動。","如想知道何時結束，可以設定計時器。","留在安靜空間直到較平靜或計時器結束。","準備好時回到日程表。"],"sensory break":["留意身體現在需要甚麼：活動、壓力、安靜或其他熟悉方法。","選一個已同意的感覺調節活動。","如有幫助，可以設定短計時器。","完成活動並留意身體是否更準備好。","結束後回到下一個活動。"],"heavy work":["選一個已同意的重力活動。","先清出足夠的安全空間。","按約定時間做推、拉、搬或其他活動。","停止後留意身體感覺。","把用品收好並回到日程表。"],"one step at a time":["選出讓你覺得太大的任務。","只說出或寫下第一個很小的動作。","先只完成這一個動作。","再看看下一個小動作是甚麼。","一次一步，直到到達適合停止的位置。"],"walk":["確認要去哪裡散步和大約多久。","穿合適的鞋，需要時帶水。","如有需要，和成人一起離開起點。","用舒服的速度走完預定路線。","回來後把物品收好並查看日程表。"],"run":["選擇安全的跑步地方或路線。","穿合適的鞋和舒服衣服。","先用短時間步行或輕柔動作熱身。","按約定時間或距離用舒服速度跑。","完成後慢慢減速、喝水並放鬆。"],"bike":["拿出單車並戴好頭盔。","需要時請成人協助確認單車可以安全使用。","選擇安全路線或踩車位置。","按約定時間踩車並遵守安全規則。","完成後把單車和頭盔放回原位。"],"soccer":["穿好足球衣物和鞋。","準備足球、水樽和其他需要的用品。","到約定的球場或訓練位置。","先熱身，再加入比賽或練習。","完成後收好用品並喝水。"],"basketball":["穿合適的衣服和鞋。","準備籃球和水樽。","到籃球架、球場或約定練習位置。","先熱身，再練習或加入比賽。","完成後收好籃球並喝水。"],"swimming":["穿好泳衣或把泳衣準備好。","準備毛巾、泳鏡和其他游泳用品。","前往泳池，需要時更衣。","游泳時遵守成人、教練和泳池規則。","完成後抹乾、更衣並把濕物品收好。"],"dance":["穿舒服的跳舞衣服，需要時穿合適鞋。","清出安全空間，或準備前往課堂。","選擇歌曲、舞步或老師的指示。","一次練習一個動作或一小段。","完成後放鬆並把用品收好。"],"exercise":["選擇今天要做的運動或短流程。","清出安全空間並準備器材。","先做輕柔動作熱身。","一次完成一項運動。","完成後慢慢放鬆、喝水並把器材收好。"],"playground":["穿合適的鞋和衣服。","如有需要，和成人一起前往遊樂場。","先選一項遊樂設施或活動。","遵守約定的安全規則來玩。","到離開時間時停止，並確認帶齊自己的物品。"],"sport / class":["查看課堂時間和需要出發的時間。","換上需要的衣服或制服。","準備水樽和所需器材。","穿鞋、拿好袋子並準備出發。","前往課堂並報到或加入小組。"],"play with friend":["選擇或一起決定一個可以共同玩的活動。","準備玩具、遊戲或材料。","輪流分享想法和使用物品。","如果有不同意見，可以先停一停、提出另一個選擇或求助。","遊戲時間完結時一起收拾。"],"play with sibling":["選一個大家都願意試的活動。","準備玩具或材料。","輪流玩，並給彼此一些空間。","遇到問題時用說話表達，或請成人幫忙。","活動結束後一起收拾。"],"chat with family":["選一位家人，或加入家人的對話。","先打招呼，或分享一件想說的事情。","另一個人說話時先聽。","問或回答一個問題，讓對話繼續。","準備好時有禮貌地結束對話。"],"call family":["選擇要打電話給哪位家人。","準備電話並找一個合適的位置。","打電話；如有需要請成人幫忙開始。","先說你好，然後輪流說話。","完成後說再見並結束通話。"],"visit family":["確認要去哪裡和甚麼時間出發。","穿好衣服並準備需要帶的物品。","前往家人的家或約定地點。","打招呼，並用讓自己舒服的方式參與。","離開時帶齊自己的物品並說再見。"],"ask for help":["先停一停，找出自己卡在哪一部分。","找到可以幫忙的人。","說或指出：「我這一部分需要幫助。」","聽對方的建議，或問一個清楚的問題。","用得到的幫助再試下一步。"],"party / celebration":["確認慶祝活動在哪裡和甚麼時間出發。","穿好衣服並準備需要帶的物品。","前往活動地點。","選擇自己想怎樣參與活動、食物或對話。","離開時帶齊自己的物品並說再見。"],"appointment":["確認預約時間和地點。","穿好衣服並準備需要帶的物品。","如有需要，帶飲品或文件。","預留足夠交通時間出發。","到達後報到或等待輪到自己。"],"therapy":["確認治療時間和地點。","穿好衣服並準備治療用品或溝通支援。","預留足夠交通時間出發。","到達後報到並準備開始。","完成後帶齊自己的物品並查看下一步。"],"library":["準備需要歸還的書本或物品。","如有需要，帶圖書證或袋子。","前往圖書館。","先還書，再選擇想借的書或想做的活動。","完成借閱並把物品安全放好。"],"shopping":["確認今天要買甚麼。","如有需要，帶購物袋、清單或付款方式。","前往商店。","按清單一次找一個區域的物品。","付款、收好物品並回家。"],"car ride":["確認要去哪裡。","準備需要帶的物品。","走到車旁並坐到自己的座位。","扣好安全帶並準備出發。","到達後解開安全帶並帶走自己的物品。"],"bus / public transport":["確認路線、車站和時間。","準備交通卡、電話或車票，以及要帶的物品。","前往正確的車站。","上正確的交通工具，拍卡或使用車票並跟著路線。","在正確車站下車並帶齊自己的物品。"],"go out":["確認要去哪裡和甚麼時間出發。","按天氣和活動穿合適衣服。","準備需要帶的物品。","穿鞋並拿好袋子。","出發前往目的地。"],"doctor":["確認醫生預約時間和診所地點。","穿好衣服，並帶上照顧者說需要的物品或資料。","預留足夠交通時間出發。","到達後報到並等待叫名字。","完成後帶齊自己的物品並查看下一個活動。"],"dentist":["確認牙醫預約時間和地點。","如符合平常流程，出發前照常刷牙。","穿好衣服並預留足夠交通時間出發。","到達後報到並等待輪到自己。","完成後帶齊自己的物品並查看下一步。"],"outdoor play":["選擇想做的戶外活動。","按天氣穿合適的鞋和衣服。","準備球、單車、玩具或水。","在約定的戶外範圍玩到計時器或成人說結束。","把物品帶回室內並查看日程表。"]},
+  "zh-Hans":{"arrive home":["走进家中，把鞋放回平常的位置。","把书包和其他随身物品放到固定位置。","如有需要，拿出午餐盒、水樽或重要文件。","快速看一看日程表。","开始流程中的第一个活动。"],"morning routine":["起床，拉开窗帘或开灯。","去厕所并洗手。","穿上今天准备好的衣服。","吃早餐，并准备上学或外出需要的物品。","离开前或开始一天前查看日程表。"],"check schedule":["打开日程表，查看今天的流程。","找出第一个还未完成的活动。","查看它的开始时间和所需时间。","想一想是否需要先准备任何物品。","开始第一个小步骤。"],"pack up":["看看四周有哪些刚才用过的物品。","把每件物品放回原来的位置。","把垃圾丢掉，把脏物品放到适当地方。","确认主要空间已大致收拾好。","查看日程表中的下一个活动。"],"short break":["选一个短暂休息活动。","设定大家同意的休息计时器。","开始休息，先专心做这个活动。","计时器响起时停止。","回到日程表并开始下一个活动。"],"quiet time":["选一个安静活动。","去一个舒适、较少干扰的地方。","如有帮助，可以设定计时器。","在安静时间内做这个活动。","完成后回到日程表看看下一步。"],"family time":["先了解家人准备一起做什么。","如有需要，先把其他荧幕或活动收起。","到大家一起活动的地方。","参与共同活动或对话。","完成后查看日程表的下一步。"],"breakfast":["准备早餐需要的食物和餐具。","坐到用餐的位置。","慢慢吃早餐。","喝水或其他已准备的饮品。","吃完后把餐具放到指定位置。"],"snack":["选择已同意的小食。","把小食和饮品拿到用餐位置。","坐下来慢慢吃。","吃完后把垃圾或餐具收好。","查看下一个活动。"],"lunch":["准备或取出午餐。","坐到用餐的位置。","慢慢吃午餐。","完成后把餐具或食物收好。","洗手或清洁桌面，然后查看下一步。"],"dinner":["到用餐位置坐好。","准备好需要的餐具和饮品。","慢慢吃晚餐。","吃完后把餐具放到指定位置。","离开餐桌前把自己的位置整理好。"],"drink water":["找到水樽或水杯。","倒水或打开水樽。","慢慢喝几口水。","确认自己是否还需要再喝。","把水樽或杯子放回原位。"],"drink milk":["拿出牛奶和杯子，或准备好奶樽。","倒出适合的份量。","坐下来慢慢喝。","喝完后把杯子或奶樽放到指定位置。","把牛奶放回适当地方。"],"fruit break":["选择已准备好的水果。","如有需要，请成人协助清洗或切开。","坐下来慢慢吃水果。","把果皮、果核或垃圾放好。","洗手并查看下一个活动。"],"help with cooking":["先问清楚今天要帮忙做哪一件事。","洗手并准备需要的工具或材料。","一次只做一个小步骤。","使用刀具、炉具或热物品时依照成人指示。","完成后把工具和材料收好。"],"put school bag away":["把书包带到固定的收纳位置。","把水樽和午餐盒拿出来。","把需要清洗的物品放到指定地方。","把功课或重要文件放到功课区。","查看日程表的下一个活动。"],"check homework":["打开学校手册、网上平台或功课清单。","查看哪些科目有功课。","看看每项功课的截止日期。","决定先做哪一项。","准备那项功课需要的物品。"],"start homework":["清出一小块工作空间。","准备所需的书本、文具或装置。","选择第一题或第一个小部分。","如有帮助，可以设定计时器。","只先开始第一个小部分。"],"homework":["先选一项功课。","准备需要的书本、装置和文具。","阅读第一个指示或题目。","一次完成一小部分，需要帮助的地方先做记号。","检查功课，收好物品并更新日程表。"],"homework break":["在一个清楚的位置暂停功课。","储存工作或先放下铅笔。","选一个短暂休息活动并设定计时器。","休息到计时器结束。","回到功课并找出下一题或下一步。"],"pack school bag":["查看明天的时间表或学校清单。","把已完成的功课和需要的书本放进书包。","放入文具盒、装置或其他学校用品。","如有需要，准备水樽或午餐物品。","把书包放到明早容易拿到的位置。"],"reading":["选择要读的书或阅读任务。","找一个舒适、光线足够的地方。","打开正确的页面。","按照约定的页数或时间阅读。","完成后做好书签并把书放好。"],"writing":["阅读写作指示，或先决定要写什么。","准备纸张、装置和写作工具。","先写第一句或第一小段。","一次只完成一个句子或一个想法。","最后读一遍，修改你发现的问题。"],"spelling":["拿出拼字清单。","先选第一个字。","读出这个字，看看较难的部分。","用已约定的方法写或练习。","检查后再到下一个字。"],"maths":["打开正确的数学功课或页面。","准备铅笔、计算机或其他允许使用的物品。","慢慢阅读第一题。","一次做一题，需要帮助的题目先做记号。","检查答案并把物品收好。"],"online learning":["打开装置并进入正确的学习网站或应用程式。","登入并打开指定课堂或任务。","阅读或观看第一个指示。","一次完成一个部分。","提交或储存工作，然后关闭学习页面。"],"school project":["阅读专题要求和截止日期。","选择今天要完成的一个小部分。","准备这一部分需要的材料或档案。","做到今天预定的停止位置。","储存工作并写下下次要做的下一步。"],"study / revision":["选择一个要温习的科目或主题。","准备笔记、字卡或温习材料。","设定一个短时间的温习计时器。","温习一小部分并测试自己。","标记需要多练习的地方，再把材料收好。"],"toilet":["进入洗手间并使用厕所。","如有需要，完成清洁。","冲厕。","用肥皂洗手。","抹干双手并回到日程表。"],"change clothes":["选择要穿的衣服。","脱下需要更换的衣服。","把脏衣服放入洗衣篮，其他衣服放回原位。","穿上新的衣服。","确认穿得舒服，并把剩下的物品收好。"],"shower":["先准备毛巾和干净衣服。","开花洒并确认水温舒服。","清洗身体；如今天要洗头，也清洗头发。","冲走肥皂或洗头水并关水。","抹干身体并穿上干净衣服。"],"brush teeth":["准备牙刷和牙膏。","在牙刷上放少量牙膏。","刷牙齿的外面、里面和咬合面。","吐出牙膏并冲洗牙刷。","把牙刷和牙膏放回原位。"],"get clothes ready":["查看明天的天气和活动。","选择上衣、裤子或其他主要衣物。","准备内衣和袜子。","如有需要，加上鞋、外套或帽子。","把整套衣服放到明天容易拿到的位置。"],"wash hands":["开水并弄湿双手。","加肥皂。","搓洗手的各个位置约20秒。","把肥皂冲干净。","抹干双手。"],"wash face":["到洗手盆前，准备干净毛巾或洗面用品。","用舒服的水温弄湿脸或毛巾。","轻轻清洁面部；如平常会用洁面产品就照流程使用。","冲走或抹走洁面产品。","抹干面部并把用品收好。"],"brush hair":["拿出梳子或发刷。","站或坐在可以舒服整理头发的位置。","先从发尾开始，慢慢梳开打结位置。","再梳理其他头发。","把梳子或发刷放回原位。"],"put on shoes":["找到需要穿的鞋。","确认左右脚的鞋。","先穿一只，再穿另一只。","绑好鞋带或扣好魔术贴、扣子或带子。","站起来确认两只鞋都稳固舒服。"],"put on sunscreen":["拿出防晒用品。","把防晒涂在需要保护的外露皮肤上。","轻轻推开，让皮肤有足够覆盖。","如有需要，清洁双手。","把防晒放回原位并继续准备外出。"],"take medication":["到平常服药的位置或找负责的成人。","确认现在是正确的服药时间。","只服用由负责成人或医护人员准备或批准的药物。","按指示配水或用指定方式服用。","确认服药这一步已完成。"],"bedtime":["换上睡衣。","刷牙并完成洗手间流程。","整理睡床和睡房。","如平常有睡前安静活动，可以做一个短活动。","完成后上床准备睡觉。"],"make bed":["先把枕头或玩具移开。","把床单或被子拉到床头方向。","把被子整理平整。","把枕头放回位置。","把玩具或其他物品放回应有的位置。"],"chores":["确认今天要做哪一项家务。","准备这项家务需要的物品。","先做第一个小部分。","一次做一个小部分直到完成。","把用品收好并查看日程表。"],"laundry":["收集脏衣服并带到洗衣区。","如果家中会分类衣物，先完成分类。","把衣服放入洗衣机，需要时请成人协助。","加入正确的洗衣用品并启动约定的程序。","完成后把衣服拿去晾干，或告诉成人已洗好。"],"hang clothes":["把洗好的湿衣服带到晾衣位置。","一次拿一件衣服。","把衣服抖开并挂在线上或衣架上。","如有需要用衣夹，衣物之间留一点空间。","完成后把洗衣篮和衣夹收好。"],"fold clothes":["把干净的干衣服放在清楚的平面上。","先把相似的衣物放在一起。","拿起一件衣服并折好。","把折好的衣服放到正确的一堆或抽屉。","继续直到整篮或整堆完成。"],"clean table":["把杯、碟、纸张或其他物品先移开。","垃圾放进垃圾桶，餐具放到洗手盆或洗碗机。","拿出平常使用的抹布或清洁用品。","把整个桌面抹干净。","把清洁用品放回原位。"],"tidy room":["先选房间的一小个区域开始。","把垃圾放进垃圾桶。","把衣服放进衣柜、抽屉或洗衣篮。","把玩具、书本和其他物品放回原位。","最后快速检查地面和主要桌面。"],"pack toys":["先选一类玩具来收拾。","找到它们应该放的盒子、架子或位置。","把这些玩具收好。","再选下一类玩具并重复。","最后看看地上还有没有未收好的玩具。"],"take out rubbish":["确认哪个垃圾桶或垃圾袋需要拿出去。","如有需要，把垃圾袋绑好或封好。","小心拿到正确的户外垃圾桶。","把垃圾袋放进正确的桶并盖好。","回到屋内后洗手。"],"feed pet":["确认宠物需要哪种食物和大约份量。","拿出食物和食物碗。","把正确份量放进碗内。","把碗放到平常喂食的位置，需要时补充清水。","收好宠物食物并洗手。"],"put dishes away":["确认餐具已干净并干燥。","一次拿一件安全的餐具。","放到平常的柜、抽屉或架子。","继续直到沥水架或洗碗机区域清空。","完成后关好柜门和抽屉。"],"free time":["选择自由时间想做的活动。","如有时间限制，设定约定的计时器。","开始活动。","计时器结束时停止或储存进度。","把物品收好并查看下一步。"],"gaming":["选择今天可以玩的游戏。","设定约定的游戏计时器。","开始游戏并玩到计时器结束。","储存进度并离开游戏。","把装置或控制器放好并查看日程表。"],"drawing":["选择想画的内容。","准备纸张和需要的画具。","先从一个简单形状、线条或部分开始。","一次加入一个细节。","到预定停止位置后把材料收好。"],"colouring":["选择想填色的图画。","准备木颜色、蜡笔或颜色笔。","先选一个区域和一种颜色。","一次填一个部分。","完成后把填色用品收好。"],"lego / building":["决定想砌什么，或打开说明书。","准备需要的 LEGO 或砌建零件。","先从底座或第一个指示开始。","一次加一件零件或一小部分。","把未用的零件收好，或把作品安全保留到下次。"],"puzzle":["选择拼图并清出一块空间。","把所有拼图块正面朝上。","如有帮助，可以先找边位和角位。","按颜色、形状或图案一次配一块。","完成后收好；未完成就安全放好留待下次。"],"board game":["选择游戏和一起玩的人。","准备棋盘、卡牌、棋子或骰子。","确认基本规则并决定谁先开始。","轮流玩到游戏完成或约定时间结束。","把所有游戏配件放回盒内。"],"music":["选择歌曲、歌单或音乐活动。","如有需要，准备耳机或喇叭。","如有时间限制，可以设定计时器。","听音乐、唱歌或跟音乐活动。","完成后停止并把设备收好。"],"piano":["坐到钢琴或电子琴前，需要时准备乐谱。","选一首歌、一个音阶或一小段练习。","先慢慢弹一次。","难的部分多练几次，再重新弹一次。","到约定时间后把乐谱收好。"],"tv / screen time":["选择已同意的节目、影片或荧幕活动。","设定约定的荧幕时间。","开始观看或使用装置。","计时器结束或约定的一集完结时停止。","关掉或收好装置并查看日程表。"],"craft":["选择想做的手工作品。","准备纸张、剪刀、胶水或其他材料。","先做第一个步骤。","一次完成一个步骤。","完成后清理桌面并把材料收好。"],"read for fun":["选择想看的书、漫画或故事。","找一个舒服的地方。","打开上次的位置并开始阅读。","读到约定的时间、页数或章节。","做好书签并把书放到安全位置。"],"calm break":["移到较安静或舒服的地方。","选一个平常对你有帮助的平静活动。","如想有清楚结束时间，可以设定短计时器。","先做平静活动，不需要立即解决所有问题。","觉得准备好时，再看日程表的下一步。"],"breathing break":["坐或站在舒服的位置。","如果可以，放松肩膀。","慢慢用鼻吸气。","慢慢呼气，重复几次。","留意身体感觉，再决定是否准备好做下一项。"],"headphones":["拿出耳机。","舒服地戴好耳机。","选择安静声音或降噪功能，如这是你平常的做法。","在约定的活动或休息时间使用。","完成后除下并放回原位。"],"stretch / yoga":["选一个可以安全活动的空间。","先选一个简单伸展或瑜伽动作。","慢慢进入姿势并呼吸。","再做几个舒服的伸展或姿势。","最后做一次慢呼吸，再回到日程表。"],"quiet corner":["去约定的安静角落或冷静空间。","选一件平静物品或活动。","如想知道何时结束，可以设定计时器。","留在安静空间直到较平静或计时器结束。","准备好时回到日程表。"],"sensory break":["留意身体现在需要什么：活动、压力、安静或其他熟悉方法。","选一个已同意的感觉调节活动。","如有帮助，可以设定短计时器。","完成活动并留意身体是否更准备好。","结束后回到下一个活动。"],"heavy work":["选一个已同意的重力活动。","先清出足够的安全空间。","按约定时间做推、拉、搬或其他活动。","停止后留意身体感觉。","把用品收好并回到日程表。"],"one step at a time":["选出让你觉得太大的任务。","只说出或写下第一个很小的动作。","先只完成这一个动作。","再看看下一个小动作是什么。","一次一步，直到到达适合停止的位置。"],"walk":["确认要去哪里散步和大约多久。","穿合适的鞋，需要时带水。","如有需要，和成人一起离开起点。","用舒服的速度走完预定路线。","回来后把物品收好并查看日程表。"],"run":["选择安全的跑步地方或路线。","穿合适的鞋和舒服衣服。","先用短时间步行或轻柔动作热身。","按约定时间或距离用舒服速度跑。","完成后慢慢减速、喝水并放松。"],"bike":["拿出单车并戴好头盔。","需要时请成人协助确认单车可以安全使用。","选择安全路线或踩车位置。","按约定时间踩车并遵守安全规则。","完成后把单车和头盔放回原位。"],"soccer":["穿好足球衣物和鞋。","准备足球、水樽和其他需要的用品。","到约定的球场或训练位置。","先热身，再加入比赛或练习。","完成后收好用品并喝水。"],"basketball":["穿合适的衣服和鞋。","准备篮球和水樽。","到篮球架、球场或约定练习位置。","先热身，再练习或加入比赛。","完成后收好篮球并喝水。"],"swimming":["穿好泳衣或把泳衣准备好。","准备毛巾、泳镜和其他游泳用品。","前往泳池，需要时更衣。","游泳时遵守成人、教练和泳池规则。","完成后抹干、更衣并把湿物品收好。"],"dance":["穿舒服的跳舞衣服，需要时穿合适鞋。","清出安全空间，或准备前往课堂。","选择歌曲、舞步或老师的指示。","一次练习一个动作或一小段。","完成后放松并把用品收好。"],"exercise":["选择今天要做的运动或短流程。","清出安全空间并准备器材。","先做轻柔动作热身。","一次完成一项运动。","完成后慢慢放松、喝水并把器材收好。"],"playground":["穿合适的鞋和衣服。","如有需要，和成人一起前往游乐场。","先选一项游乐设施或活动。","遵守约定的安全规则来玩。","到离开时间时停止，并确认带齐自己的物品。"],"sport / class":["查看课堂时间和需要出发的时间。","换上需要的衣服或制服。","准备水樽和所需器材。","穿鞋、拿好袋子并准备出发。","前往课堂并报到或加入小组。"],"play with friend":["选择或一起决定一个可以共同玩的活动。","准备玩具、游戏或材料。","轮流分享想法和使用物品。","如果有不同意见，可以先停一停、提出另一个选择或求助。","游戏时间完结时一起收拾。"],"play with sibling":["选一个大家都愿意试的活动。","准备玩具或材料。","轮流玩，并给彼此一些空间。","遇到问题时用说话表达，或请成人帮忙。","活动结束后一起收拾。"],"chat with family":["选一位家人，或加入家人的对话。","先打招呼，或分享一件想说的事情。","另一个人说话时先听。","问或回答一个问题，让对话继续。","准备好时有礼貌地结束对话。"],"call family":["选择要打电话给哪位家人。","准备电话并找一个合适的位置。","打电话；如有需要请成人帮忙开始。","先说你好，然后轮流说话。","完成后说再见并结束通话。"],"visit family":["确认要去哪里和什么时间出发。","穿好衣服并准备需要带的物品。","前往家人的家或约定地点。","打招呼，并用让自己舒服的方式参与。","离开时带齐自己的物品并说再见。"],"ask for help":["先停一停，找出自己卡在哪一部分。","找到可以帮忙的人。","说或指出：「我这一部分需要帮助。」","听对方的建议，或问一个清楚的问题。","用得到的帮助再试下一步。"],"party / celebration":["确认庆祝活动在哪里和什么时间出发。","穿好衣服并准备需要带的物品。","前往活动地点。","选择自己想怎样参与活动、食物或对话。","离开时带齐自己的物品并说再见。"],"appointment":["确认预约时间和地点。","穿好衣服并准备需要带的物品。","如有需要，带饮品或文件。","预留足够交通时间出发。","到达后报到或等待轮到自己。"],"therapy":["确认治疗时间和地点。","穿好衣服并准备治疗用品或沟通支援。","预留足够交通时间出发。","到达后报到并准备开始。","完成后带齐自己的物品并查看下一步。"],"library":["准备需要归还的书本或物品。","如有需要，带图书证或袋子。","前往图书馆。","先还书，再选择想借的书或想做的活动。","完成借阅并把物品安全放好。"],"shopping":["确认今天要买什么。","如有需要，带购物袋、清单或付款方式。","前往商店。","按清单一次找一个区域的物品。","付款、收好物品并回家。"],"car ride":["确认要去哪里。","准备需要带的物品。","走到车旁并坐到自己的座位。","扣好安全带并准备出发。","到达后解开安全带并带走自己的物品。"],"bus / public transport":["确认路线、车站和时间。","准备交通卡、电话或车票，以及要带的物品。","前往正确的车站。","上正确的交通工具，拍卡或使用车票并跟着路线。","在正确车站下车并带齐自己的物品。"],"go out":["确认要去哪里和什么时间出发。","按天气和活动穿合适衣服。","准备需要带的物品。","穿鞋并拿好袋子。","出发前往目的地。"],"doctor":["确认医生预约时间和诊所地点。","穿好衣服，并带上照顾者说需要的物品或资料。","预留足够交通时间出发。","到达后报到并等待叫名字。","完成后带齐自己的物品并查看下一个活动。"],"dentist":["确认牙医预约时间和地点。","如符合平常流程，出发前照常刷牙。","穿好衣服并预留足够交通时间出发。","到达后报到并等待轮到自己。","完成后带齐自己的物品并查看下一步。"],"outdoor play":["选择想做的户外活动。","按天气穿合适的鞋和衣服。","准备球、单车、玩具或水。","在约定的户外范围玩到计时器或成人说结束。","把物品带回室内并查看日程表。"]}
+};
+
+const UI_REVERSE_TRANSLATIONS={"zh-Hant":{},"zh-Hans":{}};
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
+
+function uiText(english){
+  const key=String(english??"");
+  if(CURRENT_LANG==="en") return key;
+  return UI_TRANSLATIONS[CURRENT_LANG]?.[key] || key;
+}
+function canonicalEnglishText(value){
+  const text=String(value??"");
+  if(text in (UI_TRANSLATIONS["zh-Hant"]||{})) return text;
+  return UI_REVERSE_TRANSLATIONS["zh-Hant"]?.[text]
+    || UI_REVERSE_TRANSLATIONS["zh-Hans"]?.[text]
+    || text;
+}
+function displayActivityLabel(label){
+  const key=String(label||"");
+  if(CURRENT_LANG==="en") return key;
+  return ACTIVITY_LABEL_TRANSLATIONS[CURRENT_LANG]?.[key] || key;
+}
+function displayTaskLabel(task){
+  if(!task) return "";
+  const base=String(task.baseLabel||task.label||"");
+  const label=String(task.label||"");
+  // Built-in activities stay language-neutral internally and are translated per device.
+  if(label===base && (ACTIVITY_LABEL_TRANSLATIONS["zh-Hant"]?.[base] || ACTIVITY_LABEL_TRANSLATIONS["zh-Hans"]?.[base])){
+    return displayActivityLabel(base);
+  }
+  // User-edited labels remain exactly as written.
+  return label;
+}
+function translatedBuiltInBreakdown(key){
+  const k=String(key||"").toLowerCase();
+  if(CURRENT_LANG==="zh-Hant" && TASK_BREAKDOWN_TRANSLATIONS["zh-Hant"]?.[k]) return [...TASK_BREAKDOWN_TRANSLATIONS["zh-Hant"][k]];
+  if(CURRENT_LANG==="zh-Hans" && TASK_BREAKDOWN_TRANSLATIONS["zh-Hans"]?.[k]) return [...TASK_BREAKDOWN_TRANSLATIONS["zh-Hans"][k]];
+  return null;
+}
+
+
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"No task selected yet":"目前沒有已選任務","My task is":"我的任務是","Time is up":"時間到了","Finish the task, extend the timer, or move to the next activity.":"完成任務、延長計時，或前往下一個活動。","Upcoming":"即將開始","minutes until":"分鐘後開始","Time to start":"開始時間到了","Planned start time is":"預定開始時間是","✓ Background alert scheduled for":"✓ 已安排背景提醒：","Waiting for Parent mode.":"等待家長模式回覆。","After-School Mission":"放學後任務"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"No task selected yet":"目前没有已选任务","My task is":"我的任务是","Time is up":"时间到了","Finish the task, extend the timer, or move to the next activity.":"完成任务、延长计时，或前往下一个活动。","Upcoming":"即将开始","minutes until":"分钟后开始","Time to start":"开始时间到了","Planned start time is":"预定开始时间是","✓ Background alert scheduled for":"✓ 已安排后台提醒：","Waiting for Parent mode.":"等待家长模式回复。","After-School Mission":"放学后任务"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
+function shouldSkipAutoTranslation(node){
+  const el=node?.parentElement;
+  if(!el) return false;
+  return !!el.closest(
+    "script,style,textarea,#languageSelect,"+
+    ".activity .label,.seq-main .label,.parent-comment-readonly,.space-setup-text,"+
+    ".motivation-title,.family-code,#familyCalendarNameDisplay,#plannerNameTitle,"+
+    ".breakdown-step,#actionNowBox strong"
+  );
+}
+function applyLanguageToDom(root=document.body){
+  if(!root) return;
+  document.documentElement.lang=CURRENT_LANG;
+
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let node;
+  while((node=walker.nextNode())){
+    if(shouldSkipAutoTranslation(node)) continue;
+    const original=node.nodeValue;
+    if(!original || !original.trim()) continue;
+    const match=original.match(/^(\s*)([\s\S]*?)(\s*)$/);
+    if(!match) continue;
+    const canonical=canonicalEnglishText(match[2]);
+    const translated=uiText(canonical);
+    const next=match[1]+translated+match[3];
+    if(next!==original) node.nodeValue=next;
+  }
+
+  root.querySelectorAll?.("[placeholder],[title],[aria-label]").forEach(el=>{
+    if(el.id==="languageSelect" || el.closest("#languageSelect")) return;
+    for(const attr of ["placeholder","title","aria-label"]){
+      if(!el.hasAttribute(attr)) continue;
+      const raw=el.getAttribute(attr);
+      if(!raw) continue;
+      const canonical=canonicalEnglishText(raw);
+      const translated=uiText(canonical);
+      if(translated!==raw) el.setAttribute(attr,translated);
+    }
+  });
+
+  const selector=document.getElementById("languageSelect");
+  if(selector && selector.value!==CURRENT_LANG) selector.value=CURRENT_LANG;
+}
+let languageTranslationTimer=null;
+function translateSoon(){
+  clearTimeout(languageTranslationTimer);
+  languageTranslationTimer=setTimeout(()=>applyLanguageToDom(),0);
+}
+let languageObserver=null;
+function startLanguageObserver(){
+  if(languageObserver || !document.body) return;
+  languageObserver=new MutationObserver(()=>translateSoon());
+  languageObserver.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["placeholder","title","aria-label"]});
+}
+function setLanguage(lang){
+  if(!SUPPORTED_LANGUAGES.includes(lang)) lang="en";
+  CURRENT_LANG=lang;
+  localStorage.setItem(PROFILE_LANGUAGE_KEY,lang);
+  localStorage.setItem(GLOBAL_LANGUAGE_KEY,lang);
+  document.documentElement.lang=lang;
+
+  renderBankCategoryFilters();
+  renderBank();
+  refreshAll();
+  updateProfileUI();
+  applyLanguageToDom();
+}
+
 // If this browser already used an older named v8/v7 planner on the same website,
 // try to migrate that child's existing entries the first time this profile opens.
 const LEGACY_NAME_KEY=String(ACTIVE_PROFILE?.name||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"");
@@ -1247,12 +1414,12 @@ async function scheduleClosedPush(task){
       body:JSON.stringify({
         clientId:getPushClientId(),
         taskId:String(task.id),
-        label:String(task.label||"Activity"),
+        label:String(displayTaskLabel(task)||uiText("Activity")),
         endAt:Number(task.timerEndAt)
       })
     });
     const status=document.getElementById("closedPushStatus");
-    if(status) status.textContent=`✓ Background alert scheduled for “${task.label}”.`;
+    if(status) status.textContent=`${uiText("✓ Background alert scheduled for")} “${displayTaskLabel(task)}”.`;
   }catch(err){
     const status=document.getElementById("closedPushStatus");
     if(status) status.textContent="Timer is running, but the background alert could not be scheduled: "+err.message;
@@ -1772,7 +1939,7 @@ function renderBankCategoryFilters(){
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="bank-category-chip"+(activeBankCategory===cat.name?" active":"");
-    btn.textContent=`${cat.icon} ${cat.name}`;
+    btn.textContent=`${cat.icon} ${uiText(cat.name)}`;
     btn.onclick=()=>{
       activeBankCategory=cat.name;
       renderBankCategoryFilters();
@@ -1780,6 +1947,7 @@ function renderBankCategoryFilters(){
     };
     holder.appendChild(btn);
   });
+  translateSoon();
 }
 
 function renderBank(){
@@ -1810,7 +1978,8 @@ function renderBank(){
       activeBankCategory==="All" ||
       (activeBankCategory==="Favourites" && isActivityFavourite(favKey)) ||
       a.category===activeBankCategory;
-    const searchMatch=!q || `${a.label} ${a.category}`.toLowerCase().includes(q);
+    const visibleLabel=a.custom?a.label:displayActivityLabel(a.label);
+    const searchMatch=!q || `${a.label} ${visibleLabel} ${a.category} ${uiText(a.category)}`.toLowerCase().includes(q);
     return categoryMatch && searchMatch;
   });
 
@@ -1820,9 +1989,10 @@ function renderBank(){
     const favourite=isActivityFavourite(favKey);
     el.className="activity "+toneClass(i)+(a.custom?" custom-activity":"");
     el.draggable=!isKidSyncMode();
-    el.title=a.category;
-    el.innerHTML=`<span class="icon">${escapeHtml(a.icon)}</span><span class="label">${escapeHtml(a.label)}</span>
-      <button class="activity-favourite ${favourite?"on":""}" title="${favourite?"Remove from favourites":"Add to favourites"}">${favourite?"⭐":"☆"}</button>
+    el.title=uiText(a.category);
+    const shownLabel=a.custom?a.label:displayActivityLabel(a.label);
+    el.innerHTML=`<span class="icon">${escapeHtml(a.icon)}</span><span class="label">${escapeHtml(shownLabel)}</span>
+      <button class="activity-favourite ${favourite?"on":""}" title="${uiText(favourite?"Remove from favourites":"Add to favourites")}">${favourite?"⭐":"☆"}</button>
       ${a.custom?'<button class="custom-remove" title="Remove from Activity Bank">✕</button>':""}`;
 
     el.addEventListener("dragstart",e=>{
@@ -1871,6 +2041,7 @@ function renderBank(){
 
   const empty=document.getElementById("bankEmptyMessage");
   if(empty) empty.style.display=visible.length?"none":"block";
+  translateSoon();
 }
 
 function currentSupportTask(){
@@ -2188,7 +2359,7 @@ function supportFeedbackMarkup(name){
 
 function supportToolDetails(t){
   const task=currentSupportTask();
-  const taskName=task?escapeHtml(`${task.icon||""} ${task.label}`.trim()):"No task selected yet";
+  const taskName=task?escapeHtml(`${task.icon||""} ${displayTaskLabel(task)}`.trim()):uiText("No task selected yet");
   const selected=selectedTools().includes(t.name);
   const save=`<button class="support-save-btn ${selected?"saved":""}">${selected?"❤️ In My Support Toolkit":"♡ This helps me"}</button>`;
   const feedback=supportFeedbackMarkup(t.name);
@@ -2274,7 +2445,7 @@ function renderTools(){
     if(open) open.onclick=e=>{e.stopPropagation();openCurrentTaskInStuck()};
     el.querySelectorAll(".help-phrase").forEach(btn=>btn.onclick=async e=>{
       e.stopPropagation();
-      const phrase=btn.dataset.phrase||btn.textContent;
+      const phrase=btn.textContent||btn.dataset.phrase;
       const feedback=el.querySelector(".support-copy-feedback");
       try{await navigator.clipboard.writeText(phrase);if(feedback) feedback.textContent="✓ Sentence copied.";}
       catch{if(feedback) feedback.textContent=`You can say: “${phrase}”`;}
@@ -2422,6 +2593,7 @@ function renderTools(){
     grid.appendChild(el);
   });
   updateSupportTimerDisplays();
+  translateSoon();
 }
 function openSupportTool(name){
   if(!tools.some(t=>t.name===name)) return;
@@ -2450,6 +2622,7 @@ function renderSelectedTools(){
     el.onclick=()=>openSupportTool(t.name);
     box.appendChild(el);
   });
+  translateSoon();
 }
 
 function renderMotivationBank(){
@@ -2507,7 +2680,7 @@ function renderUnlockTaskList(){
     const row=document.createElement("label");
     row.className="unlock-item";
     const checked=unlockTaskIds().includes(t.id);
-    row.innerHTML=`<input type="checkbox" ${checked?"checked":""}> <span>${t.icon} ${t.label}</span>`;
+    row.innerHTML=`<input type="checkbox" ${checked?"checked":""}> <span>${t.icon} ${escapeHtml(displayTaskLabel(t))}</span>`;
     const cb=row.querySelector("input");
     cb.onchange=()=>{
       if(isKidSyncMode()) return;
@@ -2763,7 +2936,7 @@ function updateAllTaskTimers(){
       t.timerFinished=true;
       changed=true;
       playAlarmSound();
-      setTimeout(()=>alert(`Time is up: ${t.label}\n\nFinish the task, extend the timer, or move to the next activity.`),0);
+      setTimeout(()=>alert(`${uiText("Time is up")}: ${displayTaskLabel(t)}\n\n${uiText("Finish the task, extend the timer, or move to the next activity.")}`),0);
     }
 
     if(node) node.textContent=taskTimerText(t);
@@ -2838,7 +3011,7 @@ function renderTaskChangeRequestHtml(t){
   const req=taskChangeRequest(t.id);
   if(isKidSyncMode()){
     if(req?.status==="pending"){
-      return `<div class="change-request-box"><strong>💬 Request sent</strong><div class="small-note">${escapeHtml(CHANGE_REQUEST_LABELS[req.type]||req.type)}. Waiting for Parent mode.</div><span class="request-badge request-pending">Pending</span></div>`;
+      return `<div class="change-request-box"><strong>💬 Request sent</strong><div class="small-note">${escapeHtml(uiText(CHANGE_REQUEST_LABELS[req.type]||req.type))}. ${uiText("Waiting for Parent mode.")}</div><span class="request-badge request-pending">Pending</span></div>`;
     }
     const previous=req?`<span class="request-badge ${requestStatusClass(req.status)}">${req.status==="accepted"?"✓ Agreed":"Not changed"}</span>`:"";
     return `<div class="change-request-box">
@@ -2857,7 +3030,7 @@ function renderTaskChangeRequestHtml(t){
   }
   if(isParentSyncMode() && req?.status==="pending"){
     return `<div class="parent-request-card">
-      <strong>💬 Child request: ${escapeHtml(CHANGE_REQUEST_LABELS[req.type]||req.type)}</strong>
+      <strong>💬 Child request: ${escapeHtml(uiText(CHANGE_REQUEST_LABELS[req.type]||req.type))}</strong>
       <div class="small-note">${req.type==="later"?"Agree moves this task to the end of the routine.":req.type==="moretime"?"Agree adds 10 minutes.":req.type==="break"?"Agree adds a 5-minute Short break before this task.":"Agree acknowledges that help is needed."}</div>
       <div class="parent-request-actions">
         <button class="agreeRequest primary">✓ Agree</button>
@@ -2881,7 +3054,7 @@ function renderPlan(){
     el.innerHTML=`
       <div class="seq-top">
         <div class="num">${i+1}</div>
-        <div class="seq-main"><span class="icon">${escapeHtml(t.icon)}</span><span class="label">${escapeHtml(t.label)}</span></div>
+        <div class="seq-main"><span class="icon">${escapeHtml(t.icon)}</span><span class="label">${escapeHtml(displayTaskLabel(t))}</span></div>
         <div class="controls">
           <button class="mini editTask" title="Edit activity">✏️</button>
           <button class="mini up">↑</button>
@@ -2926,11 +3099,11 @@ function renderPlan(){
         </div>
       </div>
       <div class="end-time-display" data-end-time="${t.id}">
-        ${t.start ? `Ends at ${calculateTaskEndTime(t.start,t.duration)}` : "Set a start time to see end time"}
+        ${t.start ? `${uiText("Ends at")} ${calculateTaskEndTime(t.start,t.duration)}` : uiText("Set a start time to see end time")}
       </div>
       <div class="task-edit-panel" style="display:none">
         <div class="task-edit-grid">
-          <input class="taskEditName" type="text" maxlength="80" value="${escapeHtml(t.label)}" aria-label="Activity name">
+          <input class="taskEditName" type="text" maxlength="80" value="${escapeHtml(displayTaskLabel(t))}" aria-label="Activity name">
           <select class="taskEditIcon" aria-label="Activity icon"></select>
         </div>
         <div class="task-edit-actions">
@@ -2998,7 +3171,9 @@ function renderPlan(){
       if(isKidSyncMode()) return;
       const nextName=el.querySelector(".taskEditName").value.trim();
       if(!nextName){alert("Please enter an activity name.");return;}
-      t.label=nextName;
+      const translatedDefault=displayActivityLabel(t.baseLabel||t.label);
+      if(t.label===t.baseLabel && nextName===translatedDefault) t.label=t.baseLabel;
+      else t.label=nextName;
       t.icon=editIcon.value||t.icon||"⭐";
       renderPlan();
       scheduleAutoSave();
@@ -3044,7 +3219,7 @@ function renderPlan(){
       if(isKidSyncMode()) return;
       t.start=e.target.value;
       const endNode=el.querySelector(`[data-end-time="${t.id}"]`);
-      if(endNode) endNode.textContent=t.start?`Ends at ${calculateTaskEndTime(t.start,t.duration)}`:"Set a start time to see end time";
+      if(endNode) endNode.textContent=t.start?`${uiText("Ends at")} ${calculateTaskEndTime(t.start,t.duration)}`:uiText("Set a start time to see end time");
       fired={}; updateDashboard(); scheduleAutoSave();
     };
     el.querySelector(".duration").onchange=e=>{
@@ -3052,7 +3227,7 @@ function renderPlan(){
       t.duration=Math.max(1,Number(e.target.value)||1);
       if(!t.timerEndAt){t.timerPausedRemaining=t.duration*60;t.timerFinished=false;}
       const endNode=el.querySelector(`[data-end-time="${t.id}"]`);
-      if(endNode) endNode.textContent=t.start?`Ends at ${calculateTaskEndTime(t.start,t.duration)}`:"Set a start time to see end time";
+      if(endNode) endNode.textContent=t.start?`${uiText("Ends at")} ${calculateTaskEndTime(t.start,t.duration)}`:uiText("Set a start time to see end time");
       fired={}; updateDashboard(); updateAllTaskTimers(); scheduleAutoSave();
     };
     el.querySelector(".priority").onchange=e=>{if(isKidSyncMode()) return;t.priority=e.target.value; scheduleAutoSave()};
@@ -3082,6 +3257,7 @@ function renderPlan(){
   renderTaskBreakdown(document.getElementById("stuckTaskSelect")?.value || null);
   updateMotivationTimerDisplay();
   scheduleAutoSave();
+  translateSoon();
 }
 
 function updateDashboard(){
@@ -3096,9 +3272,9 @@ function updateDashboard(){
     next=future[0] || null;
     later=future[1] || null;
   }
-  document.getElementById("currentText").textContent=current?current.label:"—";
-  document.getElementById("nextText").textContent=next?next.label:"—";
-  document.getElementById("laterText").textContent=later?later.label:"—";
+  document.getElementById("currentText").textContent=current?displayTaskLabel(current):"—";
+  document.getElementById("nextText").textContent=next?displayTaskLabel(next):"—";
+  document.getElementById("laterText").textContent=later?displayTaskLabel(later):"—";
 
   const done=p.filter(t=>t.status==="done").length;
   document.getElementById("progressText").textContent=`${done} / ${p.length}`;
@@ -3109,8 +3285,8 @@ function updateFirstThen(){
   const p=plan();
   const current=p.find(t=>t.status==="doing") || p.find(t=>t.status!=="done") || null;
   const m=selectedMotivation();
-  const motivationText=m ? `${m.name} (${m.duration} min)` : "choose a motivation";
-  document.getElementById("firstThenBox").innerHTML=`First <strong>${current?current.label:"—"}</strong>, then <strong>${motivationText}</strong>.`;
+  const motivationText=m ? `${escapeHtml(m.name)} (${m.duration} ${uiText("min")})` : uiText("choose a motivation");
+  document.getElementById("firstThenBox").innerHTML=`${uiText("First")} <strong>${current?escapeHtml(displayTaskLabel(current)):"—"}</strong>${uiText(", then")} <strong>${motivationText}</strong>.`;
 }
 
 
@@ -3804,8 +3980,27 @@ const taskBreakdownLibrary={
 };
 
 function genericTaskBreakdown(taskLabel){
+  const label=String(taskLabel||"").trim() || (CURRENT_LANG==="zh-Hant"?"這個任務":CURRENT_LANG==="zh-Hans"?"这个任务":"this task");
+  if(CURRENT_LANG==="zh-Hant"){
+    return [
+      `先看看任務：${label}。`,
+      "準備需要的物品。",
+      "選出第一個最小的動作。",
+      "先只完成這一個小動作。",
+      "完成後再看看下一個小動作。"
+    ];
+  }
+  if(CURRENT_LANG==="zh-Hans"){
+    return [
+      `先看看任务：${label}。`,
+      "准备需要的物品。",
+      "选出第一个最小的动作。",
+      "先只完成这一个小动作。",
+      "完成后再看看下一个小动作。"
+    ];
+  }
   return [
-    `Look at the task: ${taskLabel}.`,
+    `Look at the task: ${label}.`,
     "Get the things you need.",
     "Choose the first small action.",
     "Do only that small action.",
@@ -3815,6 +4010,7 @@ function genericTaskBreakdown(taskLabel){
 
 function smartOfflineBreakdown(taskLabel){
   const label=(taskLabel||"").trim();
+  if(CURRENT_LANG!=="en") return genericTaskBreakdown(label);
   const key=label.toLowerCase();
   if(/karate|taekwondo|martial|sport class|soccer|football|basketball|tennis|dance class|swim|swimming|lesson|training/.test(key)){
     return [
@@ -3853,11 +4049,13 @@ function getBreakdownForTask(task){
   if(Array.isArray(entry.customSteps) && entry.customSteps.length) return entry.customSteps;
 
   const key=(task.baseLabel||task.label||"").trim().toLowerCase();
+  const localized=translatedBuiltInBreakdown(key);
+  if(localized) return localized;
   if(taskBreakdownLibrary[key]) return taskBreakdownLibrary[key];
 
   if(Array.isArray(entry.steps) && entry.steps.length) return entry.steps;
 
-  return smartOfflineBreakdown(task.label||"this task");
+  return smartOfflineBreakdown(task.label||displayTaskLabel(task)||"this task");
 }
 
 async function requestSmartBreakdown(task){
@@ -3927,7 +4125,7 @@ function populateStuckTaskSelect(preferredId=null){
   plan().forEach(t=>{
     const opt=document.createElement("option");
     opt.value=t.id;
-    opt.textContent=`${t.icon} ${t.label}`;
+    opt.textContent=`${t.icon} ${displayTaskLabel(t)}`;
     select.appendChild(opt);
   });
   const current=currentRoutineTask();
@@ -4079,6 +4277,7 @@ function renderTaskBreakdown(taskId=null){
     resetDefaultBtn.style.display=canEdit&&custom?"inline-block":"none";
   }
   renderBreakdownEditor(task);
+  translateSoon();
 }
 
 function resetTaskBreakdown(){
@@ -4106,7 +4305,7 @@ async function copyTaskBreakdown(){
   const feedback=document.getElementById("copyFeedback");
   if(!task){ if(feedback) feedback.textContent="Choose a task first."; return; }
   const steps=getBreakdownForTask(task);
-  const text=`${task.label}\n`+steps.map((s,i)=>`${i+1}. ${s}`).join("\n");
+  const text=`${displayTaskLabel(task)}\n`+steps.map((s,i)=>`${i+1}. ${s}`).join("\n");
   try{
     await navigator.clipboard.writeText(text);
     if(feedback) feedback.textContent="✓ Steps copied.";
@@ -4125,7 +4324,7 @@ function getStuckSuggestions(){
   const task=currentSupportTask();
   const chosen=selectedTools();
   const tips=[];
-  if(task) tips.push(`✅ My task is: <strong>${escapeHtml(task.label)}</strong>.`);
+  if(task) tips.push(`✅ ${uiText("My task is")}: <strong>${escapeHtml(displayTaskLabel(task))}</strong>.`);
   if(chosen.includes("One step at a time")) tips.push("1️⃣ Look at only the next small step.");
   if(chosen.includes("Just start for 5 minutes")) tips.push("🚀 Try the task for only 5 minutes.");
   if(chosen.includes("Make my space easier")) tips.push("🎧 Reduce distractions and keep only what you need nearby.");
@@ -4198,10 +4397,10 @@ function alarmTick(){
     if(t.start){
       const st=timeForToday(t.start); const diff=st-now; const warn=Number(t.warning||0)*60000;
       if(warn>0 && diff<=warn && diff>warn-20000){
-        notify("Upcoming: "+t.label,`${t.warning} minutes until ${t.label}.`,today+"-"+t.id+"-warn-"+t.warning);
+        notify(`${uiText("Upcoming")}: ${displayTaskLabel(t)}`,`${t.warning} ${uiText("minutes until")} ${displayTaskLabel(t)}.`,today+"-"+t.id+"-warn-"+t.warning);
       }
       if(diff<=0 && diff>-20000){
-        notify("Time to start: "+t.label,`Planned start time is ${t.start}.`,today+"-"+t.id+"-start");
+        notify(`${uiText("Time to start")}: ${displayTaskLabel(t)}`,`${uiText("Planned start time is")} ${t.start}.`,today+"-"+t.id+"-start");
       }
     }
   });
@@ -4246,7 +4445,9 @@ function updateProfileUI(){
   const name=cleanProfileName(ACTIVE_PROFILE?.name)||"My";
   const h=document.getElementById("plannerNameTitle");
   if(h) h.textContent=name;
-  document.title=`${name} – After-School Mission`;
+  const suffix=CURRENT_LANG==="en"?"After-School Mission":CURRENT_LANG==="zh-Hant"?"放學後任務":"放学后任务";
+  document.title=`${name} – ${suffix}`;
+  translateSoon();
 }
 
 function changeProfileName(){
@@ -4342,7 +4543,8 @@ function refreshAll(){
   document.getElementById("soundChoice").value=state.soundChoice;
   document.getElementById("volumeSlider").value=Math.round(state.alarmVolume*100);
   document.getElementById("volumeLabel").textContent=Math.round(state.alarmVolume*100)+"%";
-  document.getElementById("alarmStatus").textContent=state.alarmsEnabled ? "In-page alarms are ON." : "Alarms are off. Click “Enable alarms” above.";
+  document.getElementById("alarmStatus").textContent=state.alarmsEnabled ? uiText("In-page alarms are ON.") : uiText("Alarms are off. Click “Enable alarms” above.");
+  translateSoon();
 }
 
 document.getElementById("templateSelect").onchange=e=>{
@@ -4572,7 +4774,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v30_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v31_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -4604,6 +4806,14 @@ document.getElementById("importFile").onchange=e=>{
 updateProfileUI();
 
 document.getElementById("changeProfileNameBtn").onclick=changeProfileName;
+const languageSelect=document.getElementById("languageSelect");
+if(languageSelect){
+  languageSelect.value=CURRENT_LANG;
+  languageSelect.onchange=e=>setLanguage(e.target.value);
+}
+startLanguageObserver();
+applyLanguageToDom();
+
 document.getElementById("undoBtn").onclick=runUndo;
 document.getElementById("settingsBtn").onclick=()=>{
   const shell=document.getElementById("settingsShell");

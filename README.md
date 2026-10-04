@@ -323,3 +323,27 @@ The custom-activity photo experience has been redesigned.
 Photos continue to be compressed and stored only on the current device. They are not placed in Shared Family Calendar JSON.
 
 V33.2 keeps all V33.1 data and features. No Cloudflare Worker redeploy is required.
+
+
+## v33.3 — Time + Support Feedback UX
+
+### End Time
+- End Time is now displayed inside the same task-settings row as Start Time.
+- It uses the same field size, border, colour and typography as the other task fields.
+- End Time is read-only and continues to calculate automatically from Start Time + Duration.
+- It now always uses a 12-hour display with AM / PM, e.g. `02:31 PM`.
+
+### Support feedback
+- “Did this help?” is no longer permanently shown on every support card.
+- “This helps me” remains the separate action for saving a strategy to My Support Toolkit.
+- Feedback appears only after the support has actually been used:
+  - after the 5-minute start timer finishes
+  - after a planned break finishes
+  - after One step at a time is used
+  - after an Ask for help phrase is used
+  - after “Done setting up” for Make my space easier
+  - after “I tried this” for Work with someone nearby
+- My Support Toolkit no longer shows rating counts, reducing visual clutter.
+- Daily History / OT Review keeps support-use details and now stores the contextual 👍 / 😐 / 👎 feedback for that day.
+
+V33.3 preserves the same app storage key, existing routines, Family Calendar, photos, history and all V33.2 features. No Cloudflare Worker redeploy is required.

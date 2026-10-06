@@ -362,3 +362,17 @@ V33.3 preserves the same app storage key, existing routines, Family Calendar, ph
 - Existing routines, templates, support feedback, Family Calendar data, photos and local storage keys remain compatible.
 
 Requires the V34 Cloudflare Worker backend for Parent I’m Stuck push alerts.
+
+
+## V34.1 — Photo Picker Reliability Fix
+
+- Custom Activity photo picker now uses a native label-to-file-input trigger instead of relying only on a programmatic hidden-input click.
+- Explicitly supports JPG/JPEG, PNG, WebP and GIF.
+- Mac screenshots (PNG) are supported.
+- Uses `createImageBitmap()` where available, with a browser `Image` fallback.
+- Shows “Reading photo…” while processing.
+- Shows the selected filename when the preview is ready.
+- Shows a clear error if the browser cannot read the photo instead of silently doing nothing.
+- Existing custom-activity, task and environment photo flows use the same improved decoder.
+- HEIC/HEIF may still depend on browser support; JPG/PNG/WebP are recommended.
+- No Cloudflare Worker update is required.

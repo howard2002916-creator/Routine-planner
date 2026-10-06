@@ -1,4 +1,4 @@
-const CACHE_NAME="mission-planner-github-v34";
+const CACHE_NAME="mission-planner-github-v34-1";
 const APP_SHELL=[
   "./",
   "./index.html",

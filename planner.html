@@ -636,6 +636,18 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
 .custom-photo-creator-controls{min-width:0;flex:1}
 .custom-photo-buttons{display:flex;gap:7px;flex-wrap:wrap;margin:7px 0}
 .custom-photo-buttons button{box-shadow:none}
+.custom-photo-trigger{
+  display:inline-flex;align-items:center;justify-content:center;
+  border:0;border-radius:12px;padding:10px 13px;font-weight:800;color:var(--ink);
+  background:#fff;box-shadow:0 2px 9px rgba(55,43,92,.08);cursor:pointer
+}
+.custom-photo-trigger:hover{transform:translateY(-1px)}
+.custom-photo-trigger:focus-visible{outline:3px solid rgba(78,67,145,.22);outline-offset:2px}
+.photo-input-visually-hidden{
+  position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+  margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;border:0!important;opacity:.001
+}
 .custom-activity.custom-photo-open{grid-column:1/-1;flex-wrap:wrap;cursor:default}
 .custom-photo-manager{
   width:100%;display:none;border-top:1px solid rgba(80,70,110,.13);
@@ -860,13 +872,14 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
             <div class="custom-photo-creator-controls">
               <div id="customPhotoStatus" class="small-note">No photo selected</div>
               <div class="custom-photo-buttons">
-                <button id="chooseCustomPhotoBtn" type="button">Choose photo</button>
+                <label id="chooseCustomPhotoBtn" for="customPhoto" class="custom-photo-trigger" role="button" tabindex="0">Choose photo</label>
                 <button id="removeCustomPhotoBtn" type="button" class="danger" style="display:none">Remove photo</button>
               </div>
-              <div class="small-note">Choose a photo or keep the emoji only.</div>
+              <div class="small-note">JPG, PNG, WebP or GIF. HEIC/HEIF may not be supported by every browser.</div>
             </div>
           </div>
-          <input id="customPhoto" type="file" accept="image/*" style="display:none">
+          <input id="customPhoto" class="photo-input-visually-hidden" type="file"
+                 accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
         </div>
         <button id="addCustom">➕ Add to Activity Bank</button>
       </div>
@@ -1118,7 +1131,7 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
 
     <div class="app-version-panel">
       <strong>📱 App version</strong>
-      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V34</strong></div>
+      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V34.1</strong></div>
       <div class="save-actions">
         <button id="reloadLatestBtn">🔄 Reload latest version</button>
         <button id="translationAuditBtn">🌐 Translation check</button>
@@ -1301,7 +1314,7 @@ if(!ACTIVE_PROFILE || !ACTIVE_PROFILE.id || !ACTIVE_PROFILE.name){
 const PROFILE_ID=ACTIVE_PROFILE?.id || "default";
 const APP_KEY=`otRoutinePlannerV9App_${PROFILE_ID}`;
 
-const APP_VERSION="V34";
+const APP_VERSION="V34.1";
 const FOCUS_MODE_KEY=`routineFocusMode_${PROFILE_ID}`;
 const ACTIVITY_PHOTO_KEY=`routineActivityPhotos_${PROFILE_ID}`;
 const TASK_PHOTO_KEY=`routineTaskPhotos_${PROFILE_ID}`;
@@ -1321,7 +1334,9 @@ function updateCustomPhotoCreator(){
     img.src=pendingCustomPhotoData;
     img.style.display="block";
     empty.style.display="none";
-    status.textContent=uiText("Photo ready to add.");
+    status.textContent=pendingCustomPhotoName
+      ? `${uiText("Photo ready to add.")} ${pendingCustomPhotoName}`
+      : uiText("Photo ready to add.");
     choose.textContent=uiText("Change photo");
     remove.style.display="inline-block";
   }else{
@@ -1333,11 +1348,9 @@ function updateCustomPhotoCreator(){
     remove.style.display="none";
   }
 }
-function chooseCreatorPhoto(){
-  document.getElementById("customPhoto")?.click();
-}
 function clearCreatorPhoto(){
   pendingCustomPhotoData="";
+  pendingCustomPhotoName="";
   const input=document.getElementById("customPhoto");
   if(input) input.value="";
   updateCustomPhotoCreator();
@@ -1474,6 +1487,13 @@ for(const lang of ["zh-Hant","zh-Hans"]){
     if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
   });
 }
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"Reading photo…":"正在讀取相片……","This photo could not be read.":"無法讀取這張相片。","This photo format could not be read. Please try JPG, PNG, WebP or GIF.":"無法讀取這種相片格式。請嘗試 JPG、PNG、WebP 或 GIF。","JPG, PNG, WebP or GIF. HEIC/HEIF may not be supported by every browser.":"支援 JPG、PNG、WebP 或 GIF。部分瀏覽器可能不支援 HEIC／HEIF。"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"Reading photo…":"正在读取照片……","This photo could not be read.":"无法读取这张照片。","This photo format could not be read. Please try JPG, PNG, WebP or GIF.":"无法读取这种照片格式。请尝试 JPG、PNG、WebP 或 GIF。","JPG, PNG, WebP or GIF. HEIC/HEIF may not be supported by every browser.":"支持 JPG、PNG、WebP 或 GIF。部分浏览器可能不支持 HEIC／HEIF。"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
 function shouldSkipAutoTranslation(node){
   const el=node?.parentElement;
   if(!el) return false;
@@ -1589,6 +1609,7 @@ let undoTimer=null;
 let editingBreakdownTaskId=null;
 let breakdownEditDraft=null;
 let pendingCustomPhotoData="";
+let pendingCustomPhotoName="";
 
 
 const DEFAULT_SERVER_URL="https://routine-planner-notifications.routineplanner-ot.workers.dev";
@@ -2494,7 +2515,8 @@ function renderBank(){
 
       const chooseOrChangePhoto=()=>{
         const input=document.createElement("input");
-        input.type="file";input.accept="image/*";
+        input.type="file";
+        input.accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif";
         input.onchange=ev=>{
           const file=ev.target.files?.[0];
           if(!file) return;
@@ -2502,7 +2524,7 @@ function renderBank(){
             if(!data) return;
             setActivityPhoto(a.bankId,data);
             renderBank();
-          });
+          },err=>alert(err?.message||uiText("This photo could not be read.")));
         };
         input.click();
       };
@@ -2694,26 +2716,68 @@ function setSpacePhoto(id,dataUrl){
   else delete photos[id];
   writeSpacePhotos(photos);
 }
-function compressSpacePhoto(file,callback){
+function photoFileLooksSupported(file){
+  if(!file) return false;
+  const type=String(file.type||"").toLowerCase();
+  const name=String(file.name||"").toLowerCase();
+  return ["image/jpeg","image/png","image/webp","image/gif"].includes(type)
+    || /\.(jpe?g|png|webp|gif)$/.test(name);
+}
+function photoCanvasDataUrl(source,width,height){
+  if(!width||!height) throw new Error("The photo has no readable dimensions.");
+  const max=280;
+  const scale=Math.min(1,max/Math.max(width,height));
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.max(1,Math.round(width*scale));
+  canvas.height=Math.max(1,Math.round(height*scale));
+  const ctx=canvas.getContext("2d",{alpha:false});
+  if(!ctx) throw new Error("This browser could not prepare the photo.");
+  ctx.fillStyle="#fff";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(source,0,0,canvas.width,canvas.height);
+  return canvas.toDataURL("image/jpeg",0.78);
+}
+async function compressPhotoRobust(file){
+  if(!file) throw new Error("No photo was selected.");
+  if(!photoFileLooksSupported(file)){
+    throw new Error("This photo format could not be read. Please try JPG, PNG, WebP or GIF.");
+  }
+
+  if(typeof createImageBitmap==="function"){
+    try{
+      const bitmap=await createImageBitmap(file);
+      try{
+        return photoCanvasDataUrl(bitmap,bitmap.width,bitmap.height);
+      }finally{
+        if(typeof bitmap.close==="function") bitmap.close();
+      }
+    }catch(err){
+      console.warn("createImageBitmap could not decode photo; trying Image fallback.",err);
+    }
+  }
+
+  const objectUrl=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((resolve,reject)=>{
+      const image=new Image();
+      image.onload=()=>resolve(image);
+      image.onerror=()=>reject(new Error("This browser could not decode that photo."));
+      image.src=objectUrl;
+    });
+    return photoCanvasDataUrl(img,img.naturalWidth||img.width,img.naturalHeight||img.height);
+  }finally{
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+function compressSpacePhoto(file,callback,onError=null){
   if(!file){callback("");return;}
-  const reader=new FileReader();
-  reader.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const max=280;
-      const scale=Math.min(1,max/Math.max(img.width,img.height));
-      const canvas=document.createElement("canvas");
-      canvas.width=Math.max(1,Math.round(img.width*scale));
-      canvas.height=Math.max(1,Math.round(img.height*scale));
-      const ctx=canvas.getContext("2d");
-      ctx.drawImage(img,0,0,canvas.width,canvas.height);
-      callback(canvas.toDataURL("image/jpeg",0.72));
-    };
-    img.onerror=()=>callback("");
-    img.src=reader.result;
-  };
-  reader.onerror=()=>callback("");
-  reader.readAsDataURL(file);
+  compressPhotoRobust(file)
+    .then(data=>callback(data))
+    .catch(err=>{
+      console.error("Photo processing failed",err);
+      callback("");
+      if(typeof onError==="function") onError(err);
+    });
 }
 
 function spaceItemVisual(item){
@@ -3117,10 +3181,10 @@ function renderTools(){
           const file=ev.target.files?.[0];
           if(!file) return;
           compressSpacePhoto(file,data=>{
-            if(!data){alert("Could not read that photo.");return;}
+            if(!data) return;
             pendingPhoto=data;
             preview.innerHTML=`<img src="${data}" alt="">`;
-          });
+          },err=>alert(err?.message||uiText("This photo could not be read.")));
         };
         wrapper.querySelector(".space-remove-photo").onclick=ev=>{
           ev.stopPropagation();
@@ -3899,7 +3963,7 @@ function renderPlan(){
       editIcon.value=t.icon;
     }
     const taskPhotoInput=el.querySelector(".taskPhotoInput");
-    if(taskPhotoInput)taskPhotoInput.onchange=e=>{const file=e.target.files?.[0];if(!file)return;compressSpacePhoto(file,data=>{if(!data)return;setTaskPhoto(t.id,data);const preview=el.querySelector(".task-photo-preview");if(preview)preview.innerHTML=`<img src="${data}" alt="">`})};
+    if(taskPhotoInput)taskPhotoInput.onchange=e=>{const file=e.target.files?.[0];if(!file)return;compressSpacePhoto(file,data=>{if(!data)return;setTaskPhoto(t.id,data);const preview=el.querySelector(".task-photo-preview");if(preview)preview.innerHTML=`<img src="${data}" alt="">`},err=>alert(err?.message||uiText("This photo could not be read.")))};
     const removeTaskPhotoBtn=el.querySelector(".removeTaskPhoto");
     if(removeTaskPhotoBtn)removeTaskPhotoBtn.onclick=()=>{setTaskPhoto(t.id,"");const preview=el.querySelector(".task-photo-preview");if(preview)preview.textContent=t.icon||"⭐"};
     el.querySelector(".editTask").onclick=()=>{
@@ -5425,15 +5489,34 @@ sequence.addEventListener("drop",e=>{
   renderPlan();
 });
 
-document.getElementById("chooseCustomPhotoBtn").onclick=chooseCreatorPhoto;
+const customPhotoTrigger=document.getElementById("chooseCustomPhotoBtn");
+if(customPhotoTrigger){
+  customPhotoTrigger.onkeydown=e=>{
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();
+      document.getElementById("customPhoto")?.click();
+    }
+  };
+}
 document.getElementById("removeCustomPhotoBtn").onclick=clearCreatorPhoto;
 document.getElementById("customPhoto").onchange=e=>{
   const file=e.target.files?.[0];
   if(!file) return;
+
+  const status=document.getElementById("customPhotoStatus");
+  pendingCustomPhotoName=String(file.name||"").slice(0,120);
+  if(status) status.textContent=`${uiText("Reading photo…")} ${pendingCustomPhotoName}`;
+
   compressSpacePhoto(file,data=>{
     if(!data) return;
     pendingCustomPhotoData=data;
     updateCustomPhotoCreator();
+  },err=>{
+    pendingCustomPhotoData="";
+    const msg=err?.message||uiText("This photo could not be read.");
+    if(status) status.textContent=`⚠️ ${msg}`;
+    const remove=document.getElementById("removeCustomPhotoBtn");
+    if(remove) remove.style.display="inline-block";
   });
 };
 updateCustomPhotoCreator();
@@ -5584,7 +5667,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v34_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v34_1_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

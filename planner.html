@@ -665,6 +665,32 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
   border:1px solid #eadfbc;background:#fffaf0;border-radius:13px;padding:10px
 }
 .support-feedback-contextual .support-feedback-title{font-size:13px}
+/* V34 Parent alerts + Support Toolkit UX */
+.stuck-toolkit{margin-top:14px;background:#fcfbff}
+.selected-tool-wrap{
+  border:1px solid #e1dced;background:#fff;border-radius:12px;padding:7px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center
+}
+.selected-tool-wrap .selected-tool{
+  border:0;background:transparent;padding:3px;box-shadow:none;min-width:0
+}
+.selected-tool-remove{
+  border:1px solid #eadfe7;background:#fff7f8;color:#8c4352;
+  box-shadow:none;padding:7px 8px;font-size:11.5px;white-space:nowrap
+}
+.parent-stuck-alert-panel{
+  margin-top:11px;border:1px solid #e1dced;border-radius:13px;padding:11px;background:#fcfbff
+}
+.parent-stuck-alert-toggle{display:flex;align-items:flex-start;gap:9px;cursor:pointer}
+.parent-stuck-alert-toggle input{width:19px;height:19px;margin-top:2px;flex:0 0 auto}
+.parent-stuck-alert-toggle span{display:block}
+.parent-stuck-alert-toggle strong{display:block;font-size:14px}
+.parent-stuck-alert-toggle small{display:block;color:var(--muted);font-size:12px;line-height:1.35;margin-top:2px}
+.stuck-parent-alert-status{min-height:0;margin-top:5px}
+@media(max-width:560px){
+  .selected-tool-wrap{grid-template-columns:1fr}
+  .selected-tool-remove{justify-self:start}
+}
 </style>
 </head>
 <body>
@@ -899,11 +925,6 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
       <div class="small-note" id="motivationStatus">Choose a motivation item first.</div>
     </div>
 
-    <div class="toolkit">
-      <h3 style="margin:0">🧰 My Support Toolkit</h3>
-      <div id="selectedTools" class="selected-tools"></div>
-    </div>
-
     <div class="stuck-panel">
       <strong>🆘 “I’m stuck” helper</strong>
       <div class="small-note">If a task feels too big, choose it to see a task-specific step-by-step guide. Complete one small action at a time.</div>
@@ -913,6 +934,7 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
         <button id="useCurrentTaskBtn" class="softbtn">Use current task</button>
         <button id="breakTaskBtn" class="primary">✨ Break it down</button>
       </div>
+      <div id="stuckParentAlertStatus" class="small-note stuck-parent-alert-status" aria-live="polite"></div>
 
       <div id="actionNowBox" class="action-now">
         <small>DO THIS NOW</small>
@@ -932,6 +954,12 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
       <div id="copyFeedback" class="copy-feedback"></div>
       <div id="aiBreakdownStatus" class="ai-breakdown-status">
         Every built-in Activity Bank task has its own prepared step-by-step guide. Custom activities use the offline helper when a prepared guide is not available.
+      </div>
+
+      <div class="toolkit stuck-toolkit">
+        <h3 style="margin:0">🧰 My Support Toolkit</h3>
+        <div class="small-note">My saved supports that have helped me before.</div>
+        <div id="selectedTools" class="selected-tools"></div>
       </div>
 
       <div id="supportToolsSection" class="support-tools-section">
@@ -1069,6 +1097,18 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
           <button id="familySyncNowBtn">↻ Sync now</button>
           <button id="familyDisconnectBtn" class="danger">Disconnect this device</button>
         </div>
+
+        <div id="parentStuckAlertPanel" class="parent-stuck-alert-panel" style="display:none">
+          <label class="parent-stuck-alert-toggle">
+            <input id="parentStuckAlertToggle" type="checkbox">
+            <span>
+              <strong>🔔 I’m Stuck alerts</strong>
+              <small>Optional: notify this Parent device when the child uses “I’m Stuck”.</small>
+            </span>
+          </label>
+          <div class="small-note">Background notifications must be enabled on this Parent device. You can turn this off at any time.</div>
+          <div id="parentStuckAlertStatus" class="family-sync-status">I’m Stuck alerts are off on this device.</div>
+        </div>
       </div>
 
       <div id="familySyncStatus" class="family-sync-status">
@@ -1078,7 +1118,7 @@ body.focus-mode .sequence{min-height:0}body.focus-mode .sequence.empty:before{pa
 
     <div class="app-version-panel">
       <strong>📱 App version</strong>
-      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V33.3</strong></div>
+      <div class="small-note"><span>Current version:</span> <strong id="appVersionText">V34</strong></div>
       <div class="save-actions">
         <button id="reloadLatestBtn">🔄 Reload latest version</button>
         <button id="translationAuditBtn">🌐 Translation check</button>
@@ -1261,7 +1301,7 @@ if(!ACTIVE_PROFILE || !ACTIVE_PROFILE.id || !ACTIVE_PROFILE.name){
 const PROFILE_ID=ACTIVE_PROFILE?.id || "default";
 const APP_KEY=`otRoutinePlannerV9App_${PROFILE_ID}`;
 
-const APP_VERSION="V33.3";
+const APP_VERSION="V34";
 const FOCUS_MODE_KEY=`routineFocusMode_${PROFILE_ID}`;
 const ACTIVITY_PHOTO_KEY=`routineActivityPhotos_${PROFILE_ID}`;
 const TASK_PHOTO_KEY=`routineTaskPhotos_${PROFILE_ID}`;
@@ -1422,6 +1462,13 @@ for(const lang of ["zh-Hant","zh-Hans"]){
 }
 Object.assign(UI_TRANSLATIONS["zh-Hant"],{"End time":"結束時間","Calculated automatically":"自動計算","Did this help?":"這個方法有幫助嗎？","Yes":"有","A little":"少少","Not really":"不太有","✓ Done setting up":"✓ 已完成環境設定","✓ I tried this":"✓ 我試過了","Support feedback":"支援方法回饋","No feedback recorded":"未有回饋紀錄","Feedback":"回饋","5 minutes finished.":"5分鐘完成了。","Do you want to continue, or take a planned break?":"你想繼續，還是先有計劃地休息一下？","Break finished.":"休息時間完成了。","Check your task and decide whether you are ready to go back.":"看看你的任務，再決定是否準備好繼續。"});
 Object.assign(UI_TRANSLATIONS["zh-Hans"],{"End time":"结束时间","Calculated automatically":"自动计算","Did this help?":"这个方法有帮助吗？","Yes":"有","A little":"一点","Not really":"不太有","✓ Done setting up":"✓ 已完成环境设置","✓ I tried this":"✓ 我试过了","Support feedback":"支持方法反馈","No feedback recorded":"暂无反馈记录","Feedback":"反馈","5 minutes finished.":"5分钟完成了。","Do you want to continue, or take a planned break?":"你想继续，还是先有计划地休息一下？","Break finished.":"休息时间结束了。","Check your task and decide whether you are ready to go back.":"看看你的任务，再决定是否准备好继续。"});
+for(const lang of ["zh-Hant","zh-Hans"]){
+  Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
+    if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
+  });
+}
+Object.assign(UI_TRANSLATIONS["zh-Hant"],{"My saved supports that have helped me before.":"我以前用過並覺得有幫助的支援方法。","🔔 I’m Stuck alerts":"🔔「我卡住了」通知","Optional: notify this Parent device when the child uses “I’m Stuck”.":"選用功能：當孩子使用「我卡住了」時，通知這部家長裝置。","Background notifications must be enabled on this Parent device. You can turn this off at any time.":"這部家長裝置需要先開啟背景通知；你可以隨時關閉此功能。","I’m Stuck alerts are off on this device.":"這部裝置的「我卡住了」通知目前已關閉。","✓ I’m Stuck alerts are on for this Parent device.":"✓ 這部家長裝置已開啟「我卡住了」通知。","Could not check I’m Stuck alert setting:":"未能檢查「我卡住了」通知設定：","Turning on I’m Stuck alerts…":"正在開啟「我卡住了」通知……","Turning off I’m Stuck alerts…":"正在關閉「我卡住了」通知……","Background notifications could not be enabled on this device.":"這部裝置未能開啟背景通知。","Could not change I’m Stuck alerts:":"未能更改「我卡住了」通知：","🔔 Parent was notified that you may need support.":"🔔 已通知家長你可能需要支援。","🔔 Parent was already notified about this task recently.":"🔔 最近已就這個任務通知過家長。","Your child":"你的孩子","✓ In My Toolkit · tap to remove":"✓ 已加入我的工具箱 · 再按可移除","✕ Remove":"✕ 移除","Support removed from My Support Toolkit.":"已從我的支援工具箱移除這個方法。"});
+Object.assign(UI_TRANSLATIONS["zh-Hans"],{"My saved supports that have helped me before.":"我以前用过并觉得有帮助的支持方法。","🔔 I’m Stuck alerts":"🔔“我卡住了”通知","Optional: notify this Parent device when the child uses “I’m Stuck”.":"可选功能：当孩子使用“我卡住了”时，通知这台家长设备。","Background notifications must be enabled on this Parent device. You can turn this off at any time.":"这台家长设备需要先开启后台通知；你可以随时关闭此功能。","I’m Stuck alerts are off on this device.":"这台设备的“我卡住了”通知目前已关闭。","✓ I’m Stuck alerts are on for this Parent device.":"✓ 这台家长设备已开启“我卡住了”通知。","Could not check I’m Stuck alert setting:":"无法检查“我卡住了”通知设置：","Turning on I’m Stuck alerts…":"正在开启“我卡住了”通知……","Turning off I’m Stuck alerts…":"正在关闭“我卡住了”通知……","Background notifications could not be enabled on this device.":"这台设备无法开启后台通知。","Could not change I’m Stuck alerts:":"无法更改“我卡住了”通知：","🔔 Parent was notified that you may need support.":"🔔 已通知家长你可能需要支持。","🔔 Parent was already notified about this task recently.":"🔔 最近已就这个任务通知过家长。","Your child":"你的孩子","✓ In My Toolkit · tap to remove":"✓ 已加入我的工具箱 · 再按可移除","✕ Remove":"✕ 移除","Support removed from My Support Toolkit.":"已从我的支持工具箱移除这个方法。"});
 for(const lang of ["zh-Hant","zh-Hans"]){
   Object.entries(UI_TRANSLATIONS[lang]||{}).forEach(([en,value])=>{
     if(value && !(value in UI_REVERSE_TRANSLATIONS[lang])) UI_REVERSE_TRANSLATIONS[lang][value]=en;
@@ -1668,9 +1715,11 @@ async function enableClosedPush(){
 
     localStorage.setItem(PUSH_ENABLED_KEY,"1");
     status.textContent="✓ Notifications enabled on this device. Start a timer, switch apps or lock the iPad, and the timer-end notification can still arrive.";
+    return true;
   }catch(err){
     localStorage.removeItem(PUSH_ENABLED_KEY);
     status.textContent="Could not enable notifications: "+err.message;
+    return false;
   }
 }
 
@@ -1751,6 +1800,7 @@ async function initialiseClosedPush(){
 
 
 const FAMILY_SYNC_KEY=`routineFamilySync_${PROFILE_ID}`;
+const PARENT_STUCK_ALERT_KEY=`routineParentStuckAlerts_${PROFILE_ID}`;
 let familySyncConfig=null;
 let familySyncPollTimer=null;
 let familySyncUploadTimer=null;
@@ -1795,6 +1845,111 @@ function familyStatus(message){
   if(el) el.textContent=message;
 }
 
+function parentStuckAlertsEnabledLocal(){
+  return localStorage.getItem(PARENT_STUCK_ALERT_KEY)==="1";
+}
+function setParentStuckAlertsEnabledLocal(enabled){
+  if(enabled) localStorage.setItem(PARENT_STUCK_ALERT_KEY,"1");
+  else localStorage.removeItem(PARENT_STUCK_ALERT_KEY);
+}
+function updateParentStuckAlertUI(message=null){
+  const panel=document.getElementById("parentStuckAlertPanel");
+  const toggle=document.getElementById("parentStuckAlertToggle");
+  const status=document.getElementById("parentStuckAlertStatus");
+  const show=!!familySyncConfig && isParentSyncMode();
+  if(panel) panel.style.display=show?"block":"none";
+  if(toggle) toggle.checked=show && parentStuckAlertsEnabledLocal();
+  if(status){
+    status.textContent=message || (
+      parentStuckAlertsEnabledLocal()
+        ? uiText("✓ I’m Stuck alerts are on for this Parent device.")
+        : uiText("I’m Stuck alerts are off on this device.")
+    );
+  }
+}
+async function syncParentStuckAlertSetting(){
+  if(!familySyncConfig || !isParentSyncMode()) return;
+  try{
+    const data=await familyFetch("/calendar/parent-alerts",{
+      method:"POST",
+      body:JSON.stringify({
+        code:familySyncConfig.code,
+        token:familySyncConfig.token,
+        clientId:getPushClientId()
+      })
+    });
+    setParentStuckAlertsEnabledLocal(!!data.enabled);
+    updateParentStuckAlertUI();
+  }catch(err){
+    updateParentStuckAlertUI(uiText("Could not check I’m Stuck alert setting:")+" "+err.message);
+  }
+}
+async function setParentStuckAlerts(enabled){
+  if(!familySyncConfig || !isParentSyncMode()) return false;
+  const toggle=document.getElementById("parentStuckAlertToggle");
+  const status=document.getElementById("parentStuckAlertStatus");
+  if(toggle) toggle.disabled=true;
+  if(status) status.textContent=enabled
+    ? uiText("Turning on I’m Stuck alerts…")
+    : uiText("Turning off I’m Stuck alerts…");
+  try{
+    if(enabled){
+      const pushReady=closedPushEnabled() || await enableClosedPush();
+      if(!pushReady || !closedPushEnabled()){
+        throw new Error(uiText("Background notifications could not be enabled on this device."));
+      }
+    }
+    const data=await familyFetch("/calendar/parent-alerts",{
+      method:"POST",
+      body:JSON.stringify({
+        code:familySyncConfig.code,
+        token:familySyncConfig.token,
+        clientId:getPushClientId(),
+        enabled:!!enabled
+      })
+    });
+    setParentStuckAlertsEnabledLocal(!!data.enabled);
+    updateParentStuckAlertUI(
+      data.enabled
+        ? uiText("✓ I’m Stuck alerts are on for this Parent device.")
+        : uiText("I’m Stuck alerts are off on this device.")
+    );
+    return !!data.enabled;
+  }catch(err){
+    if(enabled) setParentStuckAlertsEnabledLocal(false);
+    updateParentStuckAlertUI(uiText("Could not change I’m Stuck alerts:")+" "+err.message);
+    return false;
+  }finally{
+    if(toggle) toggle.disabled=false;
+    if(toggle) toggle.checked=parentStuckAlertsEnabledLocal();
+  }
+}
+async function sendKidStuckAlert(task){
+  const status=document.getElementById("stuckParentAlertStatus");
+  if(status) status.textContent="";
+  if(!familySyncConfig || !isKidSyncMode() || !task) return;
+  try{
+    const data=await familyFetch("/calendar/stuck",{
+      method:"POST",
+      body:JSON.stringify({
+        code:familySyncConfig.code,
+        token:familySyncConfig.token,
+        taskId:String(task.id||""),
+        taskLabel:String(displayTaskLabel(task)||uiText("Activity")),
+        childName:String(cleanProfileName(ACTIVE_PROFILE?.name)||uiText("Your child"))
+      })
+    });
+    if(status && Number(data.notified||0)>0){
+      status.textContent=uiText("🔔 Parent was notified that you may need support.");
+    }else if(status && data.suppressed){
+      status.textContent=uiText("🔔 Parent was already notified about this task recently.");
+    }
+  }catch(err){
+    // The helper still works even when the optional Parent alert cannot be sent.
+    if(status) status.textContent="";
+  }
+}
+
 async function familyFetch(path,options={}){
   const base=getPushServerUrl();
   if(!base) throw new Error("Notification / sync server is not configured.");
@@ -1832,6 +1987,7 @@ function applyFamilyModeUI(){
   }else{
     familyStatus("Not connected. Create a calendar on a parent device, or join with an existing Calendar Code.");
   }
+  updateParentStuckAlertUI();
 }
 
 function applyRemoteFamilyState(payload){
@@ -1890,6 +2046,7 @@ async function createFamilyCalendar(){
     saveFamilySyncConfig();
     applyRemoteFamilyState(data);
     startFamilySyncPolling();
+    await syncParentStuckAlertSetting();
     familyStatus(`Shared calendar created. Calendar Code: ${data.code}. Keep the Parent PIN private.`);
   }catch(err){
     familyStatus("Could not create shared calendar: "+err.message);
@@ -1926,6 +2083,7 @@ async function joinFamilyCalendar(role){
     saveFamilySyncConfig();
     applyRemoteFamilyState(data);
     startFamilySyncPolling();
+    if(data.role==="parent") await syncParentStuckAlertSetting();
     familyStatus(`Connected as ${data.role==="parent"?"Parent":"Kid"} to ${data.calendarName}.`);
   }catch(err){
     familyStatus("Could not join calendar: "+err.message);
@@ -1990,9 +2148,25 @@ function startFamilySyncPolling(){
   familySyncPollTimer=setInterval(()=>pullFamilyState(false),8000);
 }
 
-function disconnectFamilyCalendar(){
+async function disconnectFamilyCalendar(){
   if(!familySyncConfig) return;
   if(!confirm("Disconnect this device from the shared calendar? The cloud calendar will stay available to other linked devices.")) return;
+
+  const oldConfig={...familySyncConfig};
+  if(oldConfig.role==="parent" && parentStuckAlertsEnabledLocal()){
+    try{
+      await familyFetch("/calendar/parent-alerts",{
+        method:"POST",
+        body:JSON.stringify({
+          code:oldConfig.code,
+          token:oldConfig.token,
+          clientId:getPushClientId(),
+          enabled:false
+        })
+      });
+    }catch{}
+  }
+  setParentStuckAlertsEnabledLocal(false);
 
   familySyncConfig=null;
   familySyncLastVersion=0;
@@ -2029,6 +2203,7 @@ function initialiseFamilySync(){
   document.getElementById("familyCopyCodeBtn").onclick=copyFamilyCode;
   document.getElementById("familySyncNowBtn").onclick=()=>pullFamilyState(true);
   document.getElementById("familyDisconnectBtn").onclick=disconnectFamilyCalendar;
+  document.getElementById("parentStuckAlertToggle").onchange=e=>setParentStuckAlerts(!!e.target.checked);
 
   const codeInput=document.getElementById("familyJoinCode");
   codeInput.addEventListener("input",()=>{
@@ -2038,7 +2213,10 @@ function initialiseFamilySync(){
 
   applyFamilyModeUI();
   startFamilySyncPolling();
-  if(familySyncConfig) pullFamilyState(false);
+  if(familySyncConfig){
+    pullFamilyState(false);
+    if(isParentSyncMode()) syncParentStuckAlertSetting();
+  }
 }
 
 function escapeHtml(value){
@@ -2718,7 +2896,7 @@ function supportToolDetails(t){
   const task=currentSupportTask();
   const taskName=task?escapeHtml(`${task.icon||""} ${displayTaskLabel(task)}`.trim()):uiText("No task selected yet");
   const selected=selectedTools().includes(t.name);
-  const save=`<button class="support-save-btn ${selected?"saved":""}">${selected?"❤️ In My Support Toolkit":"♡ This helps me"}</button>`;
+  const save=`<button class="support-save-btn ${selected?"saved":""}">${selected?uiText("✓ In My Toolkit · tap to remove"):uiText("♡ This helps me")}</button>`;
   const feedback=supportFeedbackMarkup(t.name);
 
   if(t.type==="start5"){
@@ -2991,12 +3169,32 @@ function renderSelectedTools(){
     return;
   }
   chosen.forEach(t=>{
-    const el=document.createElement("button");
-    el.type="button";
-    el.className="selected-tool";
-    el.innerHTML=`<span style="font-size:21px">${t.icon}</span><div><strong>${t.name}</strong><small>Tap to use this support</small></div>`;
-    el.onclick=()=>openSupportTool(t.name);
-    box.appendChild(el);
+    const wrap=document.createElement("div");
+    wrap.className="selected-tool-wrap";
+
+    const openBtn=document.createElement("button");
+    openBtn.type="button";
+    openBtn.className="selected-tool";
+    openBtn.innerHTML=`<span style="font-size:21px">${t.icon}</span><div><strong>${t.name}</strong><small>Tap to use this support</small></div>`;
+    openBtn.onclick=()=>openSupportTool(t.name);
+
+    const removeBtn=document.createElement("button");
+    removeBtn.type="button";
+    removeBtn.className="selected-tool-remove";
+    removeBtn.textContent=uiText("✕ Remove");
+    removeBtn.onclick=e=>{
+      e.stopPropagation();
+      const before=[...selectedTools()];
+      setSelectedTools(before.filter(x=>x!==t.name));
+      renderSelectedTools(); renderTools(); updateStuckBox(); scheduleAutoSave();
+      showUndo(uiText("Support removed from My Support Toolkit."),()=>{
+        setSelectedTools(before);
+        renderSelectedTools(); renderTools(); updateStuckBox(); scheduleAutoSave();
+      });
+    };
+
+    wrap.append(openBtn,removeBtn);
+    box.appendChild(wrap);
   });
   translateSoon();
 }
@@ -4985,7 +5183,7 @@ async function tryBrowserAutoTranslation(){
  for(const target of targets){if(target===sourceLang)continue;const translator=await TranslatorClass.create({sourceLanguage:sourceLang,targetLanguage:target});document.getElementById(fields[target]).value=await translator.translate(source);if(typeof translator.destroy==="function")translator.destroy()}
  if(status)status.textContent=uiText("Automatic translation completed. Please review the wording before saving.")}catch{if(status)status.textContent=uiText("Could not complete automatic translation. You can enter the language versions manually.")}
 }
-const V33_TRANSLATION_AUDIT_KEYS=["🌞 Start a new day","🧒 Focus mode","↩ Full planner","📊 Daily History / OT Review","💾 Save today to history","📱 App version","🔄 Reload latest version","🌐 Translation check","🌐 Custom text language versions","🖼️ Optional photo","FOCUS MODE","Current task","Next task","Drag activities here to build your routine","Your saved supports:","Try the first small step.","If that is still hard, choose one support above."];
+const V33_TRANSLATION_AUDIT_KEYS=["🌞 Start a new day","🧒 Focus mode","↩ Full planner","📊 Daily History / OT Review","💾 Save today to history","📱 App version","🔄 Reload latest version","🌐 Translation check","🌐 Custom text language versions","🖼️ Optional photo","FOCUS MODE","Current task","Next task","Drag activities here to build your routine","Your saved supports:","Try the first small step.","If that is still hard, choose one support above.","🔔 I’m Stuck alerts","Optional: notify this Parent device when the child uses “I’m Stuck”.","✓ In My Toolkit · tap to remove","Support removed from My Support Toolkit."];
 function runTranslationAudit(){const missing=[];for(const lang of ["zh-Hans","zh-Hant"]){for(const key of V33_TRANSLATION_AUDIT_KEYS){if(!UI_TRANSLATIONS[lang]?.[key])missing.push(`${lang}: ${key}`)}if(Object.keys(ACTIVITY_LABEL_TRANSLATIONS[lang]||{}).length<98)missing.push(`${lang}: Activity Bank <98`);if(Object.keys(TASK_BREAKDOWN_TRANSLATIONS[lang]||{}).length<98)missing.push(`${lang}: I’m stuck guides <98`)}
  const status=document.getElementById("translationAuditStatus");if(status)status.textContent=missing.length?`${uiText("Translation check found missing items:")} ${missing.join(" | ")}`:uiText("English, Simplified Chinese and Traditional Chinese core translations are complete.");return missing}
 async function reloadLatestVersion(){const status=document.getElementById("versionStatus");if(status)status.textContent=uiText("Checking for the latest app files…");try{if("serviceWorker"in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update()}}catch{}if(status)status.textContent=uiText("Reloading the latest version…");const url=new URL(location.href);url.searchParams.set("_appUpdate",Date.now());location.replace(url.toString())}
@@ -5292,6 +5490,7 @@ document.getElementById("breakTaskBtn").onclick=async()=>{
   const task=selectedStuckTask();
   if(!task) return;
   recordStuckHelperUse();
+  if(isKidSyncMode()) sendKidStuckAlert(task);
   await requestSmartBreakdown(task);
 };
 document.getElementById("nextSmallStepBtn").onclick=()=>completeNextSmallStep();
@@ -5385,7 +5584,7 @@ document.getElementById("exportBtn").onclick=()=>{
   const blob=new Blob([JSON.stringify(getState(),null,2)],{type:"application/json"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v33_3_Backup.json`;
+  a.download=`${cleanProfileName(ACTIVE_PROFILE?.name).replace(/[^a-z0-9_-]+/gi,"_") || "Routine"}_After_School_Mission_v34_Backup.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

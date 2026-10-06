@@ -347,3 +347,18 @@ V33.2 keeps all V33.1 data and features. No Cloudflare Worker redeploy is requir
 - Daily History / OT Review keeps support-use details and now stores the contextual 👍 / 😐 / 👎 feedback for that day.
 
 V33.3 preserves the same app storage key, existing routines, Family Calendar, photos, history and all V33.2 features. No Cloudflare Worker redeploy is required.
+
+
+## V34 — Parent I’m Stuck Alerts + Support Toolkit UX
+
+- Parent-mode devices can optionally turn on **I’m Stuck alerts** for that specific Parent device.
+- The setting is OFF by default and requires background notifications on that Parent device.
+- When a Kid-mode device presses **Break it down** in the I’m Stuck helper, the V34 Cloudflare backend can notify opted-in Parent devices.
+- The backend applies a 10-minute per-task cooldown to avoid repeated alerts.
+- The child sees a brief transparent confirmation only when a Parent notification was actually sent or was recently sent.
+- **My Support Toolkit** now appears inside the I’m Stuck area, directly above **What might help me right now?**
+- Saved supports now have an explicit **Remove** action with Undo.
+- The support card also clearly shows **In My Toolkit · tap to remove** when already selected.
+- Existing routines, templates, support feedback, Family Calendar data, photos and local storage keys remain compatible.
+
+Requires the V34 Cloudflare Worker backend for Parent I’m Stuck push alerts.
